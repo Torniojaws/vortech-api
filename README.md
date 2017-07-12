@@ -11,6 +11,9 @@ Create a normal RESTful API with the standard CRUD way for paths and access, eg.
 ## URL
 The URL will most likely be http://www.vortechmusic.com/api/1.0 with future versions being either /1.1 or /2.0
 
+## Auth
+Since we cannot install anything on the web host, a less than optimal way must be implemented using user login instead of eg. OAuth2
+
 ## Database
 All queries will be done using PDO. User passwords will be hashed using a PBFKD2 implementation, which should be very secure.
 
@@ -19,8 +22,8 @@ Everything possible will be covered by PHPUnit tests.
 
 ## Versions
 The versions are locked in place by the host and cannot be changed.
-PHP 5.4.40
-MySQL 5.5.48
+- PHP 5.4.40
+- MySQL 5.5.48
 
 ## Frontend
 The frontend will be in a separate repository. It will be done using ReactJS and Bootstrap.
