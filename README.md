@@ -30,25 +30,25 @@ The frontend will be in a separate repository. It will be done using ReactJS and
 
 ## Apache setup
 1. Edit ``/etc/apache2/apache2.conf`` and add the below
-```
-<Directory /vagrant/vortech-api>  
-    Options Indexes FollowSymLinks MultiViews  
-    AllowOverride All  
-    Order allow,deny  
-    allow from all  
-    Require all granted  
-</Directory>  
-```
+    ```
+    <Directory /vagrant/vortech-api>  
+        Options Indexes FollowSymLinks MultiViews  
+        AllowOverride All  
+        Order allow,deny  
+        allow from all  
+        Require all granted  
+    </Directory>  
+    ```
 1. Edit ``/etc/apache2/ports.conf`` and add the below to it, where ``8081`` is the port you want to use
-```
-Listen 8081
-```
+    ```
+    Listen 8081
+    ```
 1. Then go to ``/etc/apache2/sites-available/`` directory and ``sudo cp 000-default.conf mysite.conf``
 1. Edit the file so it has:
-```
-ServerName localhost
-DocumentRoot /vagrant/vortech-api
-```
+    ```
+    ServerName localhost
+    DocumentRoot /vagrant/vortech-api
+    ```
 1. Then enable the site with ``sudo a2ensite mysite.conf``
 1. Then enable rewrites (if not yet enabled): ``sudo a2enmod rewrite``
 1. And restart Apache for all this to take effect: ``sudo service apache2 restart``
