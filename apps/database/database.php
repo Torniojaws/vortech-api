@@ -38,15 +38,23 @@ class Database
             } else {
                 $this->last_action_successful = false;
             }
-            // UPDATE and INSERT queries will not return anything with fetch, so this prevents
-            // showing 2053 General Error
-            if (substr($statement, 0, 6) == 'UPDATE' or substr($statement, 0, 6) == 'INSERT') {
+            // UPDATE, DELETE and INSERT queries will not return anything with fetch, so this
+            // prevents showing a 2053 General Error
+            if (substr($statement, 0, 6) == 'UPDATE'
+                or substr($statement, 0, 6) == 'INSERT'
+                or substr($statement, 0, 6) == 'DELETE'
+            ) {
                 return;
             }
             return $this->query->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $err) {
             echo $err;
         }
+    }
+
+    // This tells the ID in the database of the latest thing we added. Useful for updating Categories.
+    public function getInsertId() {
+        return $this->pdo->lastInsertId();
     }
 
     public function close() {
