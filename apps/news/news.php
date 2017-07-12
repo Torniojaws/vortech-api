@@ -18,10 +18,15 @@ $id = $parameters[1];
 // where "comments" is the action.
 $action = $parameters[2];
 
+$resp = array();
+
 switch ($method) {
     case 'GET':
         // Either all news or a specific news ID
-        $resp = array("get hello" => "world");
+        $resp["news"] = "world";
+        if (is_numeric($id)) {
+            $resp["id"] = $id;
+        }
         break;
     case 'POST':
         // Add news
@@ -30,11 +35,23 @@ switch ($method) {
     case 'PUT':
         // Update an existing news ID, eg. PUT /news/123
         // with a payload JSON that has the update information
-        $resp = array("updating" => "stuff");
+        if (is_numeric($id) == false) {
+            $resp["status"] = "error";
+            $resp["reason"] = "Missing ID";
+        } else {
+            $resp = array("status" => "success");
+            $resp["id"] = $id;
+        }
         break;
     case 'DELETE':
         // Delete a news ID, eg. DELETE /news/123
-        return http_response_code(204);
+        if (is_numeric($id) == false) {
+            $resp["status"] = "error";
+            $resp["reason"] = "Missing ID";
+            return http_response_code(404);
+        } else {
+            return http_response_code(204);
+        }
         break;
     default:
         $resp = array("dafuq" => "No idea what you tried");

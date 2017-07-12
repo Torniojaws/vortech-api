@@ -9,7 +9,10 @@ Create a normal RESTful API with the standard CRUD way for paths and access, eg.
 - Delete something: ``DELETE /users/:id`` which will return HTTP status 204
 
 ## URL
-The URL will most likely be http://www.vortechmusic.com/api/1.0 with future versions being either /1.1 or /2.0
+The URL will be http://www.vortechmusic.com/api/1.0 with future versions being either /1.1 or /2.0
+
+## Documentation
+The documentation is accessible in the root of the API, ie. http://www.vortechmusic.com/api/1.0
 
 ## Auth
 Since we cannot install anything on the web host, a less than optimal way must be implemented using user login instead of eg. OAuth2
