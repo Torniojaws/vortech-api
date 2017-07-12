@@ -1,31 +1,34 @@
 <?php
 
-/*
-    This is generally used to handle News items. News will also have comments, which are stored
-    in a different table than the news themselves. They are matched by news ID as foreign key.
-*/
+header('Content-Type: application/json');
+require_once('../database/database.php');
 
+// Get request information
 $method = $_SERVER['REQUEST_METHOD'];
-
-// Get the possible parameters, eg. /news/123 has the parameter "123" for News ID
 $parameters = explode('/', $_GET['params']);
 
-// News ID, eg. GET /news/123
+// Assign the request params
 $id = $parameters[1];
-
-// The action is generally reserved for getting the comments for a given news ID eg.
-// GET /news/123/comments
-// where "comments" is the action.
 $action = $parameters[2];
 
+// We store the response into this variable
 $resp = array();
 
+// Let's connect to the database
+$db = new Database();
+$db->connect();
+
+// We get the SQL query as prepared statement from here
 switch ($method) {
     case 'GET':
-        // Either all news or a specific news ID
-        $resp["news"] = "world";
         if (is_numeric($id)) {
-            $resp["id"] = $id;
+            // Get specific news post
+            $sql = 'SELECT * FROM News WHERE NewsID = :id';
+            $params = array("id" => $id);
+        } else {
+            // Get all news posts
+            $sql = 'SELECT * FROM News';
+            $params = array();
         }
         break;
     case 'POST':
@@ -58,5 +61,8 @@ switch ($method) {
         break;
 }
 
-header('Content-Type: application/json');
-echo json_encode($resp);
+// And then we run the prepared statement
+$results = $db->run($sql, $params);
+$db->close();
+
+echo json_encode($results, JSON_NUMERIC_CHECK);
