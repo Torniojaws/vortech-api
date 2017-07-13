@@ -17,11 +17,11 @@ if (count($parameters > 0)) {
 }
 
 // Let's connect to the database
-$db = new Database();
+$db = new VortechAPI\Apps\Database\Database();
 $db->connect();
 
 // This is used to generate the SQL query strings easily
-$buildSelect = new BuildSelect();
+$buildSelect = new VortechAPI\Apps\Database\BuildSelect();
 
 // We get the SQL query as prepared statement from here
 switch ($method) {
@@ -65,7 +65,7 @@ switch ($method) {
         }
 
         // Because we have already inserted everything we need, we can stop here
-        return http_response_code(200)
+        return http_response_code(200);
     case 'PUT':
         // Update an existing news ID, eg. PUT /news/123
         // with a payload JSON that has the update information
@@ -98,12 +98,12 @@ switch ($method) {
 
         // And categories. This is a bit tricky, since each entry has its own row in the table
         // So we check what exists already
-        $sql = $buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id')
+        $sql = $buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id');
         $params = array("id" => $id);
         $existingCategoryIds = $db->run($sql, $params);
 
         // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
-        $arrayUtils = new ArrayUtils();
+        $arrayUtils = new VortechAPI\Apps\Utils\ArrayUtils();
         $flat = $arrayUtils->flattenArray($existingCategoryIds);
         $flatExisting = $arrayUtils->toIntArray($flat);
 

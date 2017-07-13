@@ -19,15 +19,15 @@ class Database
     public function connect()
     {
         try {
-            $this->pdo = new PDO(
+            $this->pdo = new \PDO(
                 "$this->driver:host=$this->host; dbname=$this->name; charset=$this->charset",
                 $this->user,
                 $this->pass
             );
             // For added security with MySQL / MariaDB
-            $this->pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+            $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
             // For Extra error details
-            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $exception) {
             echo $exception;
         }
@@ -44,13 +44,12 @@ class Database
             }
             // UPDATE, DELETE and INSERT queries will not return anything with fetch, so this
             // prevents showing a 2053 General Error
-            if (substr($statement, 0, 6) == 'UPDATE'
-                or substr($statement, 0, 6) == 'INSERT'
-                or substr($statement, 0, 6) == 'DELETE'
-            ) {
+            $method = substr($statement, 0, 6);
+            $skip = array('UPDATE', 'DELETE', 'INSERT');
+            if (in_array($method, $skip)) {
                 return;
             }
-            return $this->query->fetchAll(PDO::FETCH_ASSOC);
+            return $this->query->fetchAll(\PDO::FETCH_ASSOC);
         } catch (Exception $err) {
             echo $err;
         }
