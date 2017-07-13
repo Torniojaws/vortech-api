@@ -4,12 +4,12 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class QueryBuilderTest extends TestCase
+class BuildSelectTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/database/query.php');
-        $this->qb = new \VortechAPI\Apps\Database\QueryBuilder();
+        require_once('apps/database/select.php');
+        $this->qb = new \VortechAPI\Apps\Database\BuildSelect();
     }
 
     public function testBasicQuery()

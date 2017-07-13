@@ -3,6 +3,7 @@
 header('Content-Type: application/json');
 
 require_once('../database/database.php');
+require_once('../database/select.php');
 require_once('../utils/arrays.php');
 
 // Get request information
@@ -19,19 +20,19 @@ if (count($parameters > 0)) {
 $db = new Database();
 $db->connect();
 
+// This is used to generate the SQL query strings easily
+$buildSelect = new BuildSelect();
+
 // We get the SQL query as prepared statement from here
 switch ($method) {
     case 'GET':
         if (is_numeric($id)) {
             // Get specific news post
-            $sql = 'SELECT *
-                    FROM News
-                    WHERE NewsID = :id';
+            $sql = $buildSelect->select()->from('News')->where('NewsID = :id')->result();
             $params = array("id" => $id);
         } else {
             // Get all news posts
-            $sql = 'SELECT *
-                    FROM News';
+            $sql = $buildSelect->select()->from('News')->result();
             $params = array();
         }
         break;
@@ -97,15 +98,14 @@ switch ($method) {
 
         // And categories. This is a bit tricky, since each entry has its own row in the table
         // So we check what exists already
-        $sql = 'SELECT DISTINCT(CategoryID)
-                FROM NewsCategories
-                WHERE NewsID = :id';
+        $sql = $buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id')
         $params = array("id" => $id);
         $existingCategoryIds = $db->run($sql, $params);
+
         // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
         $arrayUtils = new ArrayUtils();
-        $arrayUtils->flattenArray($existingCategoryIds);
-        $flatExisting = $arrayUtils->toIntArray();
+        $flat = $arrayUtils->flattenArray($existingCategoryIds);
+        $flatExisting = $arrayUtils->toIntArray($flat);
 
         // Then we iterate the new values (array of integers)
         foreach ($categories as $category) {

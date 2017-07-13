@@ -5,14 +5,14 @@ namespace VortechAPI\Apps\Database;
 /**
  * From: https://stackoverflow.com/a/32804402/1488445
  *
- * Use this class to generate SQL query strings easily and cleanly. Eg.
- * $query = new QueryBuilder();
+ * Use this class to generate SQL select query strings easily and cleanly. Eg.
+ * $query = new BuildSelect();
  * $sql = $query->select('MyColumn')->from('News')->where('NewsID = :id')->limit(1)->result();
  * echo $sql; // SELECT MyColumn FROM News WHERE NewsID = :id LIMIT 1
 *
  * The :id can be used in creating prepared statements with PDO
  */
-class QueryBuilder
+class BuildSelect
 {
     private $select = array();
     private $from;

@@ -15,7 +15,6 @@ class ArrayUtils
         foreach ($array as $k => $v) {
             $new[$k] = $v[$name];
         }
-        $this->array = $new;
 
         return $new;
     }
@@ -25,12 +24,14 @@ class ArrayUtils
      * ints in the array, we return an empty array.
      * @return int[] $intArray Which is a flat array of integers
      */
-    public function toIntArray()
+    public function toIntArray($array)
     {
         $intArray = array();
 
-        if (count($this->array) > 0) {
-            $intArray = array_map('intval', $this->array);
+        foreach ($array as $item) {
+            if (is_numeric($item)) {
+                $intArray[] = (int)$item;
+            }
         }
 
         return $intArray;
