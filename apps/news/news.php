@@ -12,8 +12,12 @@ $parameters = explode('/', $_GET['params']);
 
 // Assign the request params
 if (count($parameters > 0)) {
-    $id = $parameters[1];
-    $action = $parameters[2];
+    if (isset($parameters[1])) {
+        $id = $parameters[1];
+    }
+    if (isset($parameters[2])) {
+        $action = $parameters[2];
+    }
 }
 
 // Let's connect to the database
@@ -98,13 +102,13 @@ switch ($method) {
 
         // And categories. This is a bit tricky, since each entry has its own row in the table
         // So we check what exists already
-        $sql = $buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id');
+        $sql = $buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id')->result();
         $params = array("id" => $id);
         $existingCategoryIds = $db->run($sql, $params);
 
         // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
         $arrayUtils = new VortechAPI\Apps\Utils\ArrayUtils();
-        $flat = $arrayUtils->flattenArray($existingCategoryIds);
+        $flat = $arrayUtils->flattenArray($existingCategoryIds, 'CategoryID');
         $flatExisting = $arrayUtils->toIntArray($flat);
 
         // Then we iterate the new values (array of integers)
