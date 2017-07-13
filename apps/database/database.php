@@ -1,5 +1,7 @@
 <?php
 
+namespace VortechAPI\Apps\Database;
+
 // This is the gateway to the database features
 class Database
 {
@@ -14,7 +16,8 @@ class Database
         $this->pass = $config['database']['password'];
     }
 
-    public function connect() {
+    public function connect()
+    {
         try {
             $this->pdo = new PDO(
                 "$this->driver:host=$this->host; dbname=$this->name; charset=$this->charset",
@@ -30,7 +33,8 @@ class Database
         }
     }
 
-    public function run($statement, $params) {
+    public function run($statement, $params)
+    {
         try {
             $this->query = $this->pdo->prepare($statement);
             if ($this->query->execute($params)) {
@@ -53,11 +57,13 @@ class Database
     }
 
     // This tells the ID in the database of the latest thing we added. Useful for updating Categories.
-    public function getInsertId() {
+    public function getInsertId()
+    {
         return $this->pdo->lastInsertId();
     }
 
-    public function close() {
+    public function close()
+    {
         $this->pdo = null;
     }
 }

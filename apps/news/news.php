@@ -1,15 +1,9 @@
 <?php
 
 header('Content-Type: application/json');
-require_once('../database/database.php');
 
-// Used to flatten an array of arrays
-function getFlatIntArray($array) {
-    foreach ($array as $k => $v) {
-        $new[$k] = (int)$v['CategoryID'];
-    }
-    return $new;
-}
+require_once('../database/database.php');
+require_once('../utils/arrays.php');
 
 // Get request information
 $method = $_SERVER['REQUEST_METHOD'];
@@ -70,7 +64,7 @@ switch ($method) {
         }
 
         // Because we have already inserted everything we need, we can stop here
-        return http_response_code(200);
+        return http_response_code(200)
     case 'PUT':
         // Update an existing news ID, eg. PUT /news/123
         // with a payload JSON that has the update information
@@ -79,62 +73,64 @@ switch ($method) {
             $resp["reason"] = "Missing ID";
             echo json_encode($resp, JSON_NUMERIC_CHECK);
             return http_response_code(400);
-        } else {
-            // Convert POST body JSON to an array
-            $raw = file_get_contents("php://input");
-            $json = json_decode($raw, true);
+        }
 
-            // Then get the data from it
-            $title = $json['title'];
-            $contents = $json['contents'];
-            $categories = $json['categories'];
+        // Convert POST body JSON to an array
+        $raw = file_get_contents("php://input");
+        $json = json_decode($raw, true);
 
-            // Let's update the News
-            $sql = 'UPDATE News
-                    SET
-                        Title = :title,
-                        Contents = :contents,
-                        Updated = NOW()
-                    WHERE
-                        NewsID = :id';
-            $params = array("id" => $id, "title" => $title, "contents" => $contents);
-            $db->run($sql, $params);
+        // Then get the data from it
+        $title = $json['title'];
+        $contents = $json['contents'];
+        $categories = $json['categories'];
 
-            // And categories. This is a bit tricky, since each entry has its own row in the table
-            // So we check what exists already
-            $sql = 'SELECT DISTINCT(CategoryID)
-                    FROM NewsCategories
-                    WHERE NewsID = :id';
-            $params = array("id" => $id);
-            $existingCategoryIds = $db->run($sql, $params);
-            // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
-            $flatExisting = getFlatIntArray($existingCategoryIds);
+        // Let's update the News
+        $sql = 'UPDATE News
+                SET
+                    Title = :title,
+                    Contents = :contents,
+                    Updated = NOW()
+                WHERE
+                    NewsID = :id';
+        $params = array("id" => $id, "title" => $title, "contents" => $contents);
+        $db->run($sql, $params);
 
-            // Then we iterate the new values (array of integers)
-            foreach ($categories as $category) {
-                // If the new category is not in the existingCategoryIds, we INSERT it
-                if (in_array($category, $flatExisting) == false) {
-                    $sql = 'INSERT INTO NewsCategories(NewsID, CategoryID)
-                            VALUES (:id, :category)';
-                    $params = array("id" => $id, "category" => $category);
+        // And categories. This is a bit tricky, since each entry has its own row in the table
+        // So we check what exists already
+        $sql = 'SELECT DISTINCT(CategoryID)
+                FROM NewsCategories
+                WHERE NewsID = :id';
+        $params = array("id" => $id);
+        $existingCategoryIds = $db->run($sql, $params);
+        // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
+        $arrayUtils = new ArrayUtils();
+        $arrayUtils->flattenArray($existingCategoryIds);
+        $flatExisting = $arrayUtils->toIntArray();
+
+        // Then we iterate the new values (array of integers)
+        foreach ($categories as $category) {
+            // If the new category is not in the existingCategoryIds, we INSERT it
+            if (in_array($category, $flatExisting) == false) {
+                $sql = 'INSERT INTO NewsCategories(NewsID, CategoryID)
+                        VALUES (:id, :category)';
+                $params = array("id" => $id, "category" => $category);
+                $db->run($sql, $params);
+                // To prevent duplicates, we add the new entry to the array
+                $flatExisting[] = $category;
+            }
+
+            // If the existingCategoryId does not exist in the new categories, we DELETE it
+            foreach ($flatExisting as $old) {
+                if (in_array($old, $categories) == false) {
+                    $sql = 'DELETE FROM NewsCategories
+                            WHERE CategoryID = :id';
+                    $params = array("id" => $old);
                     $db->run($sql, $params);
-                    // To prevent duplicates, we add the new entry to the array
-                    $flatExisting[] = $category;
-                }
-
-                // If the existingCategoryId does not exist in the new categories, we DELETE it
-                foreach ($flatExisting as $old) {
-                    if (in_array($old, $categories) == false) {
-                        $sql = 'DELETE FROM NewsCategories
-                                WHERE CategoryID = :id';
-                        $params = array("id" => $old);
-                        $db->run($sql, $params);
-                    }
                 }
             }
-            // All done, we can return now
-            return http_response_code(200);
         }
+        // All done, we can return now
+        return http_response_code(200);
     case 'DELETE':
         // Delete a news ID, eg. DELETE /news/123
         if (is_numeric($id) == false) {
@@ -142,21 +138,21 @@ switch ($method) {
             $resp["reason"] = "Missing ID";
             echo json_encode($resp, JSON_NUMERIC_CHECK);
             return http_response_code(400);
-        } else {
-            // There is a high chance that the item has foreign keys in NewsCategories, so they
-            // must first be deleted
-            $sql = 'DELETE FROM NewsCategories
-                    WHERE NewsID = :id';
-            $params = array("id" => $id);
-            $db->run($sql, $params);
-
-            // Then we can delete the News post itself
-            $sql = 'DELETE FROM News
-                    WHERE NewsID = :id';
-            $params = array("id" => $id);
-            $db->run($sql, $params);
-            return http_response_code(204);
         }
+
+        // There is a high chance that the item has foreign keys in NewsCategories, so they
+        // must first be deleted
+        $sql = 'DELETE FROM NewsCategories
+                WHERE NewsID = :id';
+        $params = array("id" => $id);
+        $db->run($sql, $params);
+
+        // Then we can delete the News post itself
+        $sql = 'DELETE FROM News
+                WHERE NewsID = :id';
+        $params = array("id" => $id);
+        $db->run($sql, $params);
+        return http_response_code(204);
     default:
         $resp = array("dafuq" => "No idea what you tried");
         echo json_encode($resp, JSON_NUMERIC_CHECK);
