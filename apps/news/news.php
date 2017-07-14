@@ -2,9 +2,12 @@
 
 header('Content-Type: application/json');
 
+// TODO: Convert this to a class
+
 require_once('../database/database.php');
 require_once('../database/select.php');
 require_once('../utils/arrays.php');
+require_once('../utils/json.php');
 
 // Get request information
 $method = $_SERVER['REQUEST_METHOD'];
@@ -27,6 +30,9 @@ $db->connect();
 // This is used to generate the SQL query strings easily
 $buildSelect = new VortechAPI\Apps\Database\BuildSelect();
 
+// Used to validate JSON content
+$jsonValidator = new VortechAPI\Apps\Utils\JsonTools();
+
 // We get the SQL query as prepared statement from here
 switch ($method) {
     case 'GET':
@@ -44,6 +50,14 @@ switch ($method) {
         // Convert POST body JSON to an array
         $raw = file_get_contents("php://input");
         $json = json_decode($raw, true);
+
+        // Validate the JSON. Invalid JSON will result in a 400 Bad Request
+        if ($jsonValidator->isJson($json) == false) {
+            $resp["status"] = "error";
+            $resp["reason"] = "Invalid JSON";
+            echo json_encode($resp, JSON_NUMERIC_CHECK);
+            return http_response_code(400);
+        }
 
         // Then get the data from it
         $title = $json['title'];
@@ -76,6 +90,14 @@ switch ($method) {
         if (is_numeric($id) == false) {
             $resp["status"] = "error";
             $resp["reason"] = "Missing ID";
+            echo json_encode($resp, JSON_NUMERIC_CHECK);
+            return http_response_code(400);
+        }
+
+        // Validate the JSON. Invalid JSON will result in a 400 Bad Request
+        if ($jsonValidator->isJson($json) == false) {
+            $resp["status"] = "error";
+            $resp["reason"] = "Invalid JSON";
             echo json_encode($resp, JSON_NUMERIC_CHECK);
             return http_response_code(400);
         }

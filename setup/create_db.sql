@@ -1,9 +1,10 @@
 DROP DATABASE vortech;
-CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
-GRANT ALL ON *.* TO 'test'@'localhost';
-
 CREATE DATABASE vortech;
 USE vortech;
+
+-- Testing account in local development
+CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
+GRANT ALL ON vortech.* TO 'test'@'localhost';
 
 CREATE TABLE News (
     NewsID int AUTO_INCREMENT,
@@ -28,3 +29,13 @@ CREATE TABLE NewsCategories (
     PRIMARY KEY (NewsCategoryID),
     FOREIGN KEY (NewsID) REFERENCES News(NewsID)
 );
+
+-- Setup some test values
+INSERT INTO
+    Categories(Category)
+VALUES
+    ("Studio"),
+    ("Live"),
+    ("Recording"),
+    ("Rehearsal"),
+    ("Event");
