@@ -14,6 +14,7 @@ class Database
         $this->charset = $config['database']['charset'];
         $this->user = $config['database']['username'];
         $this->pass = $config['database']['password'];
+        $this->lastActionSuccessful = false;
     }
 
     public function connect()
@@ -37,11 +38,11 @@ class Database
     {
         try {
             $this->query = $this->pdo->prepare($statement);
+
             if ($this->query->execute($params)) {
-                $this->last_action_successful = true;
-            } else {
-                $this->last_action_successful = false;
+                $this->lastActionSuccessful = true;
             }
+
             // UPDATE, DELETE and INSERT queries will not return anything with fetch, so this
             // prevents showing a 2053 General Error
             $method = substr($statement, 0, 6);
