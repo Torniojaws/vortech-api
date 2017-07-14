@@ -20,4 +20,13 @@ class BuildInsertTest extends TestCase
 
         $this->assertEquals($expected, $sql);
     }
+
+    public function testAlternateQuery()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->insert()->into('News')->values('"One", 123, null, NOW()')->result();
+        $expected = 'INSERT INTO News VALUES ("One", 123, null, NOW())';
+
+        $this->assertEquals($expected, $sql);
+    }
 }

@@ -14,7 +14,6 @@ namespace VortechAPI\Apps\Database;
  */
 class BuildInsert
 {
-    private $insert = array();
     private $into;
     private $values;
 
@@ -41,18 +40,15 @@ class BuildInsert
         $query[] = 'INSERT INTO';
         if (empty($this->into)) {
             return 'Invalid query!';
-        } else {
-            $query[] = join(', ', $this->into);
         }
+        $query[] = join(', ', $this->into);
 
         // VALUES
         if (empty($this->values)) {
             return 'Invalid query!';
-        } else {
-            $query[] = 'VALUES ('.join(', ', $this->values).')';
         }
+        $query[] = 'VALUES ('.join(', ', $this->values).')';
 
-        print_r($query);
         return join(' ', $query);
     }
 }
