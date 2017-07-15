@@ -6,15 +6,19 @@ require_once('../database/database.php');
 require_once('../database/select.php');
 require_once('../database/insert.php');
 require_once('../utils/json.php');
+require_once('../utils/arrays.php');
 
 class News
 {
     public function __construct()
     {
         $this->db = new \VortechAPI\Apps\Database\Database();
+        // We always run a query when this class is instantiated, so let's connect automatically
+        $this->db->connect();
         $this->buildSelect = new \VortechAPI\Apps\Database\BuildSelect();
         $this->buildInsert = new \VortechAPI\Apps\Database\BuildInsert();
         $this->jsonValidator = new \VortechAPI\Apps\Utils\JsonTools();
+        $this->arrayUtils = new \VortechAPI\Apps\Utils\ArrayUtils();
     }
 
     public function getNews($params)
@@ -31,9 +35,7 @@ class News
         }
 
         // Now we can run the query, which uses a PDO prepared statement
-        $this->db->connect();
         $results = $this->db->run($sql, $pdoParams);
-        $this->db->close();
 
         $response["contents"] = $results;
         $response["code"] = 200;
@@ -68,19 +70,15 @@ class News
         $pdoParams = array("title" => $title, "contents" => $contents);
 
         // Now we can run the query, which uses a PDO prepared statement
-        $this->db->connect();
         $results = $this->db->run($sql, $pdoParams);
         $currentNewsId = $this->db->getInsertId();
-        $this->db->close();
 
         // And then we write the categories of the news post
         foreach ($categories as $category) {
             $sql = $this->buildInsert->insert()->into('NewsCategories(NewsID, CategoryID)')
                 ->values(':id, :category')->result();
             $pdoParams = array("id" => $currentNewsId, "category" => $category);
-            $this->db->connect();
             $results = $this->db->run($sql, $pdoParams);
-            $this->db->close();
         }
 
         $response["contents"] = "Location: /news/".$currentNewsId;
@@ -123,9 +121,7 @@ class News
         $pdoParams = array("id" => $params[1], "title" => $title, "contents" => $contents);
 
         // Now we can run the query, which uses a PDO prepared statement
-        $this->db->connect();
         $this->db->run($sql, $pdoParams);
-        $this->db->close();
 
         // And categories. This is a bit tricky, since each entry has its own row in the table
         // So we check what exists already
@@ -134,16 +130,19 @@ class News
         $existingCategoryIds = $this->db->run($sql, $pdoParams);
 
         // The data is in an array of arrays, so let's convert it to a plain array(1, 2, 3)
-        $arrayUtils = new VortechAPI\Apps\Utils\ArrayUtils();
-        $flat = $arrayUtils->flattenArray($existingCategoryIds, 'CategoryID');
-        $flatExisting = $arrayUtils->toIntArray($flat);
+        $flat = $this->arrayUtils->flattenArray($existingCategoryIds, 'CategoryID');
+        $flatExisting = $this->arrayUtils->toIntArray($flat);
 
         // Then we iterate the new values (array of integers)
         foreach ($categories as $category) {
             // If the new category is not in the existingCategoryIds, we INSERT it
             if (in_array($category, $flatExisting) == false) {
+                $sql = $this->buildInsert->insert()->into('NewsCategories(NewsID, CategoryID)')
+                    ->values(':id, :category')->result();
+                /*
                 $sql = 'INSERT INTO NewsCategories(NewsID, CategoryID)
                         VALUES (:id, :category)';
+                */
                 $pdoParams = array("id" => $params[1], "category" => $category);
                 $this->db->run($sql, $pdoParams);
                 // To prevent duplicates, we add the new entry to the array
@@ -161,6 +160,7 @@ class News
             }
         }
         // All done
+        $response["contents"] = "Location: /news/".$params[1];
         $response["code"] = 200;
         return $response;
     }
