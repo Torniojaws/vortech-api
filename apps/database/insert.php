@@ -39,13 +39,13 @@ class BuildInsert
         // INSERT INTO
         $query[] = 'INSERT INTO';
         if (empty($this->into)) {
-            return 'Invalid query!';
+            return 'Insert query missing target!';
         }
         $query[] = join(', ', $this->into);
 
         // VALUES
         if (empty($this->values)) {
-            return 'Invalid query!';
+            return 'Insert query missing values!';
         }
         $query[] = 'VALUES ('.join(', ', $this->values).')';
 

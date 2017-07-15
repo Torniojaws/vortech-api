@@ -58,12 +58,7 @@ class BuildSelect
     {
         // SELECT
         $query[] = 'SELECT';
-        if (empty($this->select)) {
-            // SELECT * is used if no params are given
-            $query[] = '*';
-        } else {
-            $query[] = join(', ', $this->select);
-        }
+        $query[] = empty($this->select) ? '*' : join(', ', $this->select);
 
         // FROM
         $query[] = 'FROM';

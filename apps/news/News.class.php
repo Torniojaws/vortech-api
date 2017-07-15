@@ -5,6 +5,7 @@ namespace VortechAPI\Apps\News;
 require_once('../database/database.php');
 require_once('../database/select.php');
 require_once('../database/insert.php');
+require_once('../database/update.php');
 require_once('../utils/json.php');
 require_once('../utils/arrays.php');
 
@@ -17,6 +18,7 @@ class News
         $this->db->connect();
         $this->buildSelect = new \VortechAPI\Apps\Database\BuildSelect();
         $this->buildInsert = new \VortechAPI\Apps\Database\BuildInsert();
+        $this->buildUpdate = new \VortechAPI\Apps\Database\BuildUpdate();
         $this->jsonValidator = new \VortechAPI\Apps\Utils\JsonTools();
         $this->arrayUtils = new \VortechAPI\Apps\Utils\ArrayUtils();
     }
@@ -111,6 +113,9 @@ class News
         $categories = $json['categories'];
 
         // Update the News entry
+        $sql = $this->buildUpdate->update('News')->set('Title = :title, Contents = :contents, Updated = NOW()')
+            ->where('NewsID = :id')->result();
+        /*
         $sql = 'UPDATE News
                 SET
                     Title = :title,
@@ -118,6 +123,7 @@ class News
                     Updated = NOW()
                 WHERE
                     NewsID = :id';
+        */
         $pdoParams = array("id" => $params[1], "title" => $title, "contents" => $contents);
 
         // Now we can run the query, which uses a PDO prepared statement
@@ -139,10 +145,6 @@ class News
             if (in_array($category, $flatExisting) == false) {
                 $sql = $this->buildInsert->insert()->into('NewsCategories(NewsID, CategoryID)')
                     ->values(':id, :category')->result();
-                /*
-                $sql = 'INSERT INTO NewsCategories(NewsID, CategoryID)
-                        VALUES (:id, :category)';
-                */
                 $pdoParams = array("id" => $params[1], "category" => $category);
                 $this->db->run($sql, $pdoParams);
                 // To prevent duplicates, we add the new entry to the array
