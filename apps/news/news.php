@@ -18,18 +18,22 @@ switch ($request->getMethod()) {
         $response = $news->getNews($request->getParams());
         break;
     case 'POST':
-        $data = file_get_contents("php://input");
+        $data = file_get_contents('php://input');
         $response = $news->addNews($data);
         break;
     case 'PUT':
-        $data = file_get_contents("php://input");
+        $data = file_get_contents('php://input');
         $response = $news->editNews($request->getParams(), $data);
         break;
     case 'DELETE':
+        $response = $news->deleteNews($request->getParams());
         break;
     default:
+        header('Allow: GET, POST, PUT, DELETE');
+        $response['contents'] = 'Unknown or unimplemented HTTP Method';
+        $response['code'] = 405;
         break;
 }
 
-echo json_encode($response["contents"], JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES);
-return http_response_code($response["code"]);
+echo json_encode($response['contents'], JSON_NUMERIC_CHECK|JSON_UNESCAPED_SLASHES);
+return http_response_code($response['code']);
