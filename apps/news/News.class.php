@@ -115,7 +115,8 @@ class News
         $categories = $json['categories'];
 
         // Update the News entry
-        $sql = $this->buildUpdate->update('News')->set('Title = :title, Contents = :contents, Updated = NOW()')
+        $sql = $this->buildUpdate->update('News')
+            ->set('Title = :title, Contents = :contents, Updated = NOW()')
             ->where('NewsID = :id')->result();
         $pdoParams = array('id' => $params[1], 'title' => $title, 'contents' => $contents);
 
@@ -124,7 +125,8 @@ class News
 
         // And categories. This is a bit tricky, since each entry has its own row in the table
         // So we check what exists already
-        $sql = $this->buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')->where('NewsID = :id')->result();
+        $sql = $this->buildSelect->select('DISTINCT(CategoryID)')->from('NewsCategories')
+            ->where('NewsID = :id')->result();
         $pdoParams = array('id' => $params[1]);
         $existingCategoryIds = $this->db->run($sql, $pdoParams);
 

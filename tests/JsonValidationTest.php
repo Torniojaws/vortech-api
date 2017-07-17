@@ -41,7 +41,8 @@ class JsonToolsTest extends TestCase
     public function testValidJsonObjectComplex()
     {
         // Adding a new album might get this complex
-        $json = '{"data": [{"stuff": 123, "things": "smooth"}], "more": [{"things": [{"change": "MH"}, {"down": "none"}]}]}';
+        $json = '{"data": [{"stuff": 123, "things": "smooth"}],
+            "more": [{"things": [{"change": "MH"}, {"down": "none"}]}]}';
         $isValid = $this->jsonValidator->isJson($json);
 
         $this->assertTrue($isValid);
