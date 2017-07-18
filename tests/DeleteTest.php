@@ -32,37 +32,13 @@ class DeleteTest extends TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function errorHandler($errno, $errstr, $errfile, $errline)
-    {
-        throw new \InvalidArgumentException(
-            sprintf(
-                'Missing argument. %s %s %s %s',
-                $errno,
-                $errstr,
-                $errfile,
-                $errline
-            )
-        );
-    }
-
-    public function testQueryWithMissingFrom()
-    {
-        // This should give a Missing arguments error due to the parameter being required
-        set_error_handler(array($this, 'errorHandler'));
-        $this->setExpectedException('\InvalidArgumentException');
-
-        $queryBuilder = $this->qb;
-        $queryBuilder->delete()->from()->where('NewsID = :id')->result();
-    }
-
     public function testQueryWithMissingWhere()
     {
-        // This should give a Missing arguments error due to the parameter being required
-        set_error_handler(array($this, 'errorHandler'));
-        $this->setExpectedException('\InvalidArgumentException');
-
         $queryBuilder = $this->qb;
-        $queryBuilder->delete()->from('News')->where()->result();
+        $sql = $queryBuilder->delete()->from('News')->where();
+        $expected = 'You must use WHERE in all DELETE queries to this API';
+
+        $this->assertEquals($sql, $expected);
     }
 
     public function testComplexQuery()
@@ -74,5 +50,14 @@ class DeleteTest extends TestCase
         $expected = 'DELETE News, Comments FROM News JOIN Comments ON Comments.NewsID = :id WHERE News.NewsID = :nid';
 
         $this->assertEquals($expected, $sql);
+    }
+
+    public function testQueryWithMissingJoins()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->delete('News, Comments')->from('News')->joins();
+        $expected = 'When deleting from multiple tables, joins are required';
+
+        $this->assertEquals($sql, $expected);
     }
 }

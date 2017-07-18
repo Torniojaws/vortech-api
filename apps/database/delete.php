@@ -36,8 +36,12 @@ class Delete
         return $this;
     }
 
-    public function where($conditions)
+    public function where($conditions = null)
     {
+        // WHERE is not required for DELETE queries, but I will make it required for safety
+        if (empty($conditions)) {
+            return 'You must use WHERE in all DELETE queries to this API';
+        }
         $this->where = $conditions;
         return $this;
     }
@@ -50,11 +54,8 @@ class Delete
             $query[] = join(', ', $this->delete);
         }
 
-        // FROM
+        // FROM (required)
         $query[] = 'FROM';
-        if (empty($this->from)) {
-            return 'Missing deletion target';
-        }
         $query[] = $this->from;
 
         // JOINS (optional)
@@ -64,10 +65,6 @@ class Delete
         }
 
         // WHERE
-        // This not officially required, but I will make it mandatory for safety reasons
-        if (empty($this->where)) {
-            return 'Using WHERE is mandatory in this API';
-        }
         $query[] = 'WHERE';
         $query[] = $this->where;
 
