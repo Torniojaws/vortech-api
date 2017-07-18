@@ -28,7 +28,7 @@ All queries will be done using PDO. User passwords will be hashed using a PBFKD2
 
 ## Testing
 Everything possible will be covered by PHPUnit 4.8 tests. Run the tests in the project root with ``phpunit tests``
-For coding standards, PSR2 is used. Run the check in the project root with ``phpcs ./ --standard=PSR2``
+For coding standards, PSR2 is used. Run the check in the project root with ``phpcs apps/ --standard=PSR2``
 
 ## Versions
 The versions are locked in place by the 3rd party host and cannot be changed. They use:
