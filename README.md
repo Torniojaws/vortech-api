@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Torniojaws/gnrephp.svg?branch=master)](https://travis-ci.org/Torniojawsgnrephp)
+[![Build Status](https://travis-ci.org/Torniojaws/gnrephp.svg?branch=master)](https://travis-ci.org/Torniojaws/gnrephp)
 
 # Vortech API
 The 3rd party webhost doesn't allow installing Python packages after all, so I will do the backend with PHP instead. It will be a RESTful API.
