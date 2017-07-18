@@ -34,7 +34,7 @@ class Json
      * @param string $string Is the input we check
      * @return boolean Result of the check
      */
-    private function hasInvalidFirstCharacter($string)
+    public function hasInvalidFirstCharacter($string)
     {
         $firstChar = substr($string, 0, 1);
         $valid = array('{', '[');
@@ -48,7 +48,7 @@ class Json
      * @param string $data Is the data to check
      * @return boolean Whether any errors appeared
      */
-    private function jsonDecodeProbeReturnsErrors($data)
+    public function jsonDecodeProbeReturnsErrors($data)
     {
         json_decode($data);
         switch (json_last_error()) {

@@ -65,4 +65,22 @@ class JsonTest extends TestCase
 
         $this->assertFalse($isValid);
     }
+
+    public function testWrongFirstCharacter()
+    {
+        // In our version, we only support JSON objects and JSON arrays, even though officially
+        // JSON can start with numbers etc. also
+        $json = '000';
+        $isInvalid = $this->jsonValidator->hasInvalidFirstCharacter($json);
+
+        $this->assertTrue($isInvalid);
+    }
+
+    public function testInvalidJsonWithErrorConstant()
+    {
+        $json = '{notvalid';
+        $hasJsonErrors = $this->jsonValidator->jsonDecodeProbeReturnsErrors($json);
+
+        $this->assertTrue($hasJsonErrors);
+    }
 }
