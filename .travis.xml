@@ -4,3 +4,10 @@ php:
   - 5.3
   - 5.4
   - hhvm
+
+script:
+  - mkdir -p build/logs
+  - phpunit apps/ --coverage-clover build/logs/clover.xml
+
+after_script
+  - php vendor/bin/coveralls -v
