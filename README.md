@@ -42,4 +42,4 @@ The versions are locked in place by the 3rd party host and cannot be changed. Th
 The frontend will be in a separate repository. It will be done using ReactJS and Bootstrap.
 
 ## Setup instructions
-See the file ``setup/SettingUpFromNothing.txt`` for thorough instructions
+See the file ``setup/SettingUpFromNothing.txt`` for thorough instructions.
