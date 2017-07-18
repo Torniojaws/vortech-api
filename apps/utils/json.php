@@ -13,19 +13,10 @@ class Json
      */
     public function isJson($data)
     {
-        // To speed things up, we check the first character, which must be { or [
-        if ($this->hasInvalidFirstCharacter($data) == true) {
-            return false;
-        }
-
-        // Then we validate the rest (needs PHP >= 5.3). This isn't perfect, but good enough.
-        // See comments in: https://stackoverflow.com/a/6041773/1488445
-        if ($this->jsonDecodeProbeReturnsErrors($data) == true) {
-            return false;
-        }
-
-        // No errors came up, so it should be valid
-        return true;
+        return (
+            $this->hasInvalidFirstCharacter($data) == false
+            && $this->jsonDecodeProbeReturnsErrors($data) == false
+        );
     }
 
     /**
@@ -42,42 +33,13 @@ class Json
     }
 
     /**
-     * Check does the json_decode() process return any errors. This covers most of them, but I have
-     * left out two cases (JSON_ERROR_RECURSION and JSON_ERROR_INF_OR_NAN) because the target webhost
-     * has a version of PHP that does not support the cases. (PHP 5.4.40 < required PHP 5.5)
+     * Check does the json_decode() process return any errors (= returns a non-empty string)
      * @param string $data Is the data to check
      * @return boolean Whether any errors appeared
      */
     public function jsonDecodeProbeReturnsErrors($data)
     {
         json_decode($data);
-        switch (json_last_error()) {
-            case JSON_ERROR_NONE:
-                $error = ''; // JSON is valid // No error has occurred
-                break;
-            case JSON_ERROR_DEPTH:
-                $error = 'The maximum stack depth has been exceeded.';
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                $error = 'Invalid or malformed JSON.';
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                $error = 'Control character error, possibly incorrectly encoded.';
-                break;
-            case JSON_ERROR_SYNTAX:
-                $error = 'Syntax error, malformed JSON.';
-                break;
-            // PHP >= 5.3.3
-            case JSON_ERROR_UTF8:
-                $error = 'Malformed UTF-8 characters, possibly incorrectly encoded.';
-                break;
-            case JSON_ERROR_UNSUPPORTED_TYPE:
-                $error = 'A value of a type that cannot be encoded was given.';
-                break;
-            default:
-                $error = 'Unknown JSON error occured.';
-                break;
-        }
-        return $error !== '';
+        return json_last_error() !== 0;
     }
 }

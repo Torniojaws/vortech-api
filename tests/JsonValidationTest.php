@@ -76,6 +76,14 @@ class JsonTest extends TestCase
         $this->assertTrue($isInvalid);
     }
 
+    public function testJsonDecodeWithNoErrors()
+    {
+        $json = '{"hi": "there"}';
+        $hasErrors = $this->jsonValidator->jsonDecodeProbeReturnsErrors($json);
+
+        $this->assertFalse($hasErrors);
+    }
+
     public function testInvalidJsonWithErrorConstant()
     {
         $json = '{notvalid';
