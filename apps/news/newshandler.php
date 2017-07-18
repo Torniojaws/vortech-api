@@ -1,28 +1,21 @@
 <?php
 
-namespace VortechAPI\Apps\News;
+namespace Apps\News;
 
-require_once('../database/database.php');
-require_once('../database/select.php');
-require_once('../database/insert.php');
-require_once('../database/update.php');
-require_once('../database/delete.php');
-require_once('../utils/json.php');
-require_once('../utils/arrays.php');
-
-class News
+class NewsHandler
 {
     public function __construct()
     {
-        $this->db = new \VortechAPI\Apps\Database\Database();
         // We always run a query when this class is instantiated, so let's connect automatically
+        $this->db = new \Apps\Database\Database();
         $this->db->connect();
-        $this->buildSelect = new \VortechAPI\Apps\Database\BuildSelect();
-        $this->buildInsert = new \VortechAPI\Apps\Database\BuildInsert();
-        $this->buildUpdate = new \VortechAPI\Apps\Database\BuildUpdate();
-        $this->buildDelete = new \VortechAPI\Apps\Database\BuildDelete();
-        $this->jsonValidator = new \VortechAPI\Apps\Utils\JsonTools();
-        $this->arrayUtils = new \VortechAPI\Apps\Utils\ArrayUtils();
+
+        // These allow us to build queries reliably
+        $this->buildSelect = new \Apps\Database\Select();
+        $this->buildInsert = new \Apps\Database\Insert();
+        $this->buildUpdate = new \Apps\Database\Update();
+        $this->buildDelete = new \Apps\Database\Delete();
+        $this->arrayUtils = new \Apps\Utils\Arrays();
     }
 
     public function getNews($params)
@@ -32,9 +25,15 @@ class News
 
         $sql = $this->buildSelect->select()->from('News')->result();
 
-        // This gets a specific NewsID, eg. GET /news/1
         if (is_numeric($params[1])) {
+            // GET /news/:id
             $sql = $this->buildSelect->select()->from('News')->where('NewsID = :id')->result();
+
+            // GET /news/:id/comments
+            if (isset($params[2]) && $params[2] == 'comments') {
+                $sql = $this->buildSelect->select()->from('NewsComments')->where('NewsID = :id')->result();
+            }
+
             $pdoParams = array('id' => $params[1]);
         }
 
@@ -54,13 +53,6 @@ class News
     public function addNews($data)
     {
         $response = array();
-
-        // Validate the JSON. Invalid JSON will result in a 400 Bad Request
-        if ($this->jsonValidator->isJson($data) == false) {
-            $response['contents'] = 'Invalid JSON';
-            $response['code'] = 400;
-            return $response;
-        }
 
         // Then get the data from an associative array of the JSON
         $json = json_decode($data, true);
@@ -97,13 +89,6 @@ class News
         // We only proceed if we have a NewsID
         if (is_numeric($params[1]) == false) {
             $response['contents'] = 'Missing NewsID from URL';
-            $response['code'] = 400;
-            return $response;
-        }
-
-        // Validate the JSON. Invalid JSON will result in a 400 Bad Request
-        if ($this->jsonValidator->isJson($data) == false) {
-            $response['contents'] = 'Invalid JSON';
             $response['code'] = 400;
             return $response;
         }
@@ -162,26 +147,14 @@ class News
         return $response;
     }
 
-    public function deleteNews($params)
+    /**
+     * Deleting news will CASCADE DELETE the associated NewsCategories and NewsComments.
+     * DELETE should not return a body, so we just return the HTTP code 204 No Content
+     */
+    public function deleteNews($newsID)
     {
-        $response = array();
-
-        // We only proceed if we have a NewsID
-        if (is_numeric($params[1]) == false) {
-            $response['contents'] = 'Missing NewsID from URL';
-            $response['code'] = 400;
-            return $response;
-        }
-
-        // There is a high chance that the item has foreign keys in NewsCategories, so they
-        // must first be deleted
-        $sql = $this->buildDelete->delete()->from('NewsCategories')->where('NewsID = :id')->result();
-        $pdoParams = array('id' => $params[1]);
-        $this->db->run($sql, $pdoParams);
-
-        // Then we can delete the News post itself
         $sql = $this->buildDelete->delete()->from('News')->where('NewsID = :id')->result();
-        $pdoParams = array('id' => $params[1]);
+        $pdoParams = array('id' => $newsID);
         $this->db->run($sql, $pdoParams);
 
         return http_response_code(204);

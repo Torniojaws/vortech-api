@@ -1,8 +1,8 @@
 <?php
 
-namespace VortechAPI\Apps\Utils;
+namespace Apps\Utils;
 
-class JsonTools
+class Json
 {
     /**
      * Check that the data input is a valid JSON. Note that JSON spec allows for number strings etc.

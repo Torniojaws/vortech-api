@@ -1,32 +1,49 @@
 <?php
 
-namespace VortechAPI\Apps\News;
+namespace Apps\News;
 
-require_once('../utils/request.php');
-require_once('News.class.php');
-
-use VortechAPI\Apps\Utils\RequestHandler;
-use VortechAPI\Apps\News\News;
+require_once(__DIR__.'/../../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 header('Content-Type: application/json');
 
-$news = new News();
-$request = new RequestHandler($_SERVER, $_GET);
+// Check the request
+$request = new \Apps\Utils\Request($_SERVER, $_GET);
+$json = file_get_contents('php://input');
+$hasValidJSON = $request->hasValidJSON($json);
+$hasValidID = $request->hasValidID();
+
+// Build an error response if a valid JSON is required and it is not valid
+if ($request->isMissingRequiredJSON($json)) {
+    $response = $request->getInvalidJSONResponse();
+}
+
+// Build missing ID response. If none is needed, $response will be overwritten by the valid case
+if ($hasValidID == false) {
+    $response = $request->getInvalidIDResponse();
+}
+
+$news = new \Apps\News\NewsHandler();
 
 switch ($request->getMethod()) {
     case 'GET':
         $response = $news->getNews($request->getParams());
         break;
     case 'POST':
-        $data = file_get_contents('php://input');
-        $response = $news->addNews($data);
+        if ($hasValidJSON) {
+            $response = $news->addNews($json);
+        }
         break;
     case 'PUT':
-        $data = file_get_contents('php://input');
-        $response = $news->editNews($request->getParams(), $data);
+        if ($hasValidJSON && $hasValidID) {
+            $response = $news->editNews($request->getParams(), $json);
+        }
         break;
     case 'DELETE':
-        $response = $news->deleteNews($request->getParams());
+        if ($hasValidID) {
+            $newsID = $request->getParams()[1];
+            $response = $news->deleteNews($newsID);
+        }
         break;
     default:
         header('Allow: GET, POST, PUT, DELETE');

@@ -27,7 +27,20 @@ CREATE TABLE NewsCategories (
     NewsID int,
     CategoryID int,
     PRIMARY KEY (NewsCategoryID),
-    FOREIGN KEY (NewsID) REFERENCES News(NewsID)
+    CONSTRAINT fk_newsCategory FOREIGN KEY (NewsID)
+        REFERENCES News(NewsID) ON DELETE CASCADE
+);
+
+CREATE TABLE NewsComments (
+    CommentID int AUTO_INCREMENT,
+    NewsID int,
+    Contents varchar(500),
+    AuthorID int,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (CommentID),
+    CONSTRAINT fk_newsComment FOREIGN KEY (NewsID)
+        REFERENCES News(NewsID) ON DELETE CASCADE
 );
 
 -- Setup some test values

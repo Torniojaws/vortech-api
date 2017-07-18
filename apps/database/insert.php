@@ -1,6 +1,6 @@
 <?php
 
-namespace VortechAPI\Apps\Database;
+namespace Apps\Database;
 
 /**
  * From: https://stackoverflow.com/a/32804402/1488445
@@ -12,7 +12,7 @@ namespace VortechAPI\Apps\Database;
 *
  * The :id can be used in creating prepared statements with PDO
  */
-class BuildInsert
+class Insert
 {
     private $into;
     private $values;

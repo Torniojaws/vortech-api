@@ -1,8 +1,8 @@
 <?php
 
-namespace VortechAPI\Apps\Utils;
+namespace Apps\Utils;
 
-class ArrayUtils
+class Arrays
 {
     /**
      * Convert an array of arrays into a flat array with just the values

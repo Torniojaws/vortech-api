@@ -1,13 +1,13 @@
 <?php
 
-namespace VortechAPI\Apps\Database;
+namespace Apps\Database;
 
 /**
  * MySQL supports deleting from multiple tables at once. The syntax for that is:
  * DELETE t1, t2 FROM t1 INNER JOIN t2 INNER JOIN t3 WHERE t1.id=t2.id AND t2.id=t3.id;
  * It will be possible, but probably not used yet, so testing will be light.
  */
-class BuildDelete
+class Delete
 {
     private $delete = array();
     private $from;

@@ -8,6 +8,12 @@ Create a normal RESTful API with the standard CRUD way for paths and access, eg.
 - Update existing data: ``PUT /guestbook/:id/comment`` with a JSON attached, and return result JSON
 - Delete something: ``DELETE /users/:id`` which will return HTTP status 204
 
+User's own actions happen via ``/me`` eg.
+- ``GET /me/guestbook`` to get all guestbook posts from the user logged in
+- ``PUT /me/guestbook/:id`` to update a guestbook post
+- ``DELETE /me/comments/:id`` for example when deleting a comment
+- TODO: Should POST also happen via ``/me`` or should it (probably) go to eg. ``POST /comments`` of some sort
+
 ## URL
 The URL will be http://www.vortechmusic.com/api/1.0 with future versions being either /1.1 or /2.0
 

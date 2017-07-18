@@ -1,6 +1,6 @@
 <?php
 
-namespace VortechAPI\Apps\Database;
+namespace Apps\Database;
 
 // This is the gateway to the database features
 class Database

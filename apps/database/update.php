@@ -1,8 +1,8 @@
 <?php
 
-namespace VortechAPI\Apps\Database;
+namespace Apps\Database;
 
-class BuildUpdate
+class Update
 {
     private $update = array();
     private $set;

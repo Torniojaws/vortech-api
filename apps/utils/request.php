@@ -1,8 +1,8 @@
 <?php
 
-namespace VortechAPI\Apps\Utils;
+namespace Apps\Utils;
 
-class RequestHandler
+class Request
 {
     public function __construct($server, $get = null, $post = null, $file = null)
     {
@@ -20,5 +20,38 @@ class RequestHandler
     public function getParams()
     {
         return explode('/', $this->get['params']);
+    }
+
+    public function hasValidID()
+    {
+        return is_numeric($this->getParams()[1]);
+    }
+
+    public function hasValidJSON($json)
+    {
+        $validator = new \Apps\Utils\Json();
+        return $validator->isJson($json);
+    }
+
+    public function isMissingRequiredJSON($json)
+    {
+        return (in_array($this->getMethod(), array('POST', 'PUT'))
+            && $this->hasValidJSON($json) == false);
+    }
+
+    public function getInvalidIDResponse()
+    {
+        $response = array();
+        $response['contents'] = 'Missing required ID from URL';
+        $response['code'] = 400;
+        return $response;
+    }
+
+    public function getInvalidJSONResponse()
+    {
+        $response = array();
+        $response['contents'] = 'Invalid JSON';
+        $response['code'] = 400;
+        return $response;
     }
 }
