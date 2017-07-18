@@ -4,8 +4,8 @@ php:
   - '5.4'
 
 before_install:
-- composer require phpunit/phpunit:4.8.* satooshi/php-coveralls:dev-master
-- composer install --dev
+- composer require phpunit/phpunit:4.8.* satooshi/php-coveralls:0.6.*
+- composer install
 
 script:
   - mkdir -p tests/logs
