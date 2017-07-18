@@ -4,12 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class JsonToolsTest extends TestCase
+require_once(__DIR__.'/../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
+
+class JsonTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/utils/json.php');
-        $this->jsonValidator = new \VortechAPI\Apps\Utils\JsonTools();
+        $this->jsonValidator = new \Apps\Utils\Json();
     }
 
     public function testValidJsonObjectSimple()

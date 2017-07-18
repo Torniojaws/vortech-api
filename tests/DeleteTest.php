@@ -4,12 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class BuildDeleteTest extends TestCase
+require_once(__DIR__.'/../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
+
+class DeleteTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/database/delete.php');
-        $this->qb = new \VortechAPI\Apps\Database\BuildDelete();
+        $this->qb = new \Apps\Database\Delete();
     }
 
     public function testBasicQuery()

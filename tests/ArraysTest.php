@@ -4,12 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class ArrayUtilsTest extends TestCase
+require_once(__DIR__.'/../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
+
+class ArraysTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/utils/arrays.php');
-        $this->utils = new \VortechAPI\Apps\Utils\ArrayUtils();
+        $this->utils = new \Apps\Utils\Arrays();
     }
 
     public function testBasicArrayFlatteningWithIntegers()

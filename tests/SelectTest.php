@@ -4,12 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class BuildSelectTest extends TestCase
+require_once(__DIR__.'/../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
+
+class SelectTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/database/select.php');
-        $this->qb = new \VortechAPI\Apps\Database\BuildSelect();
+        $this->qb = new \Apps\Database\Select();
     }
 
     public function testBasicQuery()

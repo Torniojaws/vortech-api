@@ -4,12 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-class BuildUpdateTest extends TestCase
+require_once(__DIR__.'/../autoloader.php');
+spl_autoload_register('VortechAPI\Autoloader\Loader::load');
+
+class UpdateTest extends TestCase
 {
     public function __construct()
     {
-        require_once('apps/database/update.php');
-        $this->qb = new \VortechAPI\Apps\Database\BuildUpdate();
+        $this->qb = new \Apps\Database\Update();
     }
 
     public function testBasicQueryWithoutWhere()
