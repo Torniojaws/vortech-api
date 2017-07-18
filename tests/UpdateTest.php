@@ -43,33 +43,21 @@ class UpdateTest extends TestCase
         $this->assertEquals($expected, $sql);
     }
 
-    public function errorHandler($errno, $errstr, $errfile, $errline)
-    {
-        throw new \InvalidArgumentException(
-            sprintf(
-                'Missing argument. %s %s %s %s',
-                $errno,
-                $errstr,
-                $errfile,
-                $errline
-            )
-        );
-    }
-
     public function testBasicQueryWithMissingTargetTable()
     {
-        set_error_handler(array($this, 'errorHandler'));
-        $this->setExpectedException('\InvalidArgumentException');
-
         $queryBuilder = $this->qb;
-        $queryBuilder->update()->set('Author = :name')->result();
+        $sql = $queryBuilder->update();
+        $expected = 'Update query missing target table';
+
+        $this->assertEquals($sql, $expected);
     }
 
     public function testBasicQueryWithMissingValues()
     {
         $queryBuilder = $this->qb;
-        $sql = $queryBuilder->update('News')->set()->where('NewsID = :id')->result();
+        $sql = $queryBuilder->update('News')->set();
+        $expected = 'Update query missing values';
 
-        $this->assertEquals($sql, 'Update query missing values');
+        $this->assertEquals($sql, $expected);
     }
 }

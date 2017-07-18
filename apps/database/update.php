@@ -8,19 +8,25 @@ class Update
     private $set;
     private $where;
 
-    public function update($table)
+    public function update($table = null)
     {
         $this->update = $table;
+        if (empty($this->update)) {
+            return 'Update query missing target table';
+        }
         return $this;
     }
 
     public function set()
     {
         $this->set = func_get_args();
+        if (empty($this->set)) {
+            return 'Update query missing values';
+        }
         return $this;
     }
 
-    public function where($conditions)
+    public function where($conditions = null)
     {
         $this->where = $conditions;
         return $this;
@@ -30,16 +36,10 @@ class Update
     {
         // UPDATE
         $query[] = 'UPDATE';
-        if (empty($this->update)) {
-            return 'Update query missing target table';
-        }
         $query[] = $this->update;
 
         // SET
         $query[] = 'SET';
-        if (empty($this->set)) {
-            return 'Update query missing values';
-        }
         $query[] = join(', ', $this->set);
 
         // WHERE (optional, but recommended)
