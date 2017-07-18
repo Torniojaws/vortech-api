@@ -31,4 +31,22 @@ class InsertTest extends TestCase
 
         $this->assertEquals($expected, $sql);
     }
+
+    public function testQueryWithMissingInto()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->insert()->into();
+        $expected = 'Insert query missing target!';
+
+        $this->assertEquals($sql, $expected);
+    }
+
+    public function testQueryWithMissingValues()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->insert()->into('News')->values();
+        $expected = 'Insert query missing values!';
+
+        $this->assertEquals($sql, $expected);
+    }
 }

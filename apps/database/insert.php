@@ -25,12 +25,18 @@ class Insert
     public function into()
     {
         $this->into = func_get_args();
+        if (empty($this->into)) {
+            return 'Insert query missing target!';
+        }
         return $this;
     }
 
     public function values()
     {
         $this->values = func_get_args();
+        if (empty($this->values)) {
+            return 'Insert query missing values!';
+        }
         return $this;
     }
 
@@ -38,15 +44,9 @@ class Insert
     {
         // INSERT INTO
         $query[] = 'INSERT INTO';
-        if (empty($this->into)) {
-            return 'Insert query missing target!';
-        }
         $query[] = join(', ', $this->into);
 
         // VALUES
-        if (empty($this->values)) {
-            return 'Insert query missing values!';
-        }
         $query[] = 'VALUES ('.join(', ', $this->values).')';
 
         return join(' ', $query);
