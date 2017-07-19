@@ -19,19 +19,15 @@ class Database
 
     public function connect()
     {
-        try {
-            $this->pdo = new \PDO(
-                "$this->driver:host=$this->host; dbname=$this->name; charset=$this->charset",
-                $this->user,
-                $this->pass
-            );
-            // For added security with MySQL / MariaDB
-            $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
-            // For Extra error details
-            $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
-        } catch (PDOException $exception) {
-            echo $exception;
-        }
+        $this->pdo = new \PDO(
+            "$this->driver:host=$this->host; dbname=$this->name; charset=$this->charset",
+            $this->user,
+            $this->pass
+        );
+        // For added security with MySQL / MariaDB
+        $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
+        // For Extra error details
+        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
     public function run($statement, $params)
