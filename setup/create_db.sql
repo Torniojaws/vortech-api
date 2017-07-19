@@ -6,6 +6,8 @@ USE vortech;
 CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
 GRANT ALL ON vortech.* TO 'test'@'localhost';
 
+-------------------------------- NEWS
+
 CREATE TABLE News (
     NewsID int AUTO_INCREMENT,
     Title varchar(255),
@@ -42,6 +44,10 @@ CREATE TABLE NewsComments (
     CONSTRAINT fk_newsComment FOREIGN KEY (NewsID)
         REFERENCES News(NewsID) ON DELETE CASCADE
 );
+
+-------------------------------- RELEASES
+
+
 
 -- Setup some predefined values
 INSERT INTO
