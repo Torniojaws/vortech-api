@@ -16,6 +16,7 @@ class Select
 {
     private $select = array();
     private $from;
+    private $joins;
     private $where;
     private $group;
     private $limit;
@@ -29,6 +30,12 @@ class Select
     public function from($table)
     {
         $this->from = $table;
+        return $this;
+    }
+
+    public function joins($joins)
+    {
+        $this->joins = $joins;
         return $this;
     }
 
@@ -63,6 +70,11 @@ class Select
         // FROM
         $query[] = 'FROM';
         $query[] = $this->from;
+
+        // JOIN
+        if (empty($this->joins) == false) {
+            $query[] = $this->joins;
+        }
 
         // WHERE
         if (empty($this->where) == false) {

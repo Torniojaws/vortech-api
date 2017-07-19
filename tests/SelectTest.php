@@ -49,4 +49,15 @@ class SelectTest extends TestCase
 
         $this->assertEquals($expected, $sql);
     }
+
+    public function testJoins()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->select()->from('News')
+            ->joins('JOIN NewsComments ON NewsComments.NewsID = :cid')->where('News.NewsID = :id')
+            ->result();
+        $expected = 'SELECT * FROM News JOIN NewsComments ON NewsComments.NewsID = :cid WHERE News.NewsID = :id';
+
+        $this->assertEquals($expected, $sql);
+    }
 }

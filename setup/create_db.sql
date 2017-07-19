@@ -47,7 +47,36 @@ CREATE TABLE NewsComments (
 
 -------------------------------- RELEASES
 
+CREATE TABLE Releases (
+    ReleaseID int AUTO_INCREMENT,
+    Title varchar(200),
+    Date datetime,
+    Artist varchar(200),
+    Credits text,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (ReleaseID)
+);
 
+-------------------------------- PEOPLE
+
+CREATE TABLE People (
+    PersonID int AUTO_INCREMENT,
+    Name varchar(300),
+    PRIMARY KEY (PersonID)
+);
+
+CREATE TABLE ReleasePeople (
+    ReleasePeopleID int AUTO_INCREMENT,
+    ReleaseID int,
+    PersonID int,
+    Instruments varchar(500),
+    PRIMARY KEY (ReleasePeopleID),
+    CONSTRAINT fk_release FOREIGN KEY (ReleaseID)
+        REFERENCES Releases(ReleaseID) ON DELETE CASCADE,
+    CONSTRAINT fk_releasePeople FOREIGN KEY (PersonID)
+        REFERENCES People(PersonID) ON DELETE CASCADE
+);
 
 -- Setup some predefined values
 INSERT INTO

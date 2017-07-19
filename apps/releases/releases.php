@@ -23,15 +23,18 @@ if ($hasValidID == false) {
     $response = $request->getInvalidIDResponse();
 }
 
-$releases = new \Apps\Releaes\ReleaseHandler();
+$releases = new \Apps\Releases\ReleaseHandler();
 
 switch ($request->getMethod()) {
     case 'GET':
-        $response = $releases->getReleases($request->getParams());
+        $release = new \Apps\Releases\GetRelease();
+        $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+        $response = $release->get($releaseID);
         break;
     case 'POST':
         if ($hasValidJSON) {
-            $response = $releases->addRelease($json);
+            $release = new \Apps\Releases\AddRelease();
+            $response = $release->add($json);
         }
         break;
     case 'PUT':
