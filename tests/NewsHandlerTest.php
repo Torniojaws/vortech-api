@@ -9,36 +9,19 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class NewsHandlerTest extends TestCase
 {
-    private $currentNewsID;
-
     public function __construct()
     {
         $this->news = new \Apps\News\NewsHandler();
     }
 
     /**
-     * A bit silly, but for 100 % code coverage
+     * A bit silly, but needed for 100 % code coverage
      */
     public function testNewsHandlerConstructor()
     {
-        $errors = 0;
-        if ($this->news->db instanceof \Apps\Database\Database == false) {
-            $errors++;
-        }
-        if ($this->news->buildSelect instanceof \Apps\Database\Select == false) {
-            $errors++;
-        }
-        if ($this->news->buildInsert instanceof \Apps\Database\Insert == false) {
-            $errors++;
-        }
-        if ($this->news->buildUpdate instanceof \Apps\Database\Update == false) {
-            $errors++;
-        }
-        if ($this->news->buildDelete instanceof \Apps\Database\Delete == false) {
-            $errors++;
-        }
+        $newsInstance = new \Apps\News\NewsHandler();
 
-        $this->assertTrue($errors == 0);
+        $this->assertTrue(isset($newsInstance->db));
     }
 
     public function testGettingNewsWithIDHasCorrectDataStructure()
@@ -106,7 +89,7 @@ class NewsHandlerTest extends TestCase
 
         $json = '{"title": "Testcase", "contents": "Example2", "categories": [3, 4]}';
         $params = array("ignore", $latestNews['NewsID']);
-        $response = $this->news->editNews($params, $json);
+        $this->news->editNews($params, $json);
 
         $verification = $this->news->getNews(array("i", $latestNews['NewsID']));
 
