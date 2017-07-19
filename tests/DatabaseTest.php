@@ -28,11 +28,4 @@ class DatabaseTest extends TestCase
 
         $this->assertTrue($pdo == null);
     }
-
-    public function testRunningQueryThatCausesAnException()
-    {
-        $this->db->connect();
-        $this->setExpectedException(\PDOException::class);
-        $run = $this->db->run('ASDASD', array(null, -1));
-    }
 }
