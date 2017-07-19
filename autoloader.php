@@ -7,8 +7,13 @@ class Loader
     public static function load($namespace)
     {
         $filename = __DIR__.'/'.strtolower(str_replace('\\', DIRECTORY_SEPARATOR, $namespace).'.php');
-        if (file_exists($filename)) {
+
+        // This is purely to get 100 % coverage
+        $fileWasFound = file_exists($filename);
+        if ($fileWasFound) {
             require_once($filename);
         }
+
+        return $fileWasFound;
     }
 }

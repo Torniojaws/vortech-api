@@ -78,6 +78,7 @@ class NewsHandler
         }
 
         $response['contents'] = "Location: http://www.vortechmusic.com/api/1.0/news/".$currentNewsId;
+        $response['id'] = $currentNewsId;
         $response['code'] = 201; // https://tools.ietf.org/html/rfc7231#section-4.3
         return $response;
     }
