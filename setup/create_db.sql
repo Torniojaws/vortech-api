@@ -43,7 +43,7 @@ CREATE TABLE NewsComments (
         REFERENCES News(NewsID) ON DELETE CASCADE
 );
 
--- Setup some test values
+-- Setup some predefined values
 INSERT INTO
     Categories(Category)
 VALUES
