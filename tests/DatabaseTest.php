@@ -21,13 +21,6 @@ class DatabaseTest extends TestCase
         $this->assertTrue($this->db->pdo instanceof \PDO);
     }
 
-    public function testPDOConnectionThatCausesAnException()
-    {
-        $this->db->driver = 'ShouldNotWork';
-        $this->setExpectedException(\PDOException::class);
-        $this->db->connect();
-    }
-
     public function testClosingPDOConnection()
     {
         $this->db->connect();
