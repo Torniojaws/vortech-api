@@ -56,6 +56,11 @@ class Database
         return $this->pdo->lastInsertId();
     }
 
+    public function isQuerySuccessful()
+    {
+        return $this->lastActionSuccessful;
+    }
+
     public function close()
     {
         $this->pdo = null;
