@@ -23,8 +23,6 @@ if ($hasValidID == false) {
     $response = $request->getInvalidIDResponse();
 }
 
-$releases = new \Apps\Releases\ReleaseHandler();
-
 switch ($request->getMethod()) {
     case 'GET':
         $release = new \Apps\Releases\GetRelease();
@@ -41,17 +39,25 @@ switch ($request->getMethod()) {
         if ($hasValidJSON && $hasValidID) {
             $release = new \Apps\Releases\EditRelease();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $releases->update($releaseID, $json);
+            $response = $release->update($releaseID, $json);
+        }
+        break;
+    case 'PATCH':
+        if ($hasValidJSON && $hasValidID) {
+            $release = new \Apps\Releases\PatchRelease();
+            $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $release->patch($releaseID, $json);
         }
         break;
     case 'DELETE':
         if ($hasValidID) {
-            $releaseID = $request->getParams()[1];
-            $response = $releases->deleteRelease($releaseID);
+            $release = new \Apps\Releases\DeleteRelease();
+            $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $release->delete($releaseID);
         }
         break;
     default:
-        header('Allow: GET, POST, PUT, DELETE');
+        header('Allow: GET, POST, PUT, PATCH, DELETE');
         $response['contents'] = 'Unknown or unimplemented HTTP Method';
         $response['code'] = 405;
         break;
