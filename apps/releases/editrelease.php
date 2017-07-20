@@ -12,6 +12,7 @@ class EditRelease
         if ($dataIsValid) {
             $data = json_decode($json, true);
             $this->editRelease($releaseID, $data);
+            $this->editReleasePeople($releaseID, $data);
         }
 
         return $releaseID;

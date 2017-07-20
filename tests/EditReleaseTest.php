@@ -74,22 +74,60 @@ class EditReleaseTest extends TestCase
     public function testReleasePeopleAreEdited()
     {
         $edited = '{"title": "UnitTestAdder", "date": "2017-07-19 12:00:00", "artist": "UnitTesties",
-            "credits": "This is very welcome too", "people": [{"id": 1, "name": "UnitTestExampler2",
-            "instruments": "Synths, Vocals"},{"id": 2, "name": "UnitTestBoombastic2", "instruments": "Drums, Bass"}],
+            "credits": "This is very welcome too", "people": [{"id": 1, "name": "UnitTestExampler",
+            "instruments": "Synths, Vocals"},{"id": 2, "name": "UnitTestBoombastic", "instruments": "Drums, Bass"}],
             "songs": [{"title": "UnitTest My Song", "duration": 305}, {"title": "UnitTest Another Piece",
             "duration": 125}, {"title": "UnitTest Helppo", "duration": 201}], "categories": [1, 2],
             "formats": [1, 3]}';
 
         $this->release->edit($this->testReleaseID, $edited);
 
+        $name = 'UnitTestBoombastic';
+        $personID = $this->release->getPersonID($name);
+
         $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('Title')->from('Releases')->where('ReleaseID = :id')->limit(1)->result();
-        $pdo = array('id' => $this->testReleaseID);
+        $sql = $sqlBuilder->select('Instruments')->from('ReleasePeople')
+            ->where('ReleaseID = :id AND PersonID = :pid')->limit(1)->result();
+        $pdo = array('id' => $this->testReleaseID, 'pid' => $personID);
         $result = $this->database->run($sql, $pdo);
 
-        $expected = 'UnitTestAdder2';
-        $actual = $result[0]['Title'];
+        $expected = 'Drums, Bass';
+        $actual = $result[0]['Instruments'];
 
         $this->assertEquals($expected, $actual);
+    }
+
+    public function testPersonID()
+    {
+        $name = 'UnitTestBoombastic';
+        $pid = $this->release->getPersonID($name);
+
+        $this->assertTrue(is_numeric($pid) && $pid > 0);
+    }
+
+    public function testEditPerson()
+    {
+        $edited = '{"title": "UnitTestAdder23", "date": "2017-07-19 12:00:00", "artist": "UnitTesties",
+            "credits": "This is very welcome too", "people": [{"id": 1, "name": "UnitTestExampler2",
+            "instruments": "Synths, Vocals"},{"id": 2, "name": "UnitTestBoombastic", "instruments": "Drums, Bass"}],
+            "songs": [{"title": "UnitTest My Song", "duration": 305}, {"title": "UnitTest Another Piece",
+            "duration": 125}, {"title": "UnitTest Helppo", "duration": 201}], "categories": [1, 2],
+            "formats": [1, 3]}';
+        $json = json_decode($edited, true);
+        $people = $json['people'];
+        $this->release->editPerson($people[1], $this->testReleaseID);
+
+        $name = 'UnitTestBoombastic';
+        $personID = $this->release->getPersonID($name);
+
+        $sqlBuilder = new \Apps\Database\Select();
+        $sql = $sqlBuilder->select('Instruments')->from('ReleasePeople')
+            ->where('ReleaseID = :id AND PersonID = :pid')->limit(1)->result();
+        $pdo = array('id' => $this->testReleaseID, 'pid' => $personID);
+        $result = $this->database->run($sql, $pdo);
+
+        $expected = 'Drums, Bass';
+
+        $this->assertEquals($expected, $result[0]['Instruments']);
     }
 }
