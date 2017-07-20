@@ -58,6 +58,40 @@ CREATE TABLE Releases (
     PRIMARY KEY (ReleaseID)
 );
 
+CREATE TABLE Formats (
+    FormatID int AUTO_INCREMENT,
+    Title varchar(255),
+    PRIMARY KEY (FormatID)
+);
+
+CREATE TABLE ReleaseFormats (
+    ReleaseFormatID int AUTO_INCREMENT,
+    FormatID int,
+    ReleaseID int,
+    PRIMARY KEY (ReleaseFormatID),
+    CONSTRAINT fk_formats FOREIGN KEY (FormatID)
+        REFERENCES Formats(FormatID) ON DELETE CASCADE,
+    CONSTRAINT fk_releaseFormats FOREIGN KEY (ReleaseID)
+        REFERENCES Releases(ReleaseID) ON DELETE CASCADE
+);
+
+CREATE TABLE ReleaseTypes (
+    ReleaseTypeID int AUTO_INCREMENT,
+    Type varchar(200),
+    PRIMARY KEY (ReleaseTypeID)
+);
+
+CREATE TABLE ReleaseCategories (
+    ReleaseCategoryID int AUTO_INCREMENT,
+    ReleaseID int,
+    ReleaseTypeID int,
+    PRIMARY KEY (ReleaseCategoryID),
+    CONSTRAINT fk_releaseReference FOREIGN KEY (ReleaseID)
+        REFERENCES Releases(ReleaseID) ON DELETE CASCADE,
+    CONSTRAINT fk_releaseCategory FOREIGN KEY (ReleaseTypeID)
+        REFERENCES ReleaseTypes(ReleaseTypeID) ON DELETE CASCADE
+);
+
 -------------------------------- PEOPLE
 
 CREATE TABLE People (
@@ -78,7 +112,28 @@ CREATE TABLE ReleasePeople (
         REFERENCES People(PersonID) ON DELETE CASCADE
 );
 
+-------------------------------- SONGS
+
+CREATE TABLE Songs (
+    SongID int AUTO_INCREMENT,
+    Title varchar(255),
+    Duration int,
+    PRIMARY KEY (SongID)
+);
+
+CREATE TABLE ReleaseSongs (
+    ReleaseSongID int AUTO_INCREMENT,
+    ReleaseID int,
+    SongID int,
+    PRIMARY KEY (ReleaseSongID),
+    CONSTRAINT fk_songRelease FOREIGN KEY (ReleaseID)
+        REFERENCES Releases(ReleaseID) ON DELETE CASCADE,
+    CONSTRAINT fk_song FOREIGN KEY (SongID)
+        REFERENCES Songs(SongID) ON DELETE CASCADE
+);
+
 -- Setup some predefined values
+
 INSERT INTO
     Categories(Category)
 VALUES
@@ -87,3 +142,24 @@ VALUES
     ("Recording"),
     ("Rehearsal"),
     ("Event");
+
+INSERT INTO
+    Formats(Title)
+VALUES
+    ("CD"),
+    ("CD-R"),
+    ("EP"),
+    ("Digital"),
+    ("FLAC"),
+    ("MP3"),
+    ("Streaming");
+
+INSERT INTO
+    ReleaseTypes(Type)
+VALUES
+    ("Full length"),
+    ("Live album"),
+    ("EP"),
+    ("Demo"),
+    ("Compilation"),
+    ("Split");

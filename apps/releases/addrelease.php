@@ -4,6 +4,12 @@ namespace Apps\Releases;
 
 class AddRelease
 {
+    public function __construct()
+    {
+        $this->database = new \Apps\Database\Database();
+        $this->database->connect();
+    }
+
     /**
      * This is used to add new albums to the database. This is the main point of entry for this
      * functionality.
@@ -12,21 +18,23 @@ class AddRelease
      */
     public function add($data)
     {
+        $contents = null;
         $validator = new \Apps\Utils\Json();
         $dataIsValid = $validator->isJson($data);
 
         if ($dataIsValid) {
             $json = json_decode($data, true);
 
-            $this->database = new \Apps\Database\Database();
-            $this->database->connect();
-
-            $this->insertRelease($json);
+            $releaseID = $this->insertRelease($json);
             $this->insertPeople($json);
-            $this->insertReleasePeople($json);
-        }
+            $this->insertReleasePeople($json, $releaseID);
+            $this->insertSongs($json);
+            $this->insertReleaseSongs($json, $releaseID);
+            $this->insertReleaseFormats($json, $releaseID);
+            $this->insertReleaseCategories($json, $releaseID);
 
-        $contents = "Location: http://www.vortechmusic.com/api/1.0/releases/".$this->currentReleaseID;
+            $contents = "Location: http://www.vortechmusic.com/api/1.0/releases/".$releaseID;
+        }
 
         return $this->buildResponse($dataIsValid, $contents);
     }
@@ -37,9 +45,9 @@ class AddRelease
      * @param array $results Has the results from the INSERT queries
      * @return array $response Has the response array that will be converted to JSON later
      */
-    public function buildResponse($valid, $results)
+    public function buildResponse($valid, $contents)
     {
-        $response['contents'] = $results['release'];
+        $response['contents'] = $contents;
         $response['code'] = 201;
 
         if ($valid == false) {
@@ -54,7 +62,7 @@ class AddRelease
      * This is the main course that adds a new release. All other related data must be added
      * after this has been finished.
      * @param array $json This is the array version of the JSON we received
-     * @return response Contains the results we got from the DB
+     * @return int Contains the ReleaseID we got from the DB
      */
     public function insertRelease($json)
     {
@@ -65,7 +73,8 @@ class AddRelease
             'artist' => $json['artist'], 'credits' => $json['credits']);
 
         $this->database->run($sql, $pdoParameters);
-        $this->currentReleaseID = $this->database->getInsertId();
+
+        return intval($this->database->getInsertId());
     }
 
     /**
@@ -73,10 +82,10 @@ class AddRelease
      * and on which instrument. Due to the separation, we can easily have the same person play
      * different instruments on different albums.
      * @param array $json Contains the data we use to build the insert
+     * @return boolean Done
      */
     public function insertPeople($json)
     {
-        // Check does each person exist. Add if current person doesn't.
         foreach ($json['people'] as $person) {
             if ($this->doesPersonExist($person['name']) == false) {
                 $sqlBuilder = new \Apps\Database\Insert();
@@ -86,6 +95,7 @@ class AddRelease
             }
         }
 
+        return true;
     }
 
     /**
@@ -97,44 +107,203 @@ class AddRelease
     public function doesPersonExist($name)
     {
         $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*)')->from('People')->where('Name = :name')->result();
+        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('People')->where('Name = :name')->result();
         $pdo = array('name' => $name);
         $count = $this->database->run($sql, $pdo);
+        $value = intval($count[0]['Count']);
 
-        return $count > 0;
+        return $value > 0;
     }
 
     /**
      * This contains the per-album based information. Basically which person played which
      * instrument.
      * @param array $json The dataset from which we get the information
+     * @param int $releaseID The ID of the release
      */
-    public function insertReleasePeople($json)
+    public function insertReleasePeople($json, $releaseID)
     {
-        $errors = 0;
+        // Valid ReleaseID is needed
+        if (is_numeric($releaseID) == false) {
+            return false;
+        }
+
         // Since this is a new release, there cannot be old data, so we simply insert all info
         foreach ($json['people'] as $person) {
+            $currentPersonID = null;
             // Get the PersonID
-            echo "Checking person=[".$person['name']."]";
             $get = new \Apps\Database\Select();
             $sql = $get->select('PersonID')->from('People')->where('Name = :name')->result();
             $pdo = array('name' => $person['name']);
-            $currentPersonID = $this->database->run($sql, $pdo);
+            $results = $this->database->run($sql, $pdo);
+            if ($results) {
+                $currentPersonID = intval($results[0]['PersonID']);
+            }
 
             // Then let's insert the album people information
-            $sqlBuilder = new \Apps\Database\Insert();
-            $sql = $sqlBuilder->insert()->into('ReleasePeople(ReleaseID, PersonID, Instruments)')
-                ->values(':rid, :pid, :instruments')->result();
-            $pdo = array('rid' => $this->currentReleaseID, 'pid' => $currentPersonID,
-                'instruments' => $person['instruments']);
-            print_r($this->database->getInsertId());
-            $this->database->run($sql, $pdo);
+            $this->doInsertReleasePeople($releaseID, $currentPersonID, $person['instruments']);
+        }
+    }
 
-            if (is_numeric($this->database->getInsertId()) == false) {
-                $errors++;
+    /**
+     * Do the inserting of a release person. Make sure it is inserted. This is the per-release
+     * insert, so it is always valid to insert since we are adding a new release.
+     * @param int $releaseID is the release identifier which is used as a foreign key
+     * @param int $personID tells who the person is
+     * @param string $instruments This defines what instrument(s) the person played on this release
+     * @return boolean Was the insert successful. If invalid ID, return false
+     */
+    public function doInsertReleasePeople($releaseID, $personID, $instruments)
+    {
+        if (is_numeric($releaseID) == false || is_numeric($personID) == false) {
+            return false;
+        }
+
+        $sqlBuilder = new \Apps\Database\Insert();
+        $sql = $sqlBuilder->insert()->into('ReleasePeople(ReleaseID, PersonID, Instruments)')
+            ->values(':rid, :pid, :instruments')->result();
+        $pdo = array('rid' => $releaseID, 'pid' => $personID, 'instruments' => $instruments);
+        $this->database->run($sql, $pdo);
+
+        return $this->database->isQuerySuccessful();
+    }
+
+    /**
+     * When a new release is added, the songs will be stored to the table Songs, if they do not
+     * exist there already. They can exist if the new release is eg. a live album.
+     * @param array $json Contains the actual data to use
+     * @param int $releaseID Contains the identifier of the release
+     * @return boolean Were the songs inserted successfully
+     */
+    public function insertSongs($json)
+    {
+        $errors = 0;
+        foreach ($json['songs'] as $song) {
+            if ($this->doesSongExist($song['title']) == false) {
+                $sqlBuilder = new \Apps\Database\Insert();
+                $sql = $sqlBuilder->insert()->into('Songs(Title, Duration)')
+                    ->values(':title, :duration')->result();
+                $pdo = array('title' => $song['title'], 'duration' => $song['duration']);
+                $this->database->run($sql, $pdo);
             }
         }
 
         return $errors == 0;
+    }
+
+    /**
+     * Check does the song exist in the DB by counting how many matches there are.
+     * @param string $title Is the song title to search for
+     * @return boolean Does the song exist? Ie. more than 0 matches
+     */
+    public function doesSongExist($title)
+    {
+        $sqlBuilder = new \Apps\Database\Select();
+        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('Songs')->where('Title = :title')
+            ->result();
+        $pdo = array('title' => $title);
+        $result = $this->database->run($sql, $pdo);
+        $value = intval($result[0]['Count']);
+
+        return $value > 0;
+    }
+
+    /**
+     * This contains the per-album based information. Basically which songs appear on which album.
+     * @param array $json The dataset from which we get the information
+     * @param int $releaseID The ID of the release
+     */
+    public function insertReleaseSongs($json, $releaseID)
+    {
+        if (is_numeric($releaseID) == false) {
+            return false;
+        }
+        // Since this is a new release, there cannot be old data, so we simply insert all info
+        foreach ($json['songs'] as $song) {
+            $songID = null;
+            // Get the SongID
+            $get = new \Apps\Database\Select();
+            $sql = $get->select('SongID')->from('Songs')->where('Title = :title')->result();
+            $pdo = array('title' => $song['title']);
+            $results = $this->database->run($sql, $pdo);
+            if ($results) {
+                $songID = intval($results[0]['SongID']);
+            }
+
+            // Then let's insert the album people information
+            $this->doInsertReleaseSongs($releaseID, $songID);
+        }
+    }
+
+    /**
+     * Do the inserting of a release song. Make sure it is inserted. This is the per-release
+     * insert, so it is always valid to insert since we are adding a new release.
+     * @param int $releaseID is the release identifier which is used as a foreign key
+     * @param int $songID tells which song it is
+     * @return boolean Was the insert successful. If invalid ID, return false
+     */
+    public function doInsertReleaseSongs($releaseID, $songID)
+    {
+        if (is_numeric($releaseID) == false || is_numeric($songID) == false) {
+            return false;
+        }
+
+        $sqlBuilder = new \Apps\Database\Insert();
+        $sql = $sqlBuilder->insert()->into('ReleaseSongs(ReleaseID, SongID)')
+            ->values(':rid, :sid')->result();
+        $pdo = array('rid' => $releaseID, 'sid' => $songID);
+        $this->database->run($sql, $pdo);
+
+        return $this->database->isQuerySuccessful();
+    }
+
+    /**
+     * Each release can be assigned a selection of formats from a predefined list in table
+     * Formats. This inserts the per-album based values.
+     * @param array $json The data we use
+     * @param int $releaseID The album identifier
+     * @return boolean false when there is a missing releaseID
+     */
+    public function insertReleaseFormats($json, $releaseID)
+    {
+        if (is_numeric($releaseID) == false) {
+            return false;
+        }
+
+        // It is an array of integers
+        foreach ($json['formats'] as $format) {
+            $value = intval($format);
+
+            $sqlBuilder = new \Apps\Database\Insert();
+            $sql = $sqlBuilder->insert()->into('ReleaseFormats(FormatID, ReleaseID)')
+                ->values(':fid, :rid')->result();
+            $pdo = array('fid' => $value, 'rid' => $releaseID);
+            $this->database->run($sql, $pdo);
+        }
+    }
+
+    /**
+     * Each release can be assigned a selection of category types (though usually just one)
+     * from a predefined list in table ReleaseTypes. This inserts the per-album based values.
+     * @param array $json The data we use
+     * @param int $releaseID The album identifier
+     * @return boolean false When releaseID is missing
+     */
+    public function insertReleaseCategories($json, $releaseID)
+    {
+        if (is_numeric($releaseID) == false) {
+            return false;
+        }
+
+        // It is an array of integers
+        foreach ($json['categories'] as $category) {
+            $value = intval($category);
+
+            $sqlBuilder = new \Apps\Database\Insert();
+            $sql = $sqlBuilder->insert()->into('ReleaseCategories(ReleaseID, ReleaseTypeID)')
+                ->values(':rid, :tid')->result();
+            $pdo = array('rid' => $releaseID, 'tid' => $value);
+            $this->database->run($sql, $pdo);
+        }
     }
 }
