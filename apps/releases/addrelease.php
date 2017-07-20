@@ -33,7 +33,8 @@ class AddRelease
             $this->insertReleaseFormats($json, $releaseID);
             $this->insertReleaseCategories($json, $releaseID);
 
-            $contents = "Location: http://www.vortechmusic.com/api/1.0/releases/".$releaseID;
+            $contents['location'] = "Location: http://www.vortechmusic.com/api/1.0/releases/".$releaseID;
+            $contents['id'] = $releaseID;
         }
 
         return $this->buildResponse($dataIsValid, $contents);
@@ -47,7 +48,8 @@ class AddRelease
      */
     public function buildResponse($valid, $contents)
     {
-        $response['contents'] = $contents;
+        $response['contents'] = $contents['location'];
+        $response['id'] = $contents['id'];
         $response['code'] = 201;
 
         if ($valid == false) {

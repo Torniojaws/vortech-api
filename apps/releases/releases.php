@@ -39,7 +39,9 @@ switch ($request->getMethod()) {
         break;
     case 'PUT':
         if ($hasValidJSON && $hasValidID) {
-            $response = $releases->editRelease($request->getParams(), $json);
+            $release = new \Apps\Releases\EditRelease();
+            $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $releases->update($releaseID, $json);
         }
         break;
     case 'DELETE':
