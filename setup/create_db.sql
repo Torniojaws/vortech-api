@@ -6,7 +6,7 @@ USE vortech;
 CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
 GRANT ALL ON vortech.* TO 'test'@'localhost';
 
--------------------------------- NEWS
+-- NEWS
 
 CREATE TABLE News (
     NewsID int AUTO_INCREMENT,
@@ -45,7 +45,7 @@ CREATE TABLE NewsComments (
         REFERENCES News(NewsID) ON DELETE CASCADE
 );
 
--------------------------------- RELEASES
+-- RELEASES
 
 CREATE TABLE Releases (
     ReleaseID int AUTO_INCREMENT,
@@ -92,7 +92,7 @@ CREATE TABLE ReleaseCategories (
         REFERENCES ReleaseTypes(ReleaseTypeID) ON DELETE CASCADE
 );
 
--------------------------------- PEOPLE
+-- PEOPLE
 
 CREATE TABLE People (
     PersonID int AUTO_INCREMENT,
@@ -112,7 +112,7 @@ CREATE TABLE ReleasePeople (
         REFERENCES People(PersonID) ON DELETE CASCADE
 );
 
--------------------------------- SONGS
+-- SONGS
 
 CREATE TABLE Songs (
     SongID int AUTO_INCREMENT,
