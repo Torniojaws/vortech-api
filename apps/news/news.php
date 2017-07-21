@@ -30,9 +30,11 @@ switch ($request->getMethod()) {
         $news = new \Apps\News\GetNews();
         $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
         $response = $news->get($newsID);
-    break;    case 'POST':
+        break;
+    case 'POST':
         if ($hasValidJSON) {
-            $response = $newshandler->addNews($json);
+            $news = new \Apps\News\AddNews();
+            $response = $news->add($json);
         }
         break;
     case 'PUT':
