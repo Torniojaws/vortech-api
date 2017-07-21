@@ -39,7 +39,9 @@ switch ($request->getMethod()) {
         break;
     case 'PUT':
         if ($hasValidJSON && $hasValidID) {
-            $response = $newshandler->editNews($request->getParams(), $json);
+            $news = new \Apps\News\EditNews();
+            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $news->update($newsID, $json);
         }
         break;
     case 'DELETE':
