@@ -23,26 +23,31 @@ if ($hasValidID == false) {
     $response = $request->getInvalidIDResponse();
 }
 
-$news = new \Apps\News\NewsHandler();
+$newshandler = new \Apps\News\NewsHandler();
 
 switch ($request->getMethod()) {
     case 'GET':
-        $response = $news->getNews($request->getParams());
+        $news = new \Apps\News\GetNews();
+        $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+        $response = $news->get($newsID);
         break;
     case 'POST':
         if ($hasValidJSON) {
-            $response = $news->addNews($json);
+            $news = new \Apps\News\AddNews();
+            $response = $news->add($json);
         }
         break;
     case 'PUT':
         if ($hasValidJSON && $hasValidID) {
-            $response = $news->editNews($request->getParams(), $json);
+            $news = new \Apps\News\EditNews();
+            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $news->update($newsID, $json);
         }
         break;
     case 'DELETE':
         if ($hasValidID) {
             $newsID = $request->getParams()[1];
-            $response = $news->deleteNews($newsID);
+            $response = $newshandler->deleteNews($newsID);
         }
         break;
     default:

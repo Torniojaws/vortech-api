@@ -19,7 +19,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 - [x] ``POST /releases`` with a JSON, to add a release
 - [ ] ``PUT /releases/:id`` with a JSON, to replace a release with new data
 - [x] ``PATCH /releases/:id`` with a JSON, to partially update a release (only - not related tables!)
-- [ ] ``DELETE /releases/:id`` to remove a release (the deletion will cascade to related tables)
+- [x] ``DELETE /releases/:id`` to remove a release (the deletion will cascade to related tables)
 
 For the related details, we should have some easy endpoints:
 
