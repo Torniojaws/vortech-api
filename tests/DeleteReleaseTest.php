@@ -47,14 +47,10 @@ class DeleteReleaseTest extends TestCase
     {
         $this->release->delete($this->testReleaseID);
 
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('Releases')
-            ->where('ReleaseID = :id')->limit(1)->result();
-        $pdo = array('id' => $this->testReleaseID);
-        $result = $this->database->run($sql, $pdo);
-        $count = intval($result[0]['Count']);
+        $check = new \Apps\Utils\DatabaseCheck();
+        $exists = $check->existsInTable('Releases', 'ReleaseID', $this->testReleaseID);
 
-        $this->assertTrue($count == 0);
+        $this->assertFalse($exists);
     }
 
     public function testDeleteReturnsExpectedResponseWithInvalidID()
@@ -62,19 +58,5 @@ class DeleteReleaseTest extends TestCase
         $response = $this->release->delete(-16);
 
         $this->assertEquals($response['code'], 400);
-    }
-
-    public function testReleaseExistsUsingValidID()
-    {
-        $releaseExists = $this->release->releaseIDExists($this->testReleaseID);
-
-        $this->assertTrue($releaseExists);
-    }
-
-    public function testReleaseExistsUsingInvalidID()
-    {
-        $releaseExists = $this->release->releaseIDExists(-15);
-
-        $this->assertFalse($releaseExists);
     }
 }

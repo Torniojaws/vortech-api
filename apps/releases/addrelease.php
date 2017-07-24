@@ -88,8 +88,9 @@ class AddRelease
      */
     public function insertPeople($json)
     {
+        $check = new \Apps\Utils\DatabaseCheck();
         foreach ($json['people'] as $person) {
-            if ($this->doesPersonExist($person['name']) == false) {
+            if ($check->existsInTable('People', 'Name', $person['name']) == false) {
                 $sqlBuilder = new \Apps\Database\Insert();
                 $sql = $sqlBuilder->insert()->into('People(Name)')->values(':name')->result();
                 $pdo = array('name' => $person['name']);
@@ -98,23 +99,6 @@ class AddRelease
         }
 
         return true;
-    }
-
-    /**
-     * This is used to verify we can add the person as a new entry to the DB.
-     * If he already exists, we will not add him.
-     * @param string $name Is the full name of the person
-     * @return boolean Whether the person exists or no
-     */
-    public function doesPersonExist($name)
-    {
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('People')->where('Name = :name')->result();
-        $pdo = array('name' => $name);
-        $count = $this->database->run($sql, $pdo);
-        $value = intval($count[0]['Count']);
-
-        return $value > 0;
     }
 
     /**
@@ -180,8 +164,9 @@ class AddRelease
     public function insertSongs($json)
     {
         $errors = 0;
+        $check = new \Apps\Utils\DatabaseCheck();
         foreach ($json['songs'] as $song) {
-            if ($this->doesSongExist($song['title']) == false) {
+            if ($check->existsInTable('Songs', 'Title', $song['title']) == false) {
                 $sqlBuilder = new \Apps\Database\Insert();
                 $sql = $sqlBuilder->insert()->into('Songs(Title, Duration)')
                     ->values(':title, :duration')->result();
@@ -191,23 +176,6 @@ class AddRelease
         }
 
         return $errors == 0;
-    }
-
-    /**
-     * Check does the song exist in the DB by counting how many matches there are.
-     * @param string $title Is the song title to search for
-     * @return boolean Does the song exist? Ie. more than 0 matches
-     */
-    public function doesSongExist($title)
-    {
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('Songs')->where('Title = :title')
-            ->result();
-        $pdo = array('title' => $title);
-        $result = $this->database->run($sql, $pdo);
-        $value = intval($result[0]['Count']);
-
-        return $value > 0;
     }
 
     /**

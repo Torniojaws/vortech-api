@@ -42,14 +42,10 @@ class DeleteNewsTest extends TestCase
     {
         $this->news->delete($this->testNewsID);
 
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('News')
-            ->where('NewsID = :id')->limit(1)->result();
-        $pdo = array('id' => $this->testNewsID);
-        $result = $this->database->run($sql, $pdo);
-        $count = intval($result[0]['Count']);
+        $check = new \Apps\Utils\DatabaseCheck();
+        $result = $check->existsInTable('News', 'NewsID', $this->testNewsID);
 
-        $this->assertTrue($count == 0);
+        $this->assertFalse($result);
     }
 
     public function testDeleteReturnsExpectedResponseWithInvalidID()
@@ -57,19 +53,5 @@ class DeleteNewsTest extends TestCase
         $response = $this->news->delete(-16);
 
         $this->assertEquals($response['code'], 400);
-    }
-
-    public function testNewsExistsUsingValidID()
-    {
-        $newsExists = $this->news->newsIDExists($this->testNewsID);
-
-        $this->assertTrue($newsExists);
-    }
-
-    public function testNewsExistsUsingInvalidID()
-    {
-        $newsExists = $this->news->newsIDExists(-15);
-
-        $this->assertFalse($newsExists);
     }
 }
