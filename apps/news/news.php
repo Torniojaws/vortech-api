@@ -46,8 +46,9 @@ switch ($request->getMethod()) {
         break;
     case 'DELETE':
         if ($hasValidID) {
-            $newsID = $request->getParams()[1];
-            $response = $newshandler->deleteNews($newsID);
+            $news = new \Apps\News\DeleteNews();
+            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $news->delete($newsID);
         }
         break;
     default:

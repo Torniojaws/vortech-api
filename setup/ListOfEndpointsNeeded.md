@@ -17,7 +17,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 - [x] ``GET /releases`` to return all releases
 - [x] ``GET /releases/:id`` to retun a specific release
 - [x] ``POST /releases`` with a JSON, to add a release
-- [ ] ``PUT /releases/:id`` with a JSON, to replace a release with new data
+- [x] ``PUT /releases/:id`` with a JSON, to replace a release with new data
 - [x] ``PATCH /releases/:id`` with a JSON, to partially update a release (only - not related tables!)
 - [x] ``DELETE /releases/:id`` to remove a release (the deletion will cascade to related tables)
 
