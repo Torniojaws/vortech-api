@@ -73,18 +73,4 @@ class PatchReleaseTest extends TestCase
 
         $this->assertEquals($response['code'], 400);
     }
-
-    public function testReleaseExistsUsingValidID()
-    {
-        $releaseExists = $this->release->releaseIDExists($this->testReleaseID);
-
-        $this->assertTrue($releaseExists);
-    }
-
-    public function testReleaseExistsUsingInvalidID()
-    {
-        $releaseExists = $this->release->releaseIDExists(-15);
-
-        $this->assertFalse($releaseExists);
-    }
 }

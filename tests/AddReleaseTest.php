@@ -57,26 +57,6 @@ class AddReleaseTest extends TestCase
         $this->assertEquals($expected, $response['code']);
     }
 
-    public function testDoesPersonExist()
-    {
-        $this->release->add($this->json);
-
-        $name = 'UnitTestExampler';
-        $result = $this->release->doesPersonExist($name);
-
-        $this->assertTrue($result);
-    }
-
-    public function testDoesPersonExistWhenItCertainlyDoesNot()
-    {
-        $this->release->add($this->json);
-
-        $name = 'Does Not Exist';
-        $result = $this->release->doesPersonExist($name);
-
-        $this->assertFalse($result);
-    }
-
     /**
      * When a new release is added, it also creates (if needed) some related sets of data into
      * other tables. This tests the People table, which keeps track who played what instruments

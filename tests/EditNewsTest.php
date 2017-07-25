@@ -61,14 +61,10 @@ class EditNewsTest extends TestCase
     {
         $this->news->deleteCategories($this->testNewsID);
 
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('COUNT(*) AS Count')->from('NewsCategories')
-            ->where('NewsID = :id')->result();
-        $pdo = array('id' => $this->testNewsID);
-        $result = $this->database->run($sql, $pdo);
-        $count = intval($result[0]['Count']);
+        $check = new \Apps\Utils\DatabaseCheck();
+        $exists = $check->existsInTable('NewsCategories', 'NewsID', $this->testNewsID);
 
-        $this->assertTrue($count == 0);
+        $this->assertFalse($exists);
     }
 
     public function testUpdatingCategoryWorks()

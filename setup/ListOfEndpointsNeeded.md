@@ -9,7 +9,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 - [x] ``GET /news/:id`` to return a specific news item
 - [x] ``POST /news`` with a JSON, to add a new news item
 - [x] ``PUT /news/:id`` to replace a news post with a new version
-- [ ] ``PATCH /news/:id`` with JSON, to update an existing news partially
+- [x] ``PATCH /news/:id`` with JSON, to update an existing news partially
 - [x] ``DELETE /news/:id`` to remove a news item completely
 
 ## Releases
@@ -17,7 +17,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 - [x] ``GET /releases`` to return all releases
 - [x] ``GET /releases/:id`` to retun a specific release
 - [x] ``POST /releases`` with a JSON, to add a release
-- [ ] ``PUT /releases/:id`` with a JSON, to replace a release with new data
+- [x] ``PUT /releases/:id`` with a JSON, to replace a release with new data
 - [x] ``PATCH /releases/:id`` with a JSON, to partially update a release (only - not related tables!)
 - [x] ``DELETE /releases/:id`` to remove a release (the deletion will cascade to related tables)
 
