@@ -4,6 +4,12 @@ RewriteEngine On
 RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
+# Documentation
 RewriteRule ^api/1.0/?$ ./apps/apidoc/index.html
+
+# News
 RewriteRule ^api/1.0/news(.*)$ ./apps/news/news.php?params=$1
+
+# Releases
+RewriteRule ^api/1.0/releases(.*)/people$ ./apps/releases/people/people.php?params=$1
 RewriteRule ^api/1.0/releases(.*)$ ./apps/releases/releases.php?params=$1
