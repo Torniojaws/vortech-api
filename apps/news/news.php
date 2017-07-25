@@ -23,8 +23,6 @@ if ($hasValidID == false) {
     $response = $request->getInvalidIDResponse();
 }
 
-$newshandler = new \Apps\News\NewsHandler();
-
 switch ($request->getMethod()) {
     case 'GET':
         $news = new \Apps\News\GetNews();
@@ -42,6 +40,13 @@ switch ($request->getMethod()) {
             $news = new \Apps\News\EditNews();
             $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $news->update($newsID, $json);
+        }
+        break;
+    case 'PATCH':
+        if ($hasValidJSON && $hasValidID) {
+            $news = new \Apps\News\PatchNews();
+            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $news->patch($newsID, $json);
         }
         break;
     case 'DELETE':

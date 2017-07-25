@@ -36,4 +36,21 @@ class Arrays
 
         return $intArray;
     }
+
+    /**
+     * Go through the given (flat) array and check if it contains only integers
+     * @param array $array is the array to check
+     * @return boolean
+     */
+    public function arrayContainsNonIntegers($array)
+    {
+        $nonIntegersCount = 0;
+        foreach ($array as $item) {
+            if (is_numeric($item) == false) {
+                $nonIntegersCount++;
+            }
+        }
+
+        return $nonIntegersCount > 0;
+    }
 }

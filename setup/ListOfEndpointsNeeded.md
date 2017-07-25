@@ -9,7 +9,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 - [x] ``GET /news/:id`` to return a specific news item
 - [x] ``POST /news`` with a JSON, to add a new news item
 - [x] ``PUT /news/:id`` to replace a news post with a new version
-- [ ] ``PATCH /news/:id`` with JSON, to update an existing news partially
+- [x] ``PATCH /news/:id`` with JSON, to update an existing news partially
 - [x] ``DELETE /news/:id`` to remove a news item completely
 
 ## Releases

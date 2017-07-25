@@ -15,7 +15,7 @@ class AutoloadTest extends TestCase
 
     public function testLoadWithExistingFile()
     {
-        $file = '\Apps\News\NewsHandler';
+        $file = '\Apps\News\GetNews';
         $fileLoaded = $this->autoload->load($file);
 
         $this->assertTrue($fileLoaded);

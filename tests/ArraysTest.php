@@ -71,4 +71,20 @@ class ArraysTest extends TestCase
 
         $this->assertEquals($expected, $intArray);
     }
+
+    public function testArrayContainsNonIntegersWithIntegerArray()
+    {
+        $test = [1, 2, 3];
+        $hasNonIntegers = $this->utils->arrayContainsNonIntegers($test);
+
+        $this->assertFalse($hasNonIntegers);
+    }
+
+    public function testArrayContainsNonIntegersWithNonIntegerArray()
+    {
+        $test = [1, "ABC", 3];
+        $hasNonIntegers = $this->utils->arrayContainsNonIntegers($test);
+
+        $this->assertTrue($hasNonIntegers);
+    }
 }
