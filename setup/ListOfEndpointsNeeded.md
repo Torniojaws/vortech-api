@@ -24,7 +24,7 @@ to follow, here's a list of what is probably needed. Updated as new things come 
 For the related details, we should have some easy endpoints:
 
 - [x] ``GET /releases/:id/people`` to get which people were on a release and what they played
-- [ ] ``GET /releases/:id/formats`` to get the formats the release was on
+- [x] ``GET /releases/:id/formats`` to get the formats the release was on
 - [ ] ``GET /releases/:id/categories`` to get the categories the album is in
 - [ ] ``GET /releases/:id/songs`` to get the songs the album has
 
@@ -32,7 +32,7 @@ When a new Release is added, it will also create some extra data in other tables
 for updating them too. Eg.
 
 - [x] ``PATCH /releases/:id/people`` to update who played on the album and what instrument(s)
-- [ ] ``PATCH /releases/:id/formats`` to update what formats the release is in
+- [x] ``PATCH /releases/:id/formats`` to update what formats the release is in
 - [ ] ``PATCH /releases/:id/categories`` to update which categories the release is in
 - [ ] ``PUT /releases/:id/songs`` to fully replace the song list (it would be a PITA to arrange existing data)
 
