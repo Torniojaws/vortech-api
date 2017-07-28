@@ -9,7 +9,7 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class JsonTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
         $this->jsonValidator = new \Apps\Utils\Json();
     }

@@ -9,7 +9,7 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class DatabaseTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
         $this->db = new \Apps\Database\Database();
     }
