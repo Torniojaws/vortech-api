@@ -9,7 +9,7 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class ArraysTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
         $this->utils = new \Apps\Utils\Arrays();
     }

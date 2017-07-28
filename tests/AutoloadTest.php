@@ -8,7 +8,7 @@ require_once(__DIR__.'/../autoloader.php');
 
 class AutoloadTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
         $this->autoload = new \VortechAPI\Autoloader\Loader();
     }
