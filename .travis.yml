@@ -1,13 +1,13 @@
 language: php
 
 php:
-  - '5.4'
+  - '7.1'
 
 service:
 - mysql
 
 before_install:
-- composer require phpunit/phpunit:4.8.* satooshi/php-coveralls:0.6.*
+- composer require phpunit/phpunit:6.2.3 satooshi/php-coveralls:1.0.1
 - composer install
 - mysql -e 'DROP DATABASE IF EXISTS vortech;'
 - mysql -e 'CREATE DATABASE IF NOT EXISTS vortech;'
