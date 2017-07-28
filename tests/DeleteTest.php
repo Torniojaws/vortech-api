@@ -9,7 +9,7 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class DeleteTest extends TestCase
 {
-    public function __construct()
+    public function setUp()
     {
         $this->qb = new \Apps\Database\Delete();
     }
