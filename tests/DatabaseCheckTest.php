@@ -51,12 +51,4 @@ class DatabaseCheckTest extends TestCase
 
         $this->assertFalse($result);
     }
-
-    /**
-     * @expectedException PDOException
-     */
-    public function testDoesIDExistWithUnknownTableThrowException()
-    {
-        $this->dbcheck->existsInTable('DoesNotExist', 'UnknownID', 2);
-    }
 }

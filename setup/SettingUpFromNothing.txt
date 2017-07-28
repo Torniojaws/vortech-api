@@ -19,9 +19,11 @@
 13. At stock settings, the platform is quite empty, so install these:
 14. Git:            sudo apt-get install git
 15. Apache:         sudo apt-get install apache2
-16. PHP:            sudo apt-get install php5
+16. PHP7:           sudo add-apt-repository ppa:ondrej/php
+                    sudo apt-get update
+                    sudo apt-get install php7.1
 17. MariaDB:        sudo apt-get install mariadb-server
-18. MySQL-plugin:   sudo apt-get install php5-mysql
+18. MySQL-plugin:   sudo apt-get install php-mysql
 19. During the above, you will see warnings from Apache about ServerName. Fix it like this:
 20. Give the command: echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf
 21. Then activate it: sudo a2enconf servername
@@ -76,3 +78,15 @@
 50. Username and Password should be: "vagrant"
 51. Local port is also 3306
 52. Now it should work!
+
+---- Running tests
+
+53. To run tests, PHPUnit is used. It needs to be installed also.
+54. Run: sudo apt-get install phpunit (this will install an old version, 3.x)
+55. Then run:       wget https://phar.phpunit.de/phpunit.phar
+                    chmod +x phpunit.phar
+                    sudo mv phpunit.phar /usr/local/bin/phpunit
+56. Now you will have the latest stable release of PHPUnit (6.2.3 at the moment)
+57. Then finally, install the xdebug driver to generate code coverage reports
+58. Run: sudo apt-get install php-xdebug
+59. Then try running this in the project root: phpunit --whitelist tests --coverage-text tests/
