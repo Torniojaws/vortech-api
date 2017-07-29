@@ -4,14 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class PatchPeopleTest extends TestCase
+class PatchReleaseCategoriesTest extends TestCase
 {
     public function setUp()
     {
-        $this->people = new \Apps\Releases\People\PatchPeople();
+        $this->categories = new \Apps\Releases\Categories\PatchReleaseCategories();
         $this->database = new \Apps\Database\Database();
         $this->database->connect();
 
@@ -34,51 +34,43 @@ class PatchPeopleTest extends TestCase
         $sql = $sqlBuilder->delete()->from('Releases')->where('ReleaseID = :id')->result();
         $pdo = array('id' => $this->testReleaseID);
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testClassWorks()
     {
-        $this->assertTrue($this->people instanceof \Apps\Releases\People\PatchPeople);
+        $this->assertTrue($this->categories instanceof \Apps\Releases\Categories\PatchReleaseCategories);
     }
 
-    public function testPatchingPerson()
+    public function testPatchingCategories()
     {
-        $patch = '{"id": 2, "name": "UnitTestExampler", "instruments": "Drums and Bass"}';
-        $this->people->patch($this->testReleaseID, $patch);
+        $patch = '{"categories": [3, 4]}';
+        $this->categories->patch($this->testReleaseID, $patch);
 
         $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('Instruments')->from('ReleasePeople')
-            ->joins('JOIN People ON People.PersonID = ReleasePeople.PersonID')
-            ->where('ReleaseID = :id')->result();
+        $sql = $sqlBuilder->select('ReleaseCategories.ReleaseTypeID')->from('ReleaseCategories')
+            ->joins('JOIN ReleaseTypes ON ReleaseCategories.ReleaseTypeID = ReleaseTypes.ReleaseTypeID')
+            ->where('ReleaseCategories.ReleaseID = :id')->result();
         $pdo = array('id' => $this->testReleaseID);
         $result = $this->database->run($sql, $pdo);
 
-        $expected = 'Drums and Bass';
+        // The results come as a string array from the PDO
+        $expected = array('1', '2', '3', '4');
 
-        $this->assertEquals($expected, $result[0]['Instruments']);
+        foreach ($result as $formatObj) {
+            $test[] = $formatObj['ReleaseTypeID'];
+        }
+
+        sort($test);
+
+        $this->assertEquals($expected, $test);
     }
 
-    public function testGettingPersonID()
-    {
-        $name = 'UnitTestExampler';
-        $pid = $this->people->getPersonID($name);
-
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('People.PersonID')->from('People')
-            ->joins('JOIN ReleasePeople ON ReleasePeople.PersonID = People.PersonID')
-            ->where('ReleasePeople.ReleaseID = :id AND People.Name = :name')->limit(1)->result();
-        $pdo = array('id' => $this->testReleaseID, 'name' => $name);
-        $result = $this->database->run($sql, $pdo);
-        $expected = intval($result[0]['PersonID']);
-
-        $this->assertEquals($expected, $pid);
-    }
-
-    public function testPatchingPersonWithInvalidData()
+    public function testPatchingCategoriesWithInvalidData()
     {
         $patch = '[{"id": 2, "name": "UnitTestExampler", "instruments": "Drums and Bass"},
             {"id": 3, "name": "Test", "instruments": "Drums and Bass"}]';
-        $response = $this->people->patch($this->testReleaseID, $patch);
+        $response = $this->categories->patch($this->testReleaseID, $patch);
         $expected = 400;
 
         $this->assertEquals($expected, $response['code']);

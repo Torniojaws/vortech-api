@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class AddReleaseTest extends TestCase
@@ -178,6 +178,7 @@ class AddReleaseTest extends TestCase
         $sql = $this->remove->delete()->from('Songs')->where('Title LIKE :stitle')->result();
         $pdo = array('stitle' => 'UnitTest%');
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testDoInsertReleasePeopleWithInvalidIDs()

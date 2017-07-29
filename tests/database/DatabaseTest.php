@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class DatabaseTest extends TestCase
@@ -12,6 +12,11 @@ class DatabaseTest extends TestCase
     public function setUp()
     {
         $this->db = new \Apps\Database\Database();
+    }
+
+    public function tearDown()
+    {
+        $this->db->close();
     }
 
     public function testPDOConnectionThatShouldWork()

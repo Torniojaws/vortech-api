@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class DatabaseCheckTest extends TestCase
@@ -50,13 +50,5 @@ class DatabaseCheckTest extends TestCase
         $result = $this->dbcheck->existsInTable('News', 'NewsID', -17);
 
         $this->assertFalse($result);
-    }
-
-    /**
-     * @expectedException PDOException
-     */
-    public function testDoesIDExistWithUnknownTableThrowException()
-    {
-        $this->dbcheck->existsInTable('DoesNotExist', 'UnknownID', 2);
     }
 }

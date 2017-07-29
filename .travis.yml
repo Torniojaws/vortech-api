@@ -15,7 +15,7 @@ before_install:
 
 script:
   - mkdir -p tests/logs
-  - ./vendor/bin/phpunit --coverage-clover tests/logs/clover.xml tests
+  - ./vendor/bin/phpunit --whitelist tests --coverage-clover tests/logs/clover.xml tests
 
 after_script:
   - php vendor/bin/coveralls -v

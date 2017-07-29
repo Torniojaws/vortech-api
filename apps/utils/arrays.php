@@ -7,7 +7,7 @@ class Arrays
     /**
      * Convert an array of arrays into a flat array with just the values
      * @param mixed[] $arr The array that we will flatten
-     * @param string $name Is the optional key to look for in the array
+     * @param string $name Is the key to look for in the array
      * @return mixed[] $new The flat array
      */
     public function flattenArray($array, $name)

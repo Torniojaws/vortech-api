@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class SelectTest extends TestCase

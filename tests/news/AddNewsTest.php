@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class AddNewsTest extends TestCase
@@ -24,6 +24,7 @@ class AddNewsTest extends TestCase
         $sql = $sqlBuilder->delete()->from('News')->where('Title LIKE :title')->result();
         $pdo = array('title' => 'UnitTest%');
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testClassWorks()

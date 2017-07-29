@@ -25,16 +25,25 @@ For the related details, we should have some easy endpoints:
 
 - [x] ``GET /releases/:id/people`` to get which people were on a release and what they played
 - [x] ``GET /releases/:id/formats`` to get the formats the release was on
-- [ ] ``GET /releases/:id/categories`` to get the categories the album is in
-- [ ] ``GET /releases/:id/songs`` to get the songs the album has
+- [x] ``GET /releases/:id/categories`` to get the categories the album is in
+- [x] ``GET /releases/:id/songs`` to get the songs the album has
 
 When a new Release is added, it will also create some extra data in other tables. We need some endpoints
 for updating them too. Eg.
 
 - [x] ``PATCH /releases/:id/people`` to update who played on the album and what instrument(s)
 - [x] ``PATCH /releases/:id/formats`` to update what formats the release is in
-- [ ] ``PATCH /releases/:id/categories`` to update which categories the release is in
-- [ ] ``PUT /releases/:id/songs`` to fully replace the song list (it would be a PITA to arrange existing data)
+- [x] ``PATCH /releases/:id/categories`` to update which categories the release is in
+- [x] ``PUT /releases/:id/songs`` to fully replace the song list
+
+It *might* be useful to have an endpoint purely for adding songs, unrelated to adding new albums. For example
+if there is a song that is a one-off thing for something, but has no specific Vortech release.
+
+- [ ] ``GET /songs`` to list all songs
+- [ ] ``GET /songs/:id`` to list a specific song (might not be so useful, as you'd need to know the ID)
+- [ ] ``POST /songs`` to add song(s)
+- [ ] ``PUT /songs/:id`` to update a song details
+- [ ] ``PATCH /songs/:id`` to change a specific detail of a song, like the name or duration
 
 ## Shows
 

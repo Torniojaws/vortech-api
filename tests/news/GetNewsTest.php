@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class GetNewsTest extends TestCase
@@ -51,6 +51,7 @@ class GetNewsTest extends TestCase
             ->where('Created >= NOW() - INTERVAL 1 MINUTE AND Title LIKE :value')->result();
         $pdo = array('value' => 'Test%');
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     private function buildTestData()
