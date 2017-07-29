@@ -12,7 +12,8 @@ class Database
         $this->pdo = new \PDO(
             $config['driver'].":host=".$config['host']."; dbname=".$config['name']."; charset=".$config['charset'],
             $config['user'],
-            $config['pass']
+            $config['pass'],
+            array(\PDO::ATTR_PERSISTENT => true)
         );
         // For added security with MySQL / MariaDB
         $this->pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, false);
