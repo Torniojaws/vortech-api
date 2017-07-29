@@ -4,7 +4,7 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class PatchReleaseCategoriesTest extends TestCase
@@ -34,6 +34,7 @@ class PatchReleaseCategoriesTest extends TestCase
         $sql = $sqlBuilder->delete()->from('Releases')->where('ReleaseID = :id')->result();
         $pdo = array('id' => $this->testReleaseID);
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testClassWorks()

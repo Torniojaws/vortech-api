@@ -4,14 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class GetReleaseCategoriesTest extends TestCase
+class GetSongsTest extends TestCase
 {
     public function setUp()
     {
-        $this->categories = new \Apps\Releases\Categories\GetReleaseCategories();
+        $this->songs = new \Apps\Releases\Songs\GetSongs();
 
         $this->database = new \Apps\Database\Database();
         $this->database->connect();
@@ -35,24 +35,25 @@ class GetReleaseCategoriesTest extends TestCase
         $sql = $sqlBuilder->delete()->from('Releases')->where('ReleaseID = :id')->result();
         $pdo = array('id' => $this->testReleaseID);
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testClassWorks()
     {
-        $this->assertTrue($this->categories instanceof \Apps\Releases\Categories\GetReleaseCategories);
+        $this->assertTrue($this->songs instanceof \Apps\Releases\Songs\GetSongs);
     }
 
-    public function testGettingCategories()
+    public function testGettingSongs()
     {
-        $results = $this->categories->get($this->testReleaseID);
-        $expected = '2';
+        $results = $this->songs->get($this->testReleaseID);
+        $expected = 'UnitTest Helppo';
 
-        $this->assertEquals($expected, $results['contents'][1]['ReleaseTypeID']);
+        $this->assertEquals($expected, $results['contents'][2]['Title']);
     }
 
-    public function testGettingCategoriesWithNonExistingID()
+    public function testGettingSongsWithNonExistingID()
     {
-        $results = $this->categories->get(-19);
+        $results = $this->songs->get(-19);
         // No matches = empty array
         $expected = array();
 
@@ -62,9 +63,9 @@ class GetReleaseCategoriesTest extends TestCase
     /**
      * Technically it is OK to search by text, but it will never match anything
      */
-    public function testGettingCategoriesWithAlphabeticID()
+    public function testGettingSongsWithAlphabeticID()
     {
-        $results = $this->categories->get("ABC");
+        $results = $this->songs->get("ABC");
         $expected = array();
 
         $this->assertEquals($expected, $results['contents']);

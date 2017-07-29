@@ -4,14 +4,14 @@ namespace VortechAPI\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-require_once(__DIR__.'/../autoloader.php');
+require_once(__DIR__.'/../../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class GetFormatsTest extends TestCase
+class GetReleaseCategoriesTest extends TestCase
 {
     public function setUp()
     {
-        $this->formats = new \Apps\Releases\Formats\GetFormats();
+        $this->categories = new \Apps\Releases\Categories\GetReleaseCategories();
 
         $this->database = new \Apps\Database\Database();
         $this->database->connect();
@@ -35,24 +35,25 @@ class GetFormatsTest extends TestCase
         $sql = $sqlBuilder->delete()->from('Releases')->where('ReleaseID = :id')->result();
         $pdo = array('id' => $this->testReleaseID);
         $this->database->run($sql, $pdo);
+        $this->database->close();
     }
 
     public function testClassWorks()
     {
-        $this->assertTrue($this->formats instanceof \Apps\Releases\Formats\GetFormats);
+        $this->assertTrue($this->categories instanceof \Apps\Releases\Categories\GetReleaseCategories);
     }
 
-    public function testGettingFormats()
+    public function testGettingCategories()
     {
-        $results = $this->formats->get($this->testReleaseID);
-        $expected = '3';
+        $results = $this->categories->get($this->testReleaseID);
+        $expected = '2';
 
-        $this->assertEquals($expected, $results['contents'][1]['FormatID']);
+        $this->assertEquals($expected, $results['contents'][1]['ReleaseTypeID']);
     }
 
-    public function testGettingFormatsWithNonExistingID()
+    public function testGettingCategoriesWithNonExistingID()
     {
-        $results = $this->formats->get(-19);
+        $results = $this->categories->get(-19);
         // No matches = empty array
         $expected = array();
 
@@ -62,9 +63,9 @@ class GetFormatsTest extends TestCase
     /**
      * Technically it is OK to search by text, but it will never match anything
      */
-    public function testGettingFormatsWithAlphabeticID()
+    public function testGettingCategoriesWithAlphabeticID()
     {
-        $results = $this->formats->get("ABC");
+        $results = $this->categories->get("ABC");
         $expected = array();
 
         $this->assertEquals($expected, $results['contents']);
