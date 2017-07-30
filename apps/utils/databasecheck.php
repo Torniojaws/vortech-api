@@ -21,10 +21,10 @@ class DatabaseCheck
      * For example, in Table "News", does Column "NewsID" contain an entry with ID 1
      * @param string $table is the name of the table we check from
      * @param string $column is the name of the column we check from
-     * @param string $value is the value we look for
+     * @param string or int $value is the value we look for
      * @return boolean
      */
-    public function existsInTable($table, $column, $value)
+    public function existsInTable(string $table, string $column, $value)
     {
         $sql = $this->query->select('COUNT(*) AS Count')->from($table)->where($column.' = :value')
             ->limit(1)->result();

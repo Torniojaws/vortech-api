@@ -10,7 +10,7 @@ class Arrays
      * @param string $name Is the key to look for in the array
      * @return mixed[] $new The flat array
      */
-    public function flattenArray($array, $name)
+    public function flattenArray(array $array, string $name)
     {
         foreach ($array as $k => $v) {
             $new[$k] = $v[$name];
@@ -24,7 +24,7 @@ class Arrays
      * ints in the array, we return an empty array.
      * @return int[] $intArray Which is a flat array of integers
      */
-    public function toIntArray($array)
+    public function toIntArray(array $array)
     {
         $intArray = array();
 
@@ -42,7 +42,7 @@ class Arrays
      * @param array $array is the array to check
      * @return boolean
      */
-    public function arrayContainsNonIntegers($array)
+    public function arrayContainsNonIntegers(array $array)
     {
         $nonIntegersCount = 0;
         foreach ($array as $item) {

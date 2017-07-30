@@ -27,15 +27,15 @@ class Request
         return is_numeric($this->getParams()[1]);
     }
 
-    public function hasValidJSON($json)
+    public function hasValidJSON(string $json)
     {
         $validator = new \Apps\Utils\Json();
         return $validator->isJson($json);
     }
 
-    public function isMissingRequiredJSON($json)
+    public function isMissingRequiredJSON(string $json)
     {
-        return (in_array($this->getMethod(), array('POST', 'PUT'))
+        return (in_array($this->getMethod(), array('POST', 'PUT', 'PATCH'))
             && $this->hasValidJSON($json) == false);
     }
 

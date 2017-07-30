@@ -11,7 +11,7 @@ class Json
      * @param string $data The data to Check
      * @return boolean Is it valid or not
      */
-    public function isJson($data)
+    public function isJson(string $data)
     {
         return (
             $this->hasInvalidFirstCharacter($data) == false
@@ -25,7 +25,7 @@ class Json
      * @param string $string Is the input we check
      * @return boolean Result of the check
      */
-    public function hasInvalidFirstCharacter($string)
+    public function hasInvalidFirstCharacter(string $string)
     {
         $firstChar = substr($string, 0, 1);
         $valid = array('{', '[');
@@ -37,7 +37,7 @@ class Json
      * @param string $data Is the data to check
      * @return boolean Whether any errors appeared
      */
-    public function jsonDecodeProbeReturnsErrors($data)
+    public function jsonDecodeProbeReturnsErrors(string $data)
     {
         json_decode($data);
         return json_last_error() !== 0;

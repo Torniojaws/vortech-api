@@ -11,9 +11,14 @@ RewriteRule ^api/1.0/?$ ./apps/apidoc/index.html
 RewriteRule ^api/1.0/news(.*)$ ./apps/news/news.php?params=$1
 
 # Releases
-RewriteRule ^api/1.0/releases(.*)/people$ ./apps/releases/people/people.php?params=$1
+RewriteRule ^api/1.0/releases(.*)/categories$ ./apps/releases/categories/categories.php?params=$1
 RewriteRule ^api/1.0/releases(.*)/formats$ ./apps/releases/formats/formats.php?params=$1
+RewriteRule ^api/1.0/releases(.*)/people$ ./apps/releases/people/people.php?params=$1
+RewriteRule ^api/1.0/releases(.*)/songs$ ./apps/releases/songs/songs.php?params=$1
 RewriteRule ^api/1.0/releases(.*)$ ./apps/releases/releases.php?params=$1
+
+# Songs (this is related to all songs, not release-specific)
+RewriteRule ^api/1.0/songs(.*)$ ./apps/songs/songs.php?params=$1
 
 # GZIP handling
 <ifModule mod_gzip.c>

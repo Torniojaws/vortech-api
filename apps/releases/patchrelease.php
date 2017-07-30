@@ -13,7 +13,7 @@ class PatchRelease
     /**
      * We must rely that the user provides correct values for the table columns
      */
-    public function patch($releaseID, $json)
+    public function patch(int $releaseID, string $json)
     {
         try {
             $items = json_decode($json, true);

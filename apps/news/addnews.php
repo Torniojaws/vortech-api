@@ -11,7 +11,7 @@ class AddNews
         $this->sql = new \Apps\Database\Insert();
     }
 
-    public function add($json)
+    public function add(string $json)
     {
         $news = json_decode($json, true);
         $title = $news['title'];
@@ -33,7 +33,7 @@ class AddNews
      * @param string $contents Is the news text to use
      * @return int The NewsID of the news we inserted
      */
-    public function insertNews($title, $contents)
+    public function insertNews(string $title, string $contents)
     {
         $sql = $this->sql->insert()->into('News(Title, Contents, Author, Created)')
             ->values(':title, :contents, "Juha", NOW()')->result();
@@ -48,7 +48,7 @@ class AddNews
      * @param int $category The ID of the category
      * @param int $newsID Is the ID we use as a foreign key to the news item
      */
-    public function insertCategory($category, $newsID)
+    public function insertCategory(int $category, int $newsID)
     {
         $sql = $this->sql->insert()->into('NewsCategories(NewsID, CategoryID)')
             ->values(':id, :category')->result();
@@ -61,7 +61,7 @@ class AddNews
      * @param int $newsID is the ID that we need to show in the response body Location
      * @return array That contains the response array
      */
-    public function response($newsID)
+    public function response(int $newsID)
     {
         $response['contents'] = "Location: http://www.vortechmusic.com/api/1.0/news/".$newsID;
         $response['id'] = $newsID;

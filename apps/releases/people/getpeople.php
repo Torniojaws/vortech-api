@@ -16,7 +16,7 @@ class GetPeople
      * Get the results of people who appeared in the given release ID
      * @param int $releaseID Is the release we look for
      */
-    public function get($releaseID)
+    public function get(int $releaseID)
     {
         $sql = $this->sql->select()->from('ReleasePeople')
             ->joins('JOIN People ON People.PersonID = ReleasePeople.PersonID')

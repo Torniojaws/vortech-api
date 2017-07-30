@@ -39,9 +39,9 @@ for updating them too. Eg.
 It *might* be useful to have an endpoint purely for adding songs, unrelated to adding new albums. For example
 if there is a song that is a one-off thing for something, but has no specific Vortech release.
 
-- [ ] ``GET /songs`` to list all songs
-- [ ] ``GET /songs/:id`` to list a specific song (might not be so useful, as you'd need to know the ID)
-- [ ] ``POST /songs`` to add song(s)
+- [x] ``GET /songs`` to list all songs
+- [x] ``GET /songs/:id`` to list a specific song (might not be so useful, as you'd need to know the ID)
+- [x] ``POST /songs`` to add song(s)
 - [ ] ``PUT /songs/:id`` to update a song details
 - [ ] ``PATCH /songs/:id`` to change a specific detail of a song, like the name or duration
 

@@ -16,7 +16,7 @@ class AddRelease
      * @param JSON $data This is the JSON we received in raw format
      * @return array The response array that we send back to the requester
      */
-    public function add($data)
+    public function add(string $data)
     {
         $contents = null;
         $validator = new \Apps\Utils\Json();
@@ -26,6 +26,7 @@ class AddRelease
             $json = json_decode($data, true);
 
             $releaseID = $this->insertRelease($json);
+            // TODO: Move these to their own Add classes in the subdirs people, formats, etc
             $this->insertPeople($json);
             $this->insertReleasePeople($json, $releaseID);
             $this->insertSongs($json);
@@ -42,11 +43,11 @@ class AddRelease
 
     /**
      * Build a proper response object based on the results
-     * @param boolean $valid Tells if the JSON was valid
-     * @param array $results Has the results from the INSERT queries
+     * @param bool $valid Tells if the JSON was valid
+     * @param array $contents Has the results from the INSERT queries
      * @return array $response Has the response array that will be converted to JSON later
      */
-    public function buildResponse($valid, $contents)
+    public function buildResponse(bool $valid, array $contents = null)
     {
         $response['contents'] = $contents['location'];
         $response['id'] = $contents['id'];
@@ -66,7 +67,7 @@ class AddRelease
      * @param array $json This is the array version of the JSON we received
      * @return int Contains the ReleaseID we got from the DB
      */
-    public function insertRelease($json)
+    public function insertRelease(array $json)
     {
         $sqlBuilder = new \Apps\Database\Insert();
         $sql = $sqlBuilder->insert()->into('Releases(Title, Date, Artist, Credits, Created)')
@@ -86,7 +87,7 @@ class AddRelease
      * @param array $json Contains the data we use to build the insert
      * @return boolean Done
      */
-    public function insertPeople($json)
+    public function insertPeople(array $json)
     {
         $check = new \Apps\Utils\DatabaseCheck();
         foreach ($json['people'] as $person) {
@@ -107,13 +108,8 @@ class AddRelease
      * @param array $json The dataset from which we get the information
      * @param int $releaseID The ID of the release
      */
-    public function insertReleasePeople($json, $releaseID)
+    public function insertReleasePeople(array $json, int $releaseID)
     {
-        // Valid ReleaseID is needed
-        if (is_numeric($releaseID) == false) {
-            return false;
-        }
-
         // Since this is a new release, there cannot be old data, so we simply insert all info
         foreach ($json['people'] as $person) {
             $currentPersonID = null;
@@ -139,12 +135,8 @@ class AddRelease
      * @param string $instruments This defines what instrument(s) the person played on this release
      * @return boolean Was the insert successful. If invalid ID, return false
      */
-    public function doInsertReleasePeople($releaseID, $personID, $instruments)
+    public function doInsertReleasePeople(int $releaseID, int $personID, string $instruments)
     {
-        if (is_numeric($releaseID) == false || is_numeric($personID) == false) {
-            return false;
-        }
-
         $sqlBuilder = new \Apps\Database\Insert();
         $sql = $sqlBuilder->insert()->into('ReleasePeople(ReleaseID, PersonID, Instruments)')
             ->values(':rid, :pid, :instruments')->result();
@@ -158,10 +150,9 @@ class AddRelease
      * When a new release is added, the songs will be stored to the table Songs, if they do not
      * exist there already. They can exist if the new release is eg. a live album.
      * @param array $json Contains the actual data to use
-     * @param int $releaseID Contains the identifier of the release
      * @return boolean Were the songs inserted successfully
      */
-    public function insertSongs($json)
+    public function insertSongs(array $json)
     {
         $errors = 0;
         $check = new \Apps\Utils\DatabaseCheck();
@@ -183,11 +174,8 @@ class AddRelease
      * @param array $json The dataset from which we get the information
      * @param int $releaseID The ID of the release
      */
-    public function insertReleaseSongs($json, $releaseID)
+    public function insertReleaseSongs(array $json, int $releaseID)
     {
-        if (is_numeric($releaseID) == false) {
-            return false;
-        }
         // Since this is a new release, there cannot be old data, so we simply insert all info
         foreach ($json['songs'] as $song) {
             $songID = null;
@@ -212,12 +200,8 @@ class AddRelease
      * @param int $songID tells which song it is
      * @return boolean Was the insert successful. If invalid ID, return false
      */
-    public function doInsertReleaseSongs($releaseID, $songID)
+    public function doInsertReleaseSongs(int $releaseID, int $songID)
     {
-        if (is_numeric($releaseID) == false || is_numeric($songID) == false) {
-            return false;
-        }
-
         $sqlBuilder = new \Apps\Database\Insert();
         $sql = $sqlBuilder->insert()->into('ReleaseSongs(ReleaseID, SongID)')
             ->values(':rid, :sid')->result();
@@ -234,12 +218,8 @@ class AddRelease
      * @param int $releaseID The album identifier
      * @return boolean false when there is a missing releaseID
      */
-    public function insertReleaseFormats($json, $releaseID)
+    public function insertReleaseFormats(array $json, int $releaseID)
     {
-        if (is_numeric($releaseID) == false) {
-            return false;
-        }
-
         // It is an array of integers
         foreach ($json['formats'] as $format) {
             $value = intval($format);
@@ -259,12 +239,8 @@ class AddRelease
      * @param int $releaseID The album identifier
      * @return boolean false When releaseID is missing
      */
-    public function insertReleaseCategories($json, $releaseID)
+    public function insertReleaseCategories(array $json, int $releaseID)
     {
-        if (is_numeric($releaseID) == false) {
-            return false;
-        }
-
         // It is an array of integers
         foreach ($json['categories'] as $category) {
             $value = intval($category);

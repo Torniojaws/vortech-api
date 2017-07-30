@@ -4,7 +4,7 @@ namespace Apps\News;
 
 class EditNews
 {
-    public function edit($newsID, $json)
+    public function edit(int $newsID, string $json)
     {
         $validator = new \Apps\Utils\Json();
         $dataIsValid = $validator->isJson($json);
@@ -26,10 +26,10 @@ class EditNews
     /**
      * This will modify the News table in the DB using the new values provided in $data
      * @param int $newsID is the ID of the news to edit
-     * @param array $release Contains the new values to use
+     * @param array $news Contains the new values to use
      * @return boolean Was update query successful or no (even if nothing changes!)
      */
-    public function editNews($newsID, $news)
+    public function editNews(int $newsID, array $news)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
@@ -52,7 +52,7 @@ class EditNews
      * @param int $newsID Is the news ID we refer to
      * @return boolean The ID of the entry we inserted.
      */
-    public function addUpdatedCategory($category, $newsID)
+    public function addUpdatedCategory(int $category, int $newsID)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
@@ -70,7 +70,7 @@ class EditNews
      * As part of the PUT process, we remove existing NewsCategories for the current NewsID.
      * @param int $newsID Is the news ID that we use to delete the existing categories.
      */
-    public function deleteCategories($newsID)
+    public function deleteCategories(int $newsID)
     {
         $database = new \Apps\Database\Database();
         $database->connect();

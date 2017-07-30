@@ -18,7 +18,7 @@ class PatchReleaseCategories
      * @param json $json is the JSON we use to patch the data
      * @return array $response Contains the response we want to send
      */
-    public function patch($releaseID, $json)
+    public function patch(int $releaseID, string $json)
     {
         $patch = json_decode($json, true);
         if (isset($patch['categories']) == false) {
@@ -39,7 +39,7 @@ class PatchReleaseCategories
      * @param int[] $data Contains the new categories
      * @param int $releaseID is the release we will patch
      */
-    public function patchCategories($data, $releaseID)
+    public function patchCategories(array $data, int $releaseID)
     {
         foreach ($data['categories'] as $category) {
             $sql = $this->insert->insert()->into('ReleaseCategories(ReleaseID, ReleaseTypeID)')

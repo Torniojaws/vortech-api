@@ -10,7 +10,7 @@ class DeleteNews
         $this->database->connect();
     }
 
-    public function delete($newsID)
+    public function delete(int $newsID)
     {
         $check = new \Apps\Utils\DatabaseCheck();
         if ($check->existsInTable('News', 'NewsID', $newsID) == false) {

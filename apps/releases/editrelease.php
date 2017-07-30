@@ -4,7 +4,13 @@ namespace Apps\Releases;
 
 class EditRelease
 {
-    public function edit($releaseID, $json)
+    /**
+     * This will edit an existing release
+     * @param int $releaseID
+     * @param string $json The data in string JSON format
+     * @return int $releaseID is the ID of the release we edited
+     */
+    public function edit(int $releaseID, string $json)
     {
         $validator = new \Apps\Utils\Json();
         $dataIsValid = $validator->isJson($json);
@@ -24,7 +30,7 @@ class EditRelease
      * @param array $release Contains the new values to use
      * @return boolean Was update query successful or no (even if nothing changes!)
      */
-    public function editRelease($releaseID, $release)
+    public function editRelease(int $releaseID, array $release)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
@@ -47,14 +53,14 @@ class EditRelease
      * endpoint for adding new people after-the-fact, and there you can assign them to a given existing
      * album.
      */
-    public function editReleasePeople($releaseID, $release)
+    public function editReleasePeople(int $releaseID, array $release)
     {
         foreach ($release['people'] as $person) {
             $this->editPerson($person, $releaseID);
         }
     }
 
-    public function editPerson($person, $releaseID)
+    public function editPerson(array $person, int $releaseID)
     {
         $personID = $this->getPersonID($person['name']);
 
@@ -68,7 +74,7 @@ class EditRelease
         $database->run($sql, $pdo);
     }
 
-    public function getPersonID($name)
+    public function getPersonID(string $name)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
