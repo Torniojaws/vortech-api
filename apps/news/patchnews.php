@@ -13,8 +13,10 @@ class PatchNews
     /**
      * We must rely that the user provides correct values for the table columns.
      * Patching News categories will have its own endpoint
+     * @param int $newsID
+     * @param string $json contains the data we use for patching
      */
-    public function patch($newsID, $json)
+    public function patch(int $newsID, string $json)
     {
         try {
             $items = json_decode($json, true);
@@ -60,7 +62,7 @@ class PatchNews
      * @param array $items Contains an array that might have the key 'categories'
      * @return boolean True when no errors appeared. If errors, returns false
      */
-    public function updateCategories($newsID, $items)
+    public function updateCategories(int $newsID, array $items)
     {
         // Don't check if no categories are given
         if (isset($items['categories']) == false) {

@@ -18,7 +18,7 @@ class EditSongs
      * @param json $json is the JSON we use to patch the data
      * @return array $response Contains the response we want to send
      */
-    public function edit($releaseID, $json)
+    public function edit(int $releaseID, string $json)
     {
         $edit = json_decode($json, true);
 
@@ -48,7 +48,7 @@ class EditSongs
      * @param int[] $songs Contains an array of song IDs
      * @param int $releaseID is the release we will edit
      */
-    public function editSongs($songs, $releaseID)
+    public function editSongs(array $songs, int $releaseID)
     {
         $this->removePreviousSongs($releaseID);
 
@@ -65,7 +65,7 @@ class EditSongs
      * release references - the songs themselves will still remain in the Songs table.
      * @param int $releaseID is the ID of the release
      */
-    public function removePreviousSongs($releaseID)
+    public function removePreviousSongs(int $releaseID)
     {
         $sqlBuilder = new \Apps\Database\Delete();
         $sql = $sqlBuilder->delete()->from('ReleaseSongs')->where('ReleaseID = :id')->result();
@@ -78,7 +78,7 @@ class EditSongs
      * @param int[] $songs has the song IDs we check. The method needs it as a string, so it is cast
      * @return boolean
      */
-    public function allSongsExist($songs)
+    public function allSongsExist(array $songs)
     {
         $missingCount = 0;
         $databaseCheck = new \Apps\Utils\DatabaseCheck();

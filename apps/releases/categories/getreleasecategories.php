@@ -16,7 +16,7 @@ class GetReleaseCategories
      * Get the results of categories the ReleaseID has been released in
      * @param int $releaseID Is the release we look for
      */
-    public function get($releaseID)
+    public function get(int $releaseID)
     {
         $sql = $this->sql->select()->from('ReleaseCategories')
             ->joins('JOIN ReleaseTypes ON ReleaseCategories.ReleaseTypeID = ReleaseTypes.ReleaseTypeID')

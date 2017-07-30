@@ -8,7 +8,7 @@ class Update
     private $set;
     private $where;
 
-    public function update($table = null)
+    public function update(string $table = null)
     {
         $this->update = $table;
         if (empty($this->update)) {

@@ -20,14 +20,14 @@ class Delete
         return $this;
     }
 
-    public function from($table)
+    public function from(string $table)
     {
         $this->from = $table;
         return $this;
     }
 
     // Optional, but required when deleting from multiple tables
-    public function joins($joins = null)
+    public function joins(string $joins = null)
     {
         if (empty($this->delete) == false && $joins == null) {
             return 'When deleting from multiple tables, joins are required';
@@ -36,7 +36,7 @@ class Delete
         return $this;
     }
 
-    public function where($conditions = null)
+    public function where(string $conditions = null)
     {
         // WHERE is not required for DELETE queries, but I will make it required for safety
         if (empty($conditions)) {

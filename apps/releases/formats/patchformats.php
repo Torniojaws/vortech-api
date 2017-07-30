@@ -18,7 +18,7 @@ class PatchFormats
      * @param json $json is the JSON we use to patch the data
      * @return array $response Contains the response we want to send
      */
-    public function patch($releaseID, $json)
+    public function patch(int $releaseID, string $json)
     {
         $patch = json_decode($json, true);
         if (isset($patch['formats']) == false) {
@@ -39,7 +39,7 @@ class PatchFormats
      * @param int[] $data Contains the new formats
      * @param int $releaseID is the release we will patch
      */
-    public function patchFormats($data, $releaseID)
+    public function patchFormats(array $data, int $releaseID)
     {
         foreach ($data['formats'] as $format) {
             $sql = $this->insert->insert()->into('ReleaseFormats(FormatID, ReleaseID)')

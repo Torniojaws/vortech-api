@@ -16,7 +16,7 @@ class GetSongs
      * Get the songs for the given ReleaseID
      * @param int $releaseID Is the release we look for
      */
-    public function get($releaseID)
+    public function get(int $releaseID)
     {
         $sql = $this->sql->select()->from('ReleaseSongs')
             ->joins('JOIN Songs ON Songs.SongID = ReleaseSongs.SongID')

@@ -4,7 +4,7 @@ namespace Apps\Releases;
 
 class GetRelease
 {
-    public function get($releaseID = null)
+    public function get(int $releaseID = null)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
@@ -13,7 +13,7 @@ class GetRelease
         $sql = $sqlBuilder->select()->from('Releases')->result();
         $pdoParameters = array();
 
-        if (is_numeric($releaseID)) {
+        if (isset($releaseID)) {
             $sql = $sqlBuilder->select()->from('Releases')->where('ReleaseID = :id')->result();
             $pdoParameters = array('id' => $releaseID);
         }

@@ -59,15 +59,4 @@ class GetPeopleTest extends TestCase
 
         $this->assertEquals($expected, $results['contents']);
     }
-
-    /**
-     * Technically it is OK to search by text, but it will never match anything
-     */
-    public function testGettingPeopleWithAlphabeticID()
-    {
-        $results = $this->people->get("ABC");
-        $expected = array();
-
-        $this->assertEquals($expected, $results['contents']);
-    }
 }

@@ -19,6 +19,7 @@ class Select
     private $joins;
     private $where;
     private $group;
+    private $order;
     private $limit;
 
     public function select()
@@ -27,19 +28,19 @@ class Select
         return $this;
     }
 
-    public function from($table)
+    public function from(string $table)
     {
         $this->from = $table;
         return $this;
     }
 
-    public function joins($joins)
+    public function joins(string $joins)
     {
         $this->joins = $joins;
         return $this;
     }
 
-    public function where($conditions)
+    public function where(string $conditions)
     {
         $this->where = $conditions;
         return $this;
@@ -51,7 +52,13 @@ class Select
         return $this;
     }
 
-    public function limit($limit)
+    public function order()
+    {
+        $this->order = func_get_args();
+        return $this;
+    }
+
+    public function limit(string $limit)
     {
         $this->limit = $limit;
         return $this;
@@ -86,6 +93,12 @@ class Select
         if (empty($this->group) == false) {
             $query[] = 'GROUP BY';
             $query[] = join(', ', $this->group);
+        }
+
+        // ORDER BY
+        if (empty($this->order) == false) {
+            $query[] = 'ORDER BY';
+            $query[] = join(', ', $this->order);
         }
 
         // LIMIT

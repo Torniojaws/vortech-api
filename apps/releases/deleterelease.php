@@ -10,7 +10,7 @@ class DeleteRelease
         $this->database->connect();
     }
 
-    public function delete($releaseID)
+    public function delete(int $releaseID)
     {
         $check = new \Apps\Utils\DatabaseCheck();
         if ($check->existsInTable('Releases', 'ReleaseID', $releaseID) == false) {

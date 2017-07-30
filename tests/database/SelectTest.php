@@ -50,6 +50,16 @@ class SelectTest extends TestCase
         $this->assertEquals($expected, $sql);
     }
 
+    public function testOrderBy()
+    {
+        $queryBuilder = $this->qb;
+        $sql = $queryBuilder->select()->from('News')->group('DATE(Created)')->order('Updated DESC')
+            ->result();
+        $expected = 'SELECT * FROM News GROUP BY DATE(Created) ORDER BY Updated DESC';
+
+        $this->assertEquals($expected, $sql);
+    }
+
     public function testJoins()
     {
         $queryBuilder = $this->qb;

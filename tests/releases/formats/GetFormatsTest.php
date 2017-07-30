@@ -59,15 +59,4 @@ class GetFormatsTest extends TestCase
 
         $this->assertEquals($expected, $results['contents']);
     }
-
-    /**
-     * Technically it is OK to search by text, but it will never match anything
-     */
-    public function testGettingFormatsWithAlphabeticID()
-    {
-        $results = $this->formats->get("ABC");
-        $expected = array();
-
-        $this->assertEquals($expected, $results['contents']);
-    }
 }

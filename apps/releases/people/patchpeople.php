@@ -19,7 +19,7 @@ class PatchPeople
      * @param json $json is the JSON we use to patch the data
      * @return array $response Contains the response we want to send
      */
-    public function patch($releaseID, $json)
+    public function patch(int $releaseID, string $json)
     {
         $patch = json_decode($json, true);
         if (isset($patch[1])) {
@@ -37,9 +37,9 @@ class PatchPeople
 
     /**
      * Update the instruments the person played on the album
-     * @param string $instruments Contains the updated info
+     * @param array $data Contains the updated info
      */
-    public function patchInstruments($data)
+    public function patchInstruments(array $data)
     {
         $personID = $this->getPersonID($data['name']);
 
@@ -49,7 +49,12 @@ class PatchPeople
         $this->database->run($sql, $pdo);
     }
 
-    public function getPersonID($name)
+    /**
+     * Get the PersonID using the name of the person
+     * @param string $name is the person's name we look for
+     * @return int The PersonID or int(0) if not found
+     */
+    public function getPersonID(string $name)
     {
         $sql = $this->select->select('ReleasePeople.PersonID')->from('ReleasePeople')
             ->joins('JOIN People ON People.PersonID = ReleasePeople.PersonID')

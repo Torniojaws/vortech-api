@@ -4,7 +4,7 @@ namespace Apps\News;
 
 class GetNews
 {
-    public function get($newsID = null)
+    public function get(int $newsID = null)
     {
         $database = new \Apps\Database\Database();
         $database->connect();
@@ -13,7 +13,7 @@ class GetNews
         $sql = $sqlBuilder->select()->from('News')->result();
         $pdoParameters = array();
 
-        if (is_numeric($newsID)) {
+        if (isset($newsID)) {
             $sql = $sqlBuilder->select()->from('News')->where('NewsID = :id')->result();
             $pdoParameters = array('id' => $newsID);
         }
