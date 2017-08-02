@@ -9,114 +9,50 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 class RequestTest extends TestCase
 {
-    public function testConstructor()
+    public function setUp()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'POST';
-        $request = new \Apps\Utils\Request($this->mockserver);
+        $this->mockserver['REQUEST_METHOD'] = 'PUT';
+        $params = array('params' => 'news/123');
+        $this->request = new \Apps\Utils\Request($this->mockserver, $params);
+    }
 
-        $this->assertTrue(isset($request->server));
+    public function testClassWorks()
+    {
+        $this->assertTrue($this->request instanceof \Apps\Utils\Request);
     }
 
     public function testGetMethod()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'PUT';
-        $request = new \Apps\Utils\Request($this->mockserver);
-        $expected = 'PUT';
-
-        $this->assertEquals($expected, $request->getMethod());
+        $this->assertEquals('PUT', $this->request->getMethod());
     }
 
-    public function testGetParamsWithValidData()
+    public function testGetParams()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
-        $expected = 123;
-
-        $this->assertEquals($expected, $request->getParams()[1]);
+        $this->assertEquals(123, $this->request->getParams()[1]);
     }
 
-    public function testHasValidIDWhenValidID()
+    public function testIsValid()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
-
-        $this->assertTrue($request->hasValidID());
+        $json = '{"test": "case"}';
+        $this->assertTrue($this->request->isValid($json));
     }
 
-    public function testHasValidIDWhenInvalidID()
+    public function testValidJSONWhenInvalid()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $getParams = array('params' => 'news/invalid');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
+        $json = '{hello';
 
-        $this->assertFalse($request->hasValidID());
+        $this->assertFalse($this->request->validJSON($json));
     }
 
-    public function testHasValidJSONWithValidJSON()
+    public function testValidJSONWhenMethodDoesNotRequireJSON()
     {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
+        $mockserver['REQUEST_METHOD'] = 'GET';
+        $params = array('params' => 'news/123');
+        $req = new \Apps\Utils\Request($mockserver, $params);
+        // We don't need a valid JSON when method (GET, in this case) does not require a JSON
+        // since in that case the "JSON" is not used for anything
+        $invalid = '{invalid';
 
-        $json = '{"hello": "world"}';
-
-        $this->assertTrue($request->hasValidJSON($json));
-    }
-
-    public function testHasValidJSONWithInvalidJSON()
-    {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
-
-        $json = '{"hello';
-
-        $this->assertFalse($request->hasValidJSON($json));
-    }
-
-    public function testIsMissingRequiredJSONWithInvalidJSON()
-    {
-        // PUT and POST require a valid JSON in the API
-        $this->mockserver['REQUEST_METHOD'] = 'PUT';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
-
-        $json = '{"hello';
-
-        $this->assertTrue($request->isMissingRequiredJSON($json));
-    }
-
-    public function testIsMissingRequiredJSONWithValidJSON()
-    {
-        // POST, PUT and PATCH require a valid JSON in the API
-        $this->mockserver['REQUEST_METHOD'] = 'PUT';
-        $getParams = array('params' => 'news/123');
-        $request = new \Apps\Utils\Request($this->mockserver, $getParams);
-
-        $json = '{"hello": "world"}';
-
-        $this->assertFalse($request->isMissingRequiredJSON($json));
-    }
-
-    public function testGetInvalidIDResponse()
-    {
-        $this->mockserver['REQUEST_METHOD'] = 'GET';
-        $request = new \Apps\Utils\Request($this->mockserver);
-        $result = $request->getInvalidIDResponse()['contents'];
-        $expected = 'Missing required ID from URL';
-
-        $this->assertEquals($result, $expected);
-    }
-
-    public function testGetInvalidJSONResponse()
-    {
-        $this->mockserver['REQUEST_METHOD'] = 'PUT';
-        $request = new \Apps\Utils\Request($this->mockserver);
-        $result = $request->getInvalidJSONResponse()['contents'];
-        $expected = 'Invalid JSON';
-
-        $this->assertEquals($result, $expected);
+        $this->assertTrue($req->validJSON($invalid));
     }
 }

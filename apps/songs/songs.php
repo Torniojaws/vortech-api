@@ -1,6 +1,6 @@
 <?php
 
-namespace Apps\News;
+namespace Apps\Songs;
 
 require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
@@ -19,44 +19,37 @@ if ($isValid == false) {
 
 switch ($method) {
     case 'GET':
-        $news = new \Apps\News\GetNews();
-        $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-        $response = $news->get($newsID);
+        $songs = new \Apps\Songs\GetSongs();
+        $songID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+        $response = $songs->get($songID);
         break;
     case 'POST':
         if ($isValid) {
-            $news = new \Apps\News\AddNews();
-            $response = $news->add($json);
+            $songs = new \Apps\Songs\AddSongs();
+            $response = $songs->add($json);
         }
         break;
     case 'PUT':
         if ($isValid) {
-            $news = new \Apps\News\EditNews();
+            $songs = new \Apps\Songs\EditSongs();
             $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $news->edit($newsID, $json);
+            $response = $songs->edit($newsID, $json);
         }
         break;
     case 'PATCH':
         if ($isValid) {
-            $news = new \Apps\News\PatchNews();
+            $songs = new \Apps\Songs\PatchSongs();
             $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $news->patch($newsID, $json);
-        }
-        break;
-    case 'DELETE':
-        if ($isValid) {
-            $news = new \Apps\News\DeleteNews();
-            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $news->delete($newsID);
+            $response = $songs->patch($newsID, $json);
         }
         break;
     case 'OPTIONS':
-        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'));
+        header('Allow: GET, POST, PUT, PATCH, OPTIONS');
+        $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'PATCH', 'OPTIONS'));
         $response['code'] = 200;
         break;
     default:
-        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        header('Allow: GET, POST, PUT, PATCH, OPTIONS');
         $response['contents'] = 'Not allowed';
         $response['code'] = 405;
         break;

@@ -7,36 +7,35 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 header('Content-Type: application/json');
 
-// Check the request
 $request = new \Apps\Utils\Request($_SERVER, $_GET);
+$method = $request->getMethod();
 $json = file_get_contents('php://input');
-$hasValidJSON = $request->hasValidJSON($json);
-$hasValidID = $request->hasValidID();
+$isValid = $request->isValid($json);
 
-// Build an error response if a valid JSON is required and it is not valid
-if ($request->isMissingRequiredJSON($json)) {
-    $response = $request->getInvalidJSONResponse();
+if ($isValid == false) {
+    $response['contents'] = 'Invalid request';
+    $response['code'] = 400;
 }
 
-// Build missing ID response. If none is needed, $response will be overwritten by the valid case
-if ($hasValidID == false) {
-    $response = $request->getInvalidIDResponse();
-}
-
-switch ($request->getMethod()) {
+switch ($method) {
     case 'GET':
-        if ($hasValidID) {
+        if ($isValid) {
             $categories = new \Apps\Releases\Categories\GetReleaseCategories();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $categories->get($releaseID);
         }
         break;
     case 'PATCH':
-        if ($hasValidID && $hasValidJSON) {
+        if ($isValid) {
             $categories = new \Apps\Releases\Categories\PatchReleaseCategories();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $categories->patch($releaseID, $json);
         }
+        break;
+    case 'OPTIONS':
+        header('Allow: GET, PATCH, OPTIONS');
+        $response['contents'] = array('Allowed' => array('GET', 'PATCH', 'OPTIONS'));
+        $response['code'] = 200;
         break;
     default:
         header('Allow: GET, PATCH');
