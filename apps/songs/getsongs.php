@@ -28,6 +28,8 @@ class GetSongs
             $pdo = array('id' => $songID);
         }
 
-        return $this->database->run($sql, $pdo);
+        $result = $this->database->run($sql, $pdo);
+
+        return $result;
     }
 }

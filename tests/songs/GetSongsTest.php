@@ -65,4 +65,11 @@ class GetSongsSongsTest extends TestCase
         $this->assertTrue(count($result) == 1);
         $this->assertEquals($this->validSongID, $result[0]['SongID']);
     }
+
+    public function testGettingSongsWithAnIDThatDoesNotExist()
+    {
+        $result = $this->songs->get(-22);
+
+        $this->assertTrue(empty($result));
+    }
 }

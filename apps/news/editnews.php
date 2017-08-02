@@ -20,7 +20,9 @@ class EditNews
             }
         }
 
-        return $newsID;
+        $response['code'] = 200;
+        $response['contents'] = array();
+        return $response;
     }
 
     /**

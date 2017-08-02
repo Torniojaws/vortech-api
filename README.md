@@ -2,7 +2,17 @@
 [![Coverage Status](https://coveralls.io/repos/github/Torniojaws/vortech-api/badge.svg?branch=master)](https://coveralls.io/github/Torniojaws/vortech-api?branch=master)
 
 # Vortech API
-The 3rd party webhost doesn't allow installing Python packages after all, so I will do the backend with PHP instead. It will be a RESTful API.
+The idea is to build a mostly RESTful API (no resource browser per-se - at least yet) that will be used in the Vortech website.
+As PHP7 is available on the webhost, that will be the target version. Most of the things should work in PHP5.6 also, but there
+are some PHP7-features in use that probably will not work in PHP5.x, such as typed parameters.
+
+I would have gone with Python, but unfortunately the webhost does not allow installing programs in a shared environment, so no
+Python packages (like Flask and SQLAlchemy) can be installed.
+
+## Versions (dictated by the 3rd party webhost)
+- PHP 7.1
+- MySQL 5.5.48
+- Apache 2.4
 
 ## Starting idea
 Create a normal RESTful API with the standard CRUD way for paths and access, eg.
@@ -37,10 +47,6 @@ All queries will be done using PDO. User passwords will be hashed using a PBFKD2
 ## Testing
 Everything possible will be covered by PHPUnit 6.* tests. Run the tests in the project root with ``phpunit tests``
 For coding standards, PSR2 is used. Run the check in the project root with ``phpcs apps/ --standard=PSR2``
-
-## Versions
-- PHP 7.1
-- MySQL 5.5.48
 
 ## Frontend
 The frontend will be in a separate repository. It will be done using ReactJS and Bootstrap.

@@ -7,58 +7,57 @@ spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
 header('Content-Type: application/json');
 
-// Check the request
 $request = new \Apps\Utils\Request($_SERVER, $_GET);
+$method = $request->getMethod();
 $json = file_get_contents('php://input');
-$hasValidJSON = $request->hasValidJSON($json);
-$hasValidID = $request->hasValidID();
+$isValid = $request->isValid($json);
 
-// Build an error response if a valid JSON is required and it is not valid
-if ($request->isMissingRequiredJSON($json)) {
-    $response = $request->getInvalidJSONResponse();
+if ($isValid == false) {
+    $response['contents'] = 'Invalid request';
+    $response['code'] = 400;
 }
 
-// Build missing ID response. If none is needed, $response will be overwritten by the valid case
-if ($hasValidID == false) {
-    $response = $request->getInvalidIDResponse();
-}
-
-switch ($request->getMethod()) {
+switch ($method) {
     case 'GET':
         $release = new \Apps\Releases\GetRelease();
         $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
         $response = $release->get($releaseID);
         break;
     case 'POST':
-        if ($hasValidJSON) {
+        if ($isValid) {
             $release = new \Apps\Releases\AddRelease();
             $response = $release->add($json);
         }
         break;
     case 'PUT':
-        if ($hasValidJSON && $hasValidID) {
+        if ($isValid) {
             $release = new \Apps\Releases\EditRelease();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $release->update($releaseID, $json);
         }
         break;
     case 'PATCH':
-        if ($hasValidJSON && $hasValidID) {
+        if ($isValid) {
             $release = new \Apps\Releases\PatchRelease();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $release->patch($releaseID, $json);
         }
         break;
     case 'DELETE':
-        if ($hasValidID) {
+        if ($isValid) {
             $release = new \Apps\Releases\DeleteRelease();
             $releaseID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $release->delete($releaseID);
         }
         break;
+    case 'OPTIONS':
+        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'));
+        $response['code'] = 200;
+        break;
     default:
-        header('Allow: GET, POST, PUT, PATCH, DELETE');
-        $response['contents'] = 'Unknown or unimplemented HTTP Method';
+        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        $response['contents'] = 'Not allowed';
         $response['code'] = 405;
         break;
 }
