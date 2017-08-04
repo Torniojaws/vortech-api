@@ -132,6 +132,52 @@ CREATE TABLE ReleaseSongs (
         REFERENCES Songs(SongID) ON DELETE CASCADE
 );
 
+-- Shows
+
+CREATE TABLE Shows (
+    ShowID int AUTO_INCREMENT,
+    ShowDate datetime,
+    CountryCode varchar(2),
+    Country varchar(100),
+    City varchar(100),
+    Venue varchar(200),
+    PRIMARY KEY (ShowID)
+);
+
+CREATE TABLE ShowsSetlists (
+    SetlistID int AUTO_INCREMENT,
+    ShowID int,
+    SongID int,
+    SetlistOrder int,
+    PRIMARY KEY(SetlistID),
+    CONSTRAINT fk_show FOREIGN KEY (ShowID)
+        REFERENCES Shows(ShowID) ON DELETE CASCADE,
+    CONSTRAINT fk_showsong FOREIGN KEY (SongID)
+        REFERENCES Songs(SongID) ON DELETE CASCADE
+);
+
+CREATE TABLE ShowsOtherBands (
+    OtherBandsID int AUTO_INCREMENT,
+    ShowID int,
+    BandName varchar(200),
+    BandWebsite varchar(500),
+    PRIMARY KEY (OtherBandsID),
+    CONSTRAINT fk_showband FOREIGN KEY (ShowID)
+        REFERENCES Shows(ShowID) ON DELETE CASCADE
+);
+
+CREATE TABLE ShowsPeople (
+    ShowsPeopleID int AUTO_INCREMENT,
+    ShowID int,
+    PersonID int,
+    Instruments varchar(500),
+    PRIMARY KEY(ShowsPeopleID),
+    CONSTRAINT fk_showpeople FOREIGN KEY (ShowID)
+        REFERENCES Shows(ShowID) ON DELETE CASCADE,
+    CONSTRAINT fk_showperson FOREIGN KEY (PersonID)
+        REFERENCES People(PersonID) ON DELETE CASCADE
+);
+
 -- Setup some predefined values
 
 INSERT INTO
