@@ -14,6 +14,16 @@ Python packages (like Flask and SQLAlchemy) can be installed.
 - MySQL 5.5.48
 - Apache 2.4
 
+## Project versioning
+Until the first release is done, the versions will stay as ``0.x.x``. The first release will be tagged ``1.0.0``.
+The versioning will keep to the usual convention:
+- ``1.x.x`` refers to a major release. Either something changed drastically, or there were breaking changes
+- ``x.1.x`` refers to a big update, like new base endpoints or a non-breaking major update.
+- ``x.x.1`` refers to a small update, such as adding non-breaking extra things to existing endpoints, minor refactoring, or added documentation
+
+The numbering will be incremental beyond 9, so after ``0.9.x`` comes ``0.10.x``.
+A change in a value will reset the counter on the right side of it, so ``0.4.2`` becomes ``0.5.0`` and ``1.2.10`` becomes ``2.0.0``.
+
 ## Starting idea
 Create a normal RESTful API with the standard CRUD way for paths and access, eg.
 - Create new things: ``POST /news`` with a JSON attached
