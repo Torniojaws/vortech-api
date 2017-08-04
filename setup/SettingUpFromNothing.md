@@ -7,12 +7,12 @@ This guide should get you up-and-running with 100 % certainty in Windows 7+. Don
 1. Install Oracle VM VirtualBox https://www.virtualbox.org
 1. Install Vagrant https://www.vagrantup.com
 1. Download PuTTY from https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html
-1. Using ``cmd.exe``, go to the directory you want to use for projects, eg. E:\web\
+1. Using ``cmd.exe``, go to the directory you want to use for projects, eg. ``E:\web\``
 1. Run the command: ``vagrant init ubuntu/trusty32``
 1. When it is completed, modify the file ``E:\web\Vagrantfile`` to your liking. For example:
-   * config.vm.network "forwarded_port", guest: 5656, host: 5656, host_ip: "127.0.0.1"
-   * config.vm.network "forwarded_port", guest: 3306, host: 3306, host_ip: "127.0.0.1"
-1. Back in cmd.exe directory E:\web\ run the command: ``vagrant up``
+   * ``config.vm.network "forwarded_port", guest: 5656, host: 5656, host_ip: "127.0.0.1"``
+   * ``config.vm.network "forwarded_port", guest: 3306, host: 3306, host_ip: "127.0.0.1"``
+1. Back in cmd.exe directory ``E:\web\`` run the command: ``vagrant up``
 1. It will run for a while, 2-3 minutes
 1. Then ssh to 127.0.0.1 in port 2222, using PuTTY
 1. username: vagrant, password: vagrant
@@ -23,13 +23,14 @@ This guide should get you up-and-running with 100 % certainty in Windows 7+. Don
 ## Setting up the environment
 
 1. At stock settings, the platform is quite empty, so install these:
-1. Git:            ``sudo apt-get install git``
-1. Apache:         ``sudo apt-get install apache2``
-1. PHP7:           ``sudo add-apt-repository ppa:ondrej/php``
-                   ``sudo apt-get update``
-                   ``sudo apt-get install php7.1``
-1. MariaDB:        ``sudo apt-get install mariadb-server``
-1. MySQL-plugin:   ``sudo apt-get install php7.0-mysql``
+1. Git: ``sudo apt-get install git``
+1. Apache: ``sudo apt-get install apache2``
+1. PHP7:
+   * ``sudo add-apt-repository ppa:ondrej/php``
+   * ``sudo apt-get update``
+   * ``sudo apt-get install php7.1``
+1. MariaDB: ``sudo apt-get install mariadb-server``
+1. MySQL-plugin: ``sudo apt-get install php7.0-mysql``
 1. During the above, you will see warnings from Apache about ServerName. Fix it like this:
 1. Give the command: ``echo "ServerName localhost" | sudo tee /etc/apache2/conf-available/servername.conf``
 1. Then activate it: ``sudo a2enconf servername``
@@ -38,7 +39,7 @@ This guide should get you up-and-running with 100 % certainty in Windows 7+. Don
 ## Configuring things
 
 1. Add the project directory to Apache config: ``sudo vim /etc/apache2/apache2.conf``
-1. Scroll down the file, until you see some <Directory> things:
+1. Scroll down the file, until you see some ``<Directory>`` things:
 1. Add a new one below them, using the below example, and save the file:
    ```
     <Directory /vagrant/vortech-api/>
@@ -58,7 +59,7 @@ This guide should get you up-and-running with 100 % certainty in Windows 7+. Don
 1. Replace it with: ``DocumentRoot /vagrant/vortech-api``
 1. Save the file and then activate the config: ``sudo a2ensite vortech-api.conf``
 1. You can also enable Rewrites (pretty urls, eg. http://localhost/api/1.0/) with: ``sudo a2enmod rewrite``
-1. Also, add the custom port from step 30 to the ports Apache listens to: ``sudo vim /etc/apache2/ports.conf``
+1. Also, add the custom port to the ports Apache listens to: ``sudo vim /etc/apache2/ports.conf``
 1. It already contains ``Listen 80``. Add a new entry below it: ``Listen 5656``, and save the file
 1. Then you must disable the Apache PHP5 plugin (automatically installed): ``sudo a2dismod php5``
 1. And then enable the PHP7 plugin: ``sudo a2enmod php7.1``

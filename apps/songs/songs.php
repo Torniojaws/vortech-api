@@ -32,15 +32,15 @@ switch ($method) {
     case 'PUT':
         if ($isValid) {
             $songs = new \Apps\Songs\EditSongs();
-            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $songs->edit($newsID, $json);
+            $songID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $songs->edit($songID, $json);
         }
         break;
     case 'PATCH':
         if ($isValid) {
             $songs = new \Apps\Songs\PatchSongs();
-            $newsID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $songs->patch($newsID, $json);
+            $songID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
+            $response = $songs->patch($songID, $json);
         }
         break;
     case 'OPTIONS':
