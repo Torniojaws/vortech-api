@@ -46,9 +46,17 @@ class GetPeopleTest extends TestCase
     public function testGettingPeople()
     {
         $results = $this->people->get($this->testReleaseID);
-        $expected = 'UnitTestExampler';
 
-        $this->assertEquals($expected, $results['contents'][0]['Name']);
+        // The index changes between runs, since SQL results are not always in the same order
+        $nameExists = false;
+        $expected = 'UnitTestExampler';
+        if ($results['contents'][0]['Name'] == $expected
+            || $results['contents'][1]['Name'] == $expected) {
+            $nameExists = true;
+        }
+
+        $this->assertEquals(2, count($results));
+        $this->assertTrue($nameExists, 'Expected name was not found in results!');
     }
 
     public function testGettingPeopleWithNonExistingID()

@@ -54,9 +54,13 @@ class PatchPeopleTest extends TestCase
         $pdo = array('id' => $this->testReleaseID);
         $result = $this->database->run($sql, $pdo);
 
+        // Sort results alphabetically by "Instruments"
+        usort($result, function ($person1, $person2) {
+            return $person1['Instruments'] <=> $person2['Instruments'];
+        });
         $expected = 'Drums and Bass';
 
-        $this->assertEquals($expected, $result[0]['Instruments']);
+        $this->assertEquals($expected, $result[1]['Instruments']);
     }
 
     public function testGettingPersonID()
