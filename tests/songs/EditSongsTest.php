@@ -1,13 +1,13 @@
 <?php
 
-namespace VortechAPI\Tests;
+namespace VortechAPI\Tests\Songs;
 
 use PHPUnit\Framework\TestCase;
 
 require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class EditSongsSongsTest extends TestCase
+class EditSongsTest extends TestCase
 {
     public function setUp()
     {

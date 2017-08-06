@@ -1,6 +1,6 @@
 <?php
 
-namespace VortechAPI\Tests;
+namespace VortechAPI\Tests\Shows;
 
 use PHPUnit\Framework\TestCase;
 
