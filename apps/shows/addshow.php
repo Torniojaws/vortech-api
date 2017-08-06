@@ -113,14 +113,18 @@ class AddShow
         foreach ($data as $person) {
             $currentPersonID = $person['personID'];
             if (is_numeric($currentPersonID) == false) {
-                // We have a new person, who will be added
-                $people = new \Apps\People\AddPeople();
-                $people->add(json_encode($person));
+                // Check that they don't exist already
+                $dbCheck = new \Apps\Utils\DatabaseCheck();
+                if ($dbCheck->existsInTable('People', 'Name', $currentPersonID) == false) {
+                    // We have a new person, who will be added
+                    $people = new \Apps\People\AddPeople();
+                    $people->add(json_encode(array('name' => $currentPersonID)));
+                }
 
                 // Get the ID of the current new person (there might be several in one show)
                 $select = new \Apps\Database\Select();
                 $sql = $select->select('PersonID')->from('People')->where('Name = :name')->result();
-                $pdo = array('name' => $person['personID']);
+                $pdo = array('name' => $currentPersonID);
                 $result = $this->database->run($sql, $pdo);
                 $currentPersonID = $result[0]['PersonID'];
             }

@@ -83,6 +83,10 @@ class GetShowsTest extends TestCase
         $pdo = array('title' => 'UnitTest%');
         $this->database->run($sql, $pdo);
 
+        $sql = $sqlBuilder->delete()->from('People')->where('Name LIKE :name')->result();
+        $pdo = array('name' => 'UnitTest%');
+        $this->database->run($sql, $pdo);
+
         $this->database->close();
     }
 
