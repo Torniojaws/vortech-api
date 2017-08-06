@@ -14,10 +14,10 @@ class AddSongs
     }
 
     /**
-     * The we receive will be inserted to Songs table. There are two possibilities in the data we
-     * get. It can either be a single JSON Array, or it can be an array of JSON arrays when several
+     * The song we receive will be inserted to Songs table. There are two possibilities in the data
+     * we get. It can either be a single JSON Array, or it can be an array of JSON arrays when several
      * songs are being added.
-     * @param
+     * @param array $data Contains the songs to add
      */
     public function add(array $data)
     {

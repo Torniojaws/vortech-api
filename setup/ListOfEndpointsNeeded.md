@@ -50,9 +50,9 @@ if there is a song that is a one-off thing for something, but has no specific Vo
 - [x] ``GET /shows`` to return all live shows
 - [x] ``GET /shows/:id`` to return a specifc live show
 - [x] ``POST /shows`` with a JSON, to add a new show
-- [ ] ``PUT /shows/:id`` with a JSON, to replace a show with new data
-- [ ] ``PATCH /shows/:id`` with a JSON, to update a show partially
-- [ ] ``DELETE /shows/:id`` to remove a show
+- [x] ``PUT /shows/:id`` with a JSON, to replace a show with new data
+- [x] ``PATCH /shows/:id`` with a JSON, to update a show partially
+- [x] ``DELETE /shows/:id`` to remove a show
 
 ## People
 
