@@ -67,11 +67,10 @@ do the exact same thing that PUT does.
 
 ## Biography
 
-- [ ] ``GET /biography`` to return all biography data
-- [ ] ``GET /biography/short`` to return a short biography
-- [ ] ``GET /biography/full`` to return a full biography
-- [ ] ``PATCH /biography/short`` with a JSON, to update the short biography
-- [ ] ``PATCH /biography/full`` with a JSON, to update the full biography
+- [x] ``GET /biography`` to return all current biography data
+- [ ] ``POST /biography`` with a JSON, to add a new biography
+- [x] ``PUT /biography`` with a JSON, to replace all biography data of the NEWEST entry by Created
+- [ ] ``PATCH /biography`` with a JSON, to modify the short or full biography of the NEWEST entry by Created
 
 Note that POST and DELETE will not be implemented on purpose.
 

@@ -178,6 +178,17 @@ CREATE TABLE ShowsPeople (
         REFERENCES People(PersonID) ON DELETE CASCADE
 );
 
+-- Biography
+
+CREATE TABLE Biography (
+    BiographyID int AUTO_INCREMENT,
+    Short text NOT NULL,
+    Full text NOT NULL,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (BiographyID)
+);
+
 -- Setup some predefined values
 
 INSERT INTO
