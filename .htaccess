@@ -20,6 +20,12 @@ RewriteRule ^api/1.0/releases(.*)$ ./apps/releases/releases.php?params=$1
 # Songs (this is related to all songs, not release-specific)
 RewriteRule ^api/1.0/songs(.*)$ ./apps/songs/songs.php?params=$1
 
+# Shows
+RewriteRule ^api/1.0/shows(.*)$ ./apps/shows/shows.php?params=$1
+
+# People
+RewriteRule ^api/1.0/people(.*)$ ./apps/people/people.php?params=$1
+
 # GZIP handling
 <ifModule mod_gzip.c>
     mod_gzip_on Yes
