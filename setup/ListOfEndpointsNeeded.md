@@ -56,12 +56,14 @@ if there is a song that is a one-off thing for something, but has no specific Vo
 
 ## People
 
-- [ ] ``GET /people`` to get all the people
-- [ ] ``GET /people/:id`` to get a specific person
+Since People only have one detail to change (their name), PATCH will not be implemented, as it would
+do the exact same thing that PUT does.
+
+- [x] ``GET /people`` to get all the people
+- [x] ``GET /people/:id`` to get a specific person
 - [x] ``POST /people`` with a JSON, to add a person
-- [ ] ``PUT /people/:id`` with a JSON, to update an existing person
-- [ ] ``PATCH /people/:id`` with a JSON, to change a detail of a person
-- [ ] ``DELETE /people/:id`` to delete a person
+- [x] ``PUT /people/:id`` with a JSON, to update an existing person. In practice, rename them
+- [x] ``DELETE /people/:id`` to delete a person
 
 ## Biography
 
@@ -92,9 +94,8 @@ Note that POST and DELETE will not be implemented on purpose.
 - [ ] ``DELETE /shop/:id`` to remove a shop item
 
 Would be good to have a way to get also shop items from particular categories, like albums, shirts,
-or something else. Probably with filters? Eg.
-
-``GET /shop?category=1`` to get all shop items from category 1 (maybe it can be a cleartext search?)
+or something else. Probably with filters? Eg. ``GET /shop?category=1`` to get all shop items from
+category 1 (maybe it can be a cleartext search?)
 
 ## Guestbook
 
@@ -104,3 +105,11 @@ or something else. Probably with filters? Eg.
 - [ ] ``PATCH /guestbook/:id`` with a JSON, to partially update a guestbook post.
 - [ ] ``PATCH /guestbook/:id`` could also be used by a logged in admin to add a comment to the post?
 - [ ] ``DELETE /guestbook/:id`` that only admin can call, to delete a guestbook post
+
+## Visitor counter
+
+Counting visitors will be done on a per-session basis. We will insert a new entry for each visit
+so that we can keep timeperiod statistics.
+
+- [ ] ``GET /visits`` to get the visit count details (today, week, month, total)
+- [ ] ``POST /visits`` add current visit

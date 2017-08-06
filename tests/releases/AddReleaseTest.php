@@ -1,6 +1,6 @@
 <?php
 
-namespace VortechAPI\Tests;
+namespace VortechAPI\Tests\Releases;
 
 use PHPUnit\Framework\TestCase;
 
@@ -175,8 +175,8 @@ class AddReleaseTest extends TestCase
         $pdo = array('name' => 'UnitTest%');
         $this->database->run($sql, $pdo);
 
-        $sql = $this->remove->delete()->from('Songs')->where('Title LIKE :stitle')->result();
-        $pdo = array('stitle' => 'UnitTest%');
+        $sql = $this->remove->delete()->from('Songs')->where('Title LIKE :title')->result();
+        $pdo = array('title' => 'UnitTest%');
         $this->database->run($sql, $pdo);
         $this->database->close();
     }

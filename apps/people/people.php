@@ -36,16 +36,9 @@ switch ($method) {
             $response = $people->edit($personID, $json);
         }
         break;
-    case 'PATCH':
-        if ($isValid) {
-            $people = new \Apps\People\PatchPeople();
-            $personID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-            $response = $people->patch($personID, $json);
-        }
-        break;
     case 'OPTIONS':
-        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'));
+        header('Allow: GET, POST, PUT, DELETE, OPTIONS');
+        $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'));
         $response['code'] = 200;
         break;
     case 'DELETE':
@@ -56,7 +49,7 @@ switch ($method) {
         }
         break;
     default:
-        header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+        header('Allow: GET, POST, PUT, DELETE, OPTIONS');
         $response['contents'] = 'Not allowed';
         $response['code'] = 405;
         break;

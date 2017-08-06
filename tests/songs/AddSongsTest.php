@@ -1,6 +1,6 @@
 <?php
 
-namespace VortechAPI\Tests;
+namespace VortechAPI\Tests\Songs;
 
 use PHPUnit\Framework\TestCase;
 
