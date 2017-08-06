@@ -59,8 +59,8 @@ class EditShowTest extends TestCase
     public function tearDown()
     {
         $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('Shows')->where('Country = :country')->result();
-        $pdo = array('country' => 'UnitTest');
+        $sql = $sqlBuilder->delete()->from('Shows')->where('Country LIKE :country')->result();
+        $pdo = array('country' => 'UnitTest%');
         $this->database->run($sql, $pdo);
 
         $sql = $sqlBuilder->delete()->from('Songs')->where('Title LIKE :title')->result();

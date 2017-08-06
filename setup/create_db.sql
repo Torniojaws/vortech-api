@@ -96,7 +96,7 @@ CREATE TABLE ReleaseCategories (
 
 CREATE TABLE People (
     PersonID int AUTO_INCREMENT,
-    Name varchar(300) NOT NULL,
+    Name varchar(300) NOT NULL UNIQUE,
     PRIMARY KEY (PersonID)
 );
 
@@ -116,7 +116,7 @@ CREATE TABLE ReleasePeople (
 
 CREATE TABLE Songs (
     SongID int AUTO_INCREMENT,
-    Title varchar(255) NOT NULL,
+    Title varchar(255) NOT NULL UNIQUE,
     Duration int NOT NULL,
     PRIMARY KEY (SongID)
 );
