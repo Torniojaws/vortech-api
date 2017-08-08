@@ -21,8 +21,8 @@ class AddBiographyTest extends TestCase
     public function tearDown()
     {
         $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('Biography')->where('Full = :full')->result();
-        $pdo = array('full' => 'Full biography');
+        $sql = $sqlBuilder->delete()->from('Biography')->where('Full LIKE :full')->result();
+        $pdo = array('full' => 'Full%');
         $this->database->run($sql, $pdo);
         $this->database->close();
     }
