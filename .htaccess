@@ -26,6 +26,9 @@ RewriteRule ^api/1.0/shows(.*)$ ./apps/shows/shows.php?params=$1
 # People
 RewriteRule ^api/1.0/people(.*)$ ./apps/people/people.php?params=$1
 
+# Biography
+RewriteRule ^api/1.0/biography(.*)$ ./apps/biography/biography.php?params=$1
+
 # GZIP handling
 <ifModule mod_gzip.c>
     mod_gzip_on Yes

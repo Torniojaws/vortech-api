@@ -67,13 +67,12 @@ do the exact same thing that PUT does.
 
 ## Biography
 
-- [ ] ``GET /biography`` to return all biography data
-- [ ] ``GET /biography/short`` to return a short biography
-- [ ] ``GET /biography/full`` to return a full biography
-- [ ] ``PATCH /biography/short`` with a JSON, to update the short biography
-- [ ] ``PATCH /biography/full`` with a JSON, to update the full biography
+- [x] ``GET /biography`` to return all current biography data
+- [x] ``POST /biography`` with a JSON, to add a new biography
+- [x] ``PUT /biography`` with a JSON, to replace all biography data of the NEWEST entry by Created
+- [x] ``PATCH /biography`` with a JSON, to modify the short or full biography of the NEWEST entry by Created
 
-Note that POST and DELETE will not be implemented on purpose.
+Note that DELETE will not be implemented on purpose.
 
 ## Videos
 
@@ -101,7 +100,7 @@ category 1 (maybe it can be a cleartext search?)
 
 - [ ] ``GET /guestbook`` to get all guestbook items
 - [ ] ``GET /guestbook/:id`` to get a specifc guestbook item
-- [ ] ``POST /guestbook`` with a JSON, to add a new guestbook entry
+- [ ] ``POST /guestbook`` with a JSON, to add a new guestbook entry as a Guest
 - [ ] ``PATCH /guestbook/:id`` with a JSON, to partially update a guestbook post.
 - [ ] ``PATCH /guestbook/:id`` could also be used by a logged in admin to add a comment to the post?
 - [ ] ``DELETE /guestbook/:id`` that only admin can call, to delete a guestbook post
