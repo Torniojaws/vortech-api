@@ -31,7 +31,7 @@ switch ($method) {
         break;
     case 'PUT':
         if ($isValid) {
-            $videos = new \Apps\Videos\EditVideos();
+            $videos = new \Apps\Videos\EditVideo();
             $videoID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $videos->edit($videoID, $json);
         }

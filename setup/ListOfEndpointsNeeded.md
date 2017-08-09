@@ -76,10 +76,10 @@ Note that DELETE will not be implemented on purpose.
 
 ## Videos
 
-- [ ] ``GET /videos`` to return a list of all videos
-- [ ] ``GET /videos/:id`` to return a specific video
-- [ ] ``POST /videos`` with a JSON, to add a new video
-- [ ] ``PUT /videos/:id`` with a JSON, to replace the full video details
+- [x] ``GET /videos`` to return a list of all videos
+- [x] ``GET /videos/:id`` to return a specific video
+- [x] ``POST /videos`` with a JSON, to add a new video
+- [x] ``PUT /videos/:id`` with a JSON, to replace the full video details
 - [ ] ``PATCH /videos/:id`` with a JSON, to partially update a video
 - [ ] ``DELETE /videos/:id`` to remove a video
 
@@ -95,6 +95,25 @@ Note that DELETE will not be implemented on purpose.
 Would be good to have a way to get also shop items from particular categories, like albums, shirts,
 or something else. Probably with filters? Eg. ``GET /shop?category=1`` to get all shop items from
 category 1 (maybe it can be a cleartext search?)
+
+## Photos
+
+Photos will always be returned grouped by their assigned albums.
+
+- [ ] ``GET /photos`` to get all photos
+- [ ] ``GET /photos/:id`` to get a specific photo
+- [ ] ``GET /photos/:category`` to get all photos of :category
+- [ ] ``POST /photos`` with a JSON with the files being uploaded during the process, the JSON has the metadata
+- [ ] ``PATCH /photos/:id`` with a JSON, to edit a photo details (probably the Caption text)
+- [ ] ``DELETE /photos/:id`` to delete the photo DB entry and the file itself
+
+## Contacts
+
+Contacts is quite simple. Mostly used to retrieve the most recent values.
+
+- [ ] ``GET /contacts`` to get the data of the most recent contacts data (by Created)
+- [ ] ``POST /contacts`` to add an updated contacts dataset
+- [ ] ``PATCH /contacts`` to update the most recent contact info
 
 ## Guestbook
 
@@ -112,3 +131,21 @@ so that we can keep timeperiod statistics.
 
 - [ ] ``GET /visits`` to get the visit count details (today, week, month, total)
 - [ ] ``POST /visits`` add current visit
+
+## Votes
+
+When users vote for things, we need to count them. At first, it will be just for releases, but it
+can be expanded for other things too. Maybe songs, shopitems, and something else?
+
+- [ ] ``GET /votes/releases`` to get all vote results for all albums.
+- [ ] ``GET /votes/releases/:id`` to get the vote results for a specific album
+- [ ] ``POST /votes/releases`` with a JSON, to add a vote for an album
+
+## Release download count
+
+Whenever a release is downloaded, we'll add an entry to the DB. Can we have some extra details, like
+which country the request came from?
+
+- [ ] ``GET /downloads/releases`` to get the download count of all releases
+- [ ] ``GET /downloads/releases/:id`` to get the download count of a specific release
+- [ ] ``POST /downloads/releases`` with a JSON, add to download count
