@@ -49,6 +49,7 @@ switch ($method) {
             $videoID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
             $response = $videos->delete($videoID);
         }
+        break;
     case 'OPTIONS':
         header('Allow: GET, POST, PUT, PATCH, DELETE, OPTIONS');
         $response['contents'] = array('Allowed' => array('GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'));
