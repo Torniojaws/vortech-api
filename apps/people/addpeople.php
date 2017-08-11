@@ -2,20 +2,11 @@
 
 namespace Apps\People;
 
-class AddPeople
+class AddPeople extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     public function add(string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -31,7 +22,7 @@ class AddPeople
                 $name = $person['name'];
             }
 
-            $sql = $this->insert->insert()->into('People(Name)')->values(':name')->result();
+            $sql = $this->create->insert()->into('People(Name)')->values(':name')->result();
             $pdo = array('name' => $name);
             $this->database->run($sql, $pdo);
             $inserted[] = $this->database->getInsertId();

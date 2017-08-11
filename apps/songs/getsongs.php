@@ -2,16 +2,8 @@
 
 namespace Apps\Songs;
 
-class GetSongs
+class GetSongs extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-    }
-
     /**
      * Return the results from Songs table. If a SongID is provided, return the details of that
      * song.
@@ -20,11 +12,11 @@ class GetSongs
      */
     public function get(int $songID = null)
     {
-        $sql = $this->select->select()->from('Songs')->result();
+        $sql = $this->read->select()->from('Songs')->result();
         $pdo = array();
 
         if (isset($songID)) {
-            $sql = $this->select->select()->from('Songs')->where('SongID = :id')->result();
+            $sql = $this->read->select()->from('Songs')->where('SongID = :id')->result();
             $pdo = array('id' => $songID);
         }
 

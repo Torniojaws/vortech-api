@@ -2,21 +2,12 @@
 
 namespace Apps\People;
 
-class DeletePeople
+class DeletePeople extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->delete = new \Apps\Database\Delete();
-    }
-
     public function delete(int $personID)
     {
         // If ID does not exist, we return 400
-        $check = new \Apps\Utils\DatabaseCheck();
-        if ($check->existsInTable('People', 'PersonID', $personID) == false) {
+        if ($this->dbCheck->existsInTable('People', 'PersonID', $personID) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid PersonID';
             return $response;

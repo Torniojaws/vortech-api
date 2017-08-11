@@ -2,22 +2,11 @@
 
 namespace Apps\Shows;
 
-class PatchShow
+class PatchShow extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->update = new \Apps\Database\Update();
-        $this->select = new \Apps\Database\Select();
-        $this->dbCheck = new \Apps\Utils\DatabaseCheck();
-    }
-
     public function patch(int $showID, string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -25,8 +14,6 @@ class PatchShow
 
         // Rely that user passes correct values, or nothing is updated
         $show = json_decode($json, true);
-
-        // Convert a single object to an array
         if (is_array($show) == false) {
             $show = array($show);
         }
@@ -86,7 +73,7 @@ class PatchShow
         foreach ($bands as $band) {
             $exists = $this->dbCheck->existsInTable('ShowsOtherBands', 'BandName', $band['name']);
             if ($exists == false) {
-                $sql = $this->insert->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
+                $sql = $this->create->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
                     ->values(':show, :name, :web')->result();
                 $pdo = array('show' => $showID, 'name' => $band['name'], 'web' => $band['website']);
                 $this->database->run($sql, $pdo);
@@ -113,7 +100,7 @@ class PatchShow
                     $addPerson->add(json_encode(array('name' => $person['personID'])));
                 }
                 // Get the PersonID
-                $sql = $this->select->select('PersonID')->from('People')->where('Name = :name')->result();
+                $sql = $this->read->select('PersonID')->from('People')->where('Name = :name')->result();
                 $pdo = array('name' => $personID);
                 $result = $this->database->run($sql, $pdo);
                 $personID = intval($result[0]['PersonID']);
@@ -122,7 +109,7 @@ class PatchShow
             // Check if the ShowsPeople already contains the given PersonID. If not, add it.
             $inShow = $this->dbCheck->existsInTable('ShowsPeople', 'PersonID', $personID);
             if ($inShow == false) {
-                $sql = $this->insert->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
+                $sql = $this->create->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
                     ->values(':show, :pid, :instruments')->result();
                 $pdo = array('show' => $showID, 'pid' => $personID, 'instruments' => $person['instruments']);
                 $this->database->run($sql, $pdo);

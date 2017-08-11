@@ -2,23 +2,19 @@
 
 namespace Apps\News;
 
-class GetNews
+class GetNews extends \Apps\Abstraction\CRUD
 {
     public function get(int $newsID = null)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select()->from('News')->result();
-        $pdoParameters = array();
+        $sql = $this->read->select()->from('News')->result();
+        $pdo = array();
 
         if (isset($newsID)) {
-            $sql = $sqlBuilder->select()->from('News')->where('NewsID = :id')->result();
-            $pdoParameters = array('id' => $newsID);
+            $sql = $this->read->select()->from('News')->where('NewsID = :id')->result();
+            $pdo = array('id' => $newsID);
         }
 
-        $response['contents'] = $database->run($sql, $pdoParameters);
+        $response['contents'] = $this->database->run($sql, $pdo);
         $response['code'] = 200;
         return $response;
     }
