@@ -80,8 +80,8 @@ Note that DELETE will not be implemented on purpose.
 - [x] ``GET /videos/:id`` to return a specific video
 - [x] ``POST /videos`` with a JSON, to add a new video
 - [x] ``PUT /videos/:id`` with a JSON, to replace the full video details
-- [ ] ``PATCH /videos/:id`` with a JSON, to partially update a video
-- [ ] ``DELETE /videos/:id`` to remove a video
+- [x] ``PATCH /videos/:id`` with a JSON, to partially update a video
+- [x] ``DELETE /videos/:id`` to remove a video
 
 ## Shop
 
