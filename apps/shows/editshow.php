@@ -4,7 +4,8 @@ namespace Apps\Shows;
 
 class EditShow extends \Apps\Abstraction\CRUD
 {
-    public function edit(int $showID, string $json) {
+    public function edit(int $showID, string $json)
+    {
         if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
