@@ -2,17 +2,8 @@
 
 namespace Apps\Releases\People;
 
-class PatchPeople
+class PatchPeople extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-        $this->update = new \Apps\Database\Update();
-    }
-
     /**
      * The contents should only be a single patch JSON.
      * @param int $releaseID is the release to update
@@ -32,6 +23,7 @@ class PatchPeople
 
         $response['contents'] = 'Location: http://www.vortechmusic.com/api/1.0/releases/'.$releaseID.'/people';
         $response['code'] = 200;
+
         return $response;
     }
 
@@ -56,7 +48,7 @@ class PatchPeople
      */
     public function getPersonID(string $name)
     {
-        $sql = $this->select->select('ReleasePeople.PersonID')->from('ReleasePeople')
+        $sql = $this->read->select('ReleasePeople.PersonID')->from('ReleasePeople')
             ->joins('JOIN People ON People.PersonID = ReleasePeople.PersonID')
             ->where('People.Name = :name')->limit(1)->result();
         $pdo = array('name' => $name);

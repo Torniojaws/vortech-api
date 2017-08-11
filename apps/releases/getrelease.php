@@ -2,24 +2,21 @@
 
 namespace Apps\Releases;
 
-class GetRelease
+class GetRelease extends \Apps\Abstraction\CRUD
 {
     public function get(int $releaseID = null)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select()->from('Releases')->result();
-        $pdoParameters = array();
+        $sql = $this->read->select()->from('Releases')->result();
+        $pdo = array();
 
         if (isset($releaseID)) {
-            $sql = $sqlBuilder->select()->from('Releases')->where('ReleaseID = :id')->result();
-            $pdoParameters = array('id' => $releaseID);
+            $sql = $this->read->select()->from('Releases')->where('ReleaseID = :id')->result();
+            $pdo = array('id' => $releaseID);
         }
 
-        $response['contents'] = $database->run($sql, $pdoParameters);
+        $response['contents'] = $this->database->run($sql, $pdo);
         $response['code'] = 200;
+
         return $response;
     }
 }

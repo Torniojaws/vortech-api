@@ -2,20 +2,11 @@
 
 namespace Apps\Videos;
 
-class AddVideos
+class AddVideos extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     public function add(string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             $response['id'] = -1;
@@ -45,7 +36,7 @@ class AddVideos
     public function addOneVideo(array $video)
     {
         // Add the video data
-        $sql = $this->insert->insert()->into('Videos(Title, URL, Created)')
+        $sql = $this->create->insert()->into('Videos(Title, URL, Created)')
             ->values(':title, :url, NOW()')->result();
         $pdo = array('title' => $video['title'], 'url' => $video['url']);
         $this->database->run($sql, $pdo);
@@ -53,7 +44,7 @@ class AddVideos
 
         // And the video tags
         foreach ($video['categories'] as $tag) {
-            $sql = $this->insert->insert()->into('VideosTags(VideoID, VideoCategoryID)')
+            $sql = $this->create->insert()->into('VideosTags(VideoID, VideoCategoryID)')
                 ->values(':id, :cid')->result();
             $pdo = array('id' => $videoID, 'cid' => $tag);
             $this->database->run($sql, $pdo);

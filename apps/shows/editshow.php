@@ -2,24 +2,10 @@
 
 namespace Apps\Shows;
 
-class EditShow
+class EditShow extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-        $this->select = new \Apps\Database\Select();
-        $this->update = new \Apps\Database\Update();
-        $this->delete = new \Apps\Database\Delete();
-
-        $this->dbCheck = new \Apps\Utils\DatabaseCheck();
-    }
-
     public function edit(int $showID, string $json) {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -92,14 +78,14 @@ class EditShow
                 }
 
                 // Get the SongID
-                $sql = $this->select->select('SongID')->from('Songs')->where('Title = :title')->result();
+                $sql = $this->read->select('SongID')->from('Songs')->where('Title = :title')->result();
                 $pdo = array('title' => $song['title']);
                 $result = $this->database->run($sql, $pdo);
                 $songID = $result[0]['SongID'];
             }
 
             // Add current song to the new setlist
-            $sql = $this->insert->insert()->into('ShowsSetlists(ShowID, SongID, SetlistOrder)')
+            $sql = $this->create->insert()->into('ShowsSetlists(ShowID, SongID, SetlistOrder)')
                 ->values(':show, :song, :order')->result();
             $pdo = array('show' => $showID, 'song' => $songID, 'order' => $order);
             $this->database->run($sql, $pdo);
@@ -120,7 +106,7 @@ class EditShow
 
         // Then add the replacements
         foreach ($bands as $band) {
-            $sql = $this->insert->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
+            $sql = $this->create->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
                 ->values(':id, :name, :web')->result();
             $pdo = array('id' => $showID, 'name' => $band['name'], 'web' => $band['website']);
             $this->database->run($sql, $pdo);
@@ -155,14 +141,14 @@ class EditShow
                 }
 
                 // Get the PersonID
-                $sql = $this->select->select('PersonID')->from('People')->where('Name = :name')->result();
+                $sql = $this->read->select('PersonID')->from('People')->where('Name = :name')->result();
                 $pdo = array('name' => $personID);
                 $result = $this->database->run($sql, $pdo);
                 $personID = intval($result[0]['PersonID']);
             }
 
             // Add current person to the show performers
-            $sql = $this->insert->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
+            $sql = $this->create->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
                 ->values(':show, :pid, :instruments')->result();
             $pdo = array('show' => $showID, 'pid' => $personID, 'instruments' => $person['instruments']);
             $this->database->run($sql, $pdo);

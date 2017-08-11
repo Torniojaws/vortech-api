@@ -2,7 +2,7 @@
 
 namespace Apps\Releases;
 
-class EditRelease
+class EditRelease extends \Apps\Abstraction\CRUD
 {
     /**
      * This will edit an existing release
@@ -12,14 +12,15 @@ class EditRelease
      */
     public function edit(int $releaseID, string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        $dataIsValid = $validator->isJson($json);
-
-        if ($dataIsValid) {
-            $data = json_decode($json, true);
-            $this->editRelease($releaseID, $data);
-            $this->editReleasePeople($releaseID, $data);
+        if ($this->json->isJson($json) == false) {
+            $response['code'] = 400;
+            $response['contents'] = 'Invalid JSON';
+            return $response;
         }
+
+        $data = json_decode($json, true);
+        $this->editRelease($releaseID, $data);
+        $this->editReleasePeople($releaseID, $data);
 
         return $releaseID;
     }
@@ -32,18 +33,14 @@ class EditRelease
      */
     public function editRelease(int $releaseID, array $release)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Update();
-        $sql = $sqlBuilder->update('Releases')
+        $sql = $this->update->update('Releases')
             ->set('Title = :title, Date = :date, Artist = :artist, Credits = :credits, Updated = NOW()')
             ->where('ReleaseID = :id')->result();
         $pdo = array('title' => $release['title'], 'date' => $release['date'], 'artist' => $release['artist'],
             'credits' => $release['credits'], 'id' => $releaseID);
-        $database->run($sql, $pdo);
+        $this->database->run($sql, $pdo);
 
-        return $database->isQuerySuccessful();
+        return $this->database->isQuerySuccessful();
     }
 
     /**
@@ -64,25 +61,17 @@ class EditRelease
     {
         $personID = $this->getPersonID($person['name']);
 
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Update();
-        $sql = $sqlBuilder->update('ReleasePeople')
+        $sql = $this->update->update('ReleasePeople')
             ->set('Instruments = :instruments')->where('ReleaseID = :id AND PersonID = :person')->result();
         $pdo = array('id' => $releaseID, 'instruments' => $person['instruments'], 'person' => $personID);
-        $database->run($sql, $pdo);
+        $this->database->run($sql, $pdo);
     }
 
     public function getPersonID(string $name)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Select();
-        $sql = $sqlBuilder->select('PersonID')->from('People')->where('Name = :name')->result();
+        $sql = $this->read->select('PersonID')->from('People')->where('Name = :name')->result();
         $pdo = array('name' => $name);
-        $result = $database->run($sql, $pdo);
+        $result = $this->database->run($sql, $pdo);
 
         return intval($result[0]['PersonID']);
     }

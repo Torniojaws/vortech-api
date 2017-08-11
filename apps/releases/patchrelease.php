@@ -2,14 +2,8 @@
 
 namespace Apps\Releases;
 
-class PatchRelease
+class PatchRelease extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-    }
-
     /**
      * We must rely that the user provides correct values for the table columns
      */
@@ -18,22 +12,20 @@ class PatchRelease
         try {
             $items = json_decode($json, true);
 
-            $check = new \Apps\Utils\DatabaseCheck();
-            if ($check->existsInTable('Releases', 'ReleaseID', $releaseID) == false) {
+            if ($this->dbCheck->existsInTable('Releases', 'ReleaseID', $releaseID) == false) {
                 $response['contents'] = 'Unknown release ID';
                 $response['code'] = 400;
                 return $response;
             }
 
-            $sqlBuilder = new \Apps\Database\Update();
             foreach ($items as $column => $value) {
-                $sql = $sqlBuilder->update('Releases')->set($column.' = :value')
+                $sql = $this->update->update('Releases')->set($column.' = :value')
                     ->where('ReleaseID = :id')->result();
                 $pdo = array('value' => $value, 'id' => $releaseID);
                 $this->database->run($sql, $pdo);
             }
 
-            $response['contents'] = null;
+            $response['contents'] = array();
             $response['code'] = 204;
         } catch (\PDOException $exception) {
             // Most likely when column does not exist

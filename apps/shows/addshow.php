@@ -2,20 +2,11 @@
 
 namespace Apps\Shows;
 
-class AddShow
+class AddShow extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     public function add(string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['Contents'] = 'Invalid JSON';
             $response['id'] = null;
@@ -44,7 +35,7 @@ class AddShow
      */
     public function insertShow(array $data)
     {
-        $sql = $this->insert->insert()->into('Shows(ShowDate, CountryCode, Country, City, Venue)')
+        $sql = $this->create->insert()->into('Shows(ShowDate, CountryCode, Country, City, Venue)')
             ->values(':date, :cc, :country, :city, :venue')->result();
         $pdo = array(
             'date' => $data['date'],
@@ -71,14 +62,14 @@ class AddShow
             $songID = (int)$song;
             if (is_array($song)) {
                 // New song, add to Songs table
-                $sql = $this->insert->insert()->into('Songs(Title, Duration)')
+                $sql = $this->create->insert()->into('Songs(Title, Duration)')
                     ->values(':title, :duration')->result();
                 $pdo = array('title' => $song['title'], 'duration' => $song['duration']);
                 $this->database->run($sql, $pdo);
                 $songID = (int)$this->database->getInsertId();
             }
 
-            $sql = $this->insert->insert()->into('ShowsSetlists(ShowID, SongID, SetlistOrder)')
+            $sql = $this->create->insert()->into('ShowsSetlists(ShowID, SongID, SetlistOrder)')
                 ->values(':sid, :song, :order')->result();
             $pdo = array('sid' => $showID, 'song' => $songID, 'order' => $songOrder);
             $this->database->run($sql, $pdo);
@@ -94,7 +85,7 @@ class AddShow
     public function insertBands(int $showID, array $data)
     {
         foreach ($data as $band) {
-            $sql = $this->insert->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
+            $sql = $this->create->insert()->into('ShowsOtherBands(ShowID, BandName, BandWebsite)')
                 ->values(':sid, :name, :web')->result();
             $pdo = array('sid' => $showID, 'name' => $band['name'], 'web' => $band['website']);
             $this->database->run($sql, $pdo);
@@ -114,22 +105,20 @@ class AddShow
             $currentPersonID = $person['personID'];
             if (is_numeric($currentPersonID) == false) {
                 // Check that they don't exist already
-                $dbCheck = new \Apps\Utils\DatabaseCheck();
-                if ($dbCheck->existsInTable('People', 'Name', $currentPersonID) == false) {
+                if ($this->dbCheck->existsInTable('People', 'Name', $currentPersonID) == false) {
                     // We have a new person, who will be added
                     $people = new \Apps\People\AddPeople();
                     $people->add(json_encode(array('name' => $currentPersonID)));
                 }
 
                 // Get the ID of the current new person (there might be several in one show)
-                $select = new \Apps\Database\Select();
-                $sql = $select->select('PersonID')->from('People')->where('Name = :name')->result();
+                $sql = $this->read->select('PersonID')->from('People')->where('Name = :name')->result();
                 $pdo = array('name' => $currentPersonID);
                 $result = $this->database->run($sql, $pdo);
                 $currentPersonID = $result[0]['PersonID'];
             }
 
-            $sql = $this->insert->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
+            $sql = $this->create->insert()->into('ShowsPeople(ShowID, PersonID, Instruments)')
                 ->values(':sid, :pid, :instruments')->result();
             $pdo = array(
                 'sid' => $showID,

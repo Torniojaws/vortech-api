@@ -22,5 +22,6 @@ abstract class CRUD
         // Utils
         $this->arrays = new \Apps\Utils\Arrays();
         $this->dbCheck = new \Apps\Utils\DatabaseCheck();
+        $this->json = new \Apps\Utils\Json();
     }
 }
