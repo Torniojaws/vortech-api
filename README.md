@@ -1,3 +1,4 @@
+[![GitHub version](https://badge.fury.io/gh/Torniojaws%2Fvortech-api.svg)](https://badge.fury.io/gh/Torniojaws%2Fvortech-api)
 [![Build Status](https://travis-ci.org/Torniojaws/vortech-api.svg?branch=master)](https://travis-ci.org/Torniojaws/vortech-api)
 [![Coverage Status](https://coveralls.io/repos/github/Torniojaws/vortech-api/badge.svg?branch=master)](https://coveralls.io/github/Torniojaws/vortech-api?branch=master)
 
