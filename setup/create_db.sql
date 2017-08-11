@@ -189,6 +189,34 @@ CREATE TABLE Biography (
     PRIMARY KEY (BiographyID)
 );
 
+-- Videos
+
+CREATE TABLE Videos (
+    VideoID int AUTO_INCREMENT,
+    Title varchar(200) NOT NULL,
+    URL text NOT NULL,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (VideoID)
+);
+
+CREATE TABLE VideosCategories (
+    VideoCategoryID int AUTO_INCREMENT,
+    Category varchar(200) NOT NULL,
+    PRIMARY KEY (VideoCategoryID)
+);
+
+CREATE TABLE VideosTags (
+    TagID int AUTO_INCREMENT,
+    VideoID int NOT NULL,
+    VideoCategoryID int NOT NULL,
+    PRIMARY KEY (TagID),
+    CONSTRAINT fk_video FOREIGN KEY (VideoID)
+        REFERENCES Videos(VideoID) ON DELETE CASCADE,
+    CONSTRAINT fk_videocategory FOREIGN KEY (VideoCategoryID)
+        REFERENCES VideosCategories(VideoCategoryID) ON DELETE CASCADE
+);
+
 -- Setup some predefined values
 
 INSERT INTO
@@ -220,3 +248,17 @@ VALUES
     ("Demo"),
     ("Compilation"),
     ("Split");
+
+INSERT INTO
+    VideosCategories(Category)
+VALUES
+    ("Music video"),
+    ("Live video"),
+    ("Lyric video"),
+    ("Full show"),
+    ("Rehearsal"),
+    ("Studio"),
+    ("Recording"),
+    ("Video greeting"),
+    ("How to play"),
+    ("Interview");
