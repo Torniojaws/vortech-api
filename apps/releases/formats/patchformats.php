@@ -2,16 +2,8 @@
 
 namespace Apps\Releases\Formats;
 
-class PatchFormats
+class PatchFormats extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     /**
      * The contents should only be a single patch JSON.
      * @param int $releaseID is the release to update
@@ -31,6 +23,7 @@ class PatchFormats
 
         $response['contents'] = 'Location: http://www.vortechmusic.com/api/1.0/releases/'.$releaseID.'/formats';
         $response['code'] = 200;
+
         return $response;
     }
 
@@ -42,7 +35,7 @@ class PatchFormats
     public function patchFormats(array $data, int $releaseID)
     {
         foreach ($data['formats'] as $format) {
-            $sql = $this->insert->insert()->into('ReleaseFormats(FormatID, ReleaseID)')
+            $sql = $this->create->insert()->into('ReleaseFormats(FormatID, ReleaseID)')
                 ->values(':format, :rid')->result();
             $pdo = array('format' => $format, 'rid' => $releaseID);
             $this->database->run($sql, $pdo);

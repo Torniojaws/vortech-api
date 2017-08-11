@@ -2,22 +2,17 @@
 
 namespace Apps\Shows;
 
-class GetShows
+class GetShows extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-    }
-
     public function get(int $showID = null)
     {
         // Unless ShowID is given, we return ALL data
         $contents = empty($showID) ? $this->getAllShows() : $this->getOneShow($showID);
 
-        return $contents;
+        $response['code'] = 200;
+        $response['contents'] = empty($contents) ? array() : $contents;
+
+        return $response;
     }
 
     /**
@@ -26,12 +21,11 @@ class GetShows
      */
     public function getAllShows()
     {
-        $sql = $this->select->select('ShowID')->from('Shows')->result();
+        $sql = $this->read->select('ShowID')->from('Shows')->result();
         $pdo = array();
         $result = $this->database->run($sql, $pdo);
 
-        $arrayUtils = new \Apps\Utils\Arrays();
-        $allShowIDs = $arrayUtils->flattenArray($result, 'ShowID');
+        $allShowIDs = $this->arrays->flattenArray($result, 'ShowID');
 
         $results = array();
         foreach ($allShowIDs as $showID) {
@@ -70,14 +64,14 @@ class GetShows
 
     public function getShowData(int $showID)
     {
-        $sql = $this->select->select()->from('Shows')->where('ShowID = :id')->result();
+        $sql = $this->read->select()->from('Shows')->where('ShowID = :id')->result();
         $pdo = array('id' => $showID);
         return $this->database->run($sql, $pdo);
     }
 
     public function getSetlist(int $showID)
     {
-        $sql = $this->select->select()->from('ShowsSetlists sl, Songs s')
+        $sql = $this->read->select()->from('ShowsSetlists sl, Songs s')
             ->where('sl.SongID = s.SongID AND sl.ShowID = :id')->result();
         $pdo = array('id' => $showID);
         return $this->database->run($sql, $pdo);
@@ -85,14 +79,14 @@ class GetShows
 
     public function getOtherBands(int $showID)
     {
-        $sql = $this->select->select()->from('ShowsOtherBands')->where('ShowID = :id')->result();
+        $sql = $this->read->select()->from('ShowsOtherBands')->where('ShowID = :id')->result();
         $pdo = array('id' => $showID);
         return $this->database->run($sql, $pdo);
     }
 
     public function getPlayers(int $showID)
     {
-        $sql = $this->select->select()->from('ShowsPeople sp, People p')
+        $sql = $this->read->select()->from('ShowsPeople sp, People p')
             ->where('sp.ShowID = :id AND p.PersonID = sp.PersonID')->result();
         $pdo = array('id' => $showID);
         return $this->database->run($sql, $pdo);
@@ -110,7 +104,7 @@ class GetShows
         }
         // Sort the array of arrays so that array[0] has the array with array['setlistOrder'] = 1
         // and array[1] is array['setlistOrder'] = 2, etc.
-        // This is done with the new Spaceship operator that was added to PHP7.
+        // This is done with the new Spaceship operator <=> that was added to PHP7.
         // It does not exist in PHP5.x.
         usort($songs, function ($song1, $song2) {
             return $song1['setlistOrder'] <=> $song2['setlistOrder'];

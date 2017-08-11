@@ -2,20 +2,11 @@
 
 namespace Apps\People;
 
-class EditPeople
+class EditPeople extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->update = new \Apps\Database\Update();
-    }
-
     public function edit(int $personID, string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;

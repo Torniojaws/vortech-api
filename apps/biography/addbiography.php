@@ -2,20 +2,11 @@
 
 namespace Apps\Biography;
 
-class AddBiography
+class AddBiography extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     public function add(string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -27,7 +18,7 @@ class AddBiography
             $bio = array($bio);
         }
 
-        $sql = $this->insert->insert()->into('Biography(Short, Full, Created)')
+        $sql = $this->create->insert()->into('Biography(Short, Full, Created)')
             ->values(':short, :full, NOW()')->result();
         $pdo = array('short' => $bio[0]['short'], 'full' => $bio[0]['full']);
         $this->database->run($sql, $pdo);

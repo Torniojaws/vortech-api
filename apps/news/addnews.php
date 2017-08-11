@@ -2,15 +2,8 @@
 
 namespace Apps\News;
 
-class AddNews
+class AddNews extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-        $this->sql = new \Apps\Database\Insert();
-    }
-
     public function add(string $json)
     {
         $news = json_decode($json, true);
@@ -35,7 +28,7 @@ class AddNews
      */
     public function insertNews(string $title, string $contents)
     {
-        $sql = $this->sql->insert()->into('News(Title, Contents, Author, Created)')
+        $sql = $this->create->insert()->into('News(Title, Contents, Author, Created)')
             ->values(':title, :contents, "Juha", NOW()')->result();
         $pdo = array('title' => $title, 'contents' => $contents);
         $this->database->run($sql, $pdo);
@@ -50,7 +43,7 @@ class AddNews
      */
     public function insertCategory(int $category, int $newsID)
     {
-        $sql = $this->sql->insert()->into('NewsCategories(NewsID, CategoryID)')
+        $sql = $this->create->insert()->into('NewsCategories(NewsID, CategoryID)')
             ->values(':id, :category')->result();
         $pdo = array('id' => $newsID, 'category' => $category);
         $this->database->run($sql, $pdo);

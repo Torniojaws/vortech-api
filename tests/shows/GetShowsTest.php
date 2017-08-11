@@ -97,9 +97,11 @@ class GetShowsTest extends TestCase
 
     public function testGettingOneShow()
     {
-        $result = $this->shows->get($this->testShowID2);
+        $response = $this->shows->get($this->testShowID2);
+        $result = $response['contents'];
 
         $this->assertFalse(empty($result), 'Result should not be empty');
+        $this->assertEquals(200, $response['code'], 'Wrong response code');
         $this->assertTrue(array_key_exists('setlist', $result), 'Setlist is missing from response');
         $this->assertTrue(array_key_exists('otherBands', $result), 'Other bands are missing from response');
         $this->assertEquals('SE', $result['countryCode'], 'Country code is wrong');
@@ -111,7 +113,8 @@ class GetShowsTest extends TestCase
 
     public function testGettingAllShows()
     {
-        $shows = $this->shows->get();
+        $response = $this->shows->get();
+        $shows = $response['contents'];
 
         $this->assertEquals(2, count($shows), 'Show count does not match');
         $this->assertEquals('SE', $shows[1]['countryCode'], 'Country code does not match');

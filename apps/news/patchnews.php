@@ -2,14 +2,8 @@
 
 namespace Apps\News;
 
-class PatchNews
+class PatchNews extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-    }
-
     /**
      * We must rely that the user provides correct values for the table columns.
      * Patching News categories will have its own endpoint
@@ -21,8 +15,7 @@ class PatchNews
         try {
             $items = json_decode($json, true);
 
-            $check = new \Apps\Utils\DatabaseCheck();
-            if ($check->existsInTable('News', 'NewsID', $newsID) == false) {
+            if ($this->dbCheck->existsInTable('News', 'NewsID', $newsID) == false) {
                 $response['contents'] = 'Unknown news ID';
                 $response['code'] = 400;
                 return $response;
@@ -37,15 +30,14 @@ class PatchNews
             }
 
             // All other valid items exist in the News table
-            $sqlBuilder = new \Apps\Database\Update();
             foreach ($items as $column => $value) {
-                $sql = $sqlBuilder->update('News')->set($column.' = :value')
+                $sql = $this->update->update('News')->set($column.' = :value')
                     ->where('NewsID = :id')->result();
                 $pdo = array('value' => $value, 'id' => $newsID);
                 $this->database->run($sql, $pdo);
             }
 
-            $response['contents'] = null;
+            $response['contents'] = array();
             $response['code'] = 204;
         } catch (\PDOException $exception) {
             // Most likely when column does not exist
@@ -70,21 +62,18 @@ class PatchNews
         }
 
         // Validate the categories. Must be integers
-        $utils = new \Apps\Utils\Arrays();
-        if ($utils->arrayContainsNonIntegers($items['categories'])) {
+        if ($this->arrays->arrayContainsNonIntegers($items['categories'])) {
             return false;
         }
 
         // Delete previous categories
-        $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('NewsCategories')->where('NewsID = :id')->result();
+        $sql = $this->delete->delete()->from('NewsCategories')->where('NewsID = :id')->result();
         $pdo = array('id' => $newsID);
         $this->database->run($sql, $pdo);
 
         // Then add the new ones in
         foreach ($items['categories'] as $category) {
-            $insert = new \Apps\Database\Insert();
-            $sql = $insert->insert()->into('NewsCategories(NewsID, CategoryID)')
+            $sql = $this->create->insert()->into('NewsCategories(NewsID, CategoryID)')
                 ->values(':nid, :cid')->result();
             $pdo = array('nid' => $newsID, 'cid' => $category);
             $this->database->run($sql, $pdo);

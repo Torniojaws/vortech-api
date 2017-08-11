@@ -2,26 +2,28 @@
 
 namespace Apps\News;
 
-class EditNews
+class EditNews extends \Apps\Abstraction\CRUD
 {
     public function edit(int $newsID, string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        $dataIsValid = $validator->isJson($json);
+        if ($this->json->isJson($json) == false) {
+            $response['code'] = 400;
+            $response['contents'] = 'Invalid JSON';
+            return $response;
+        }
 
-        if ($dataIsValid) {
-            $data = json_decode($json, true);
-            $this->editNews($newsID, $data);
+        $data = json_decode($json, true);
+        $this->editNews($newsID, $data);
 
-            // Update categories. We first delete all existing ones for current NewsID
-            $this->deleteCategories($newsID);
-            foreach ($data['categories'] as $category) {
-                $this->addUpdatedCategory($category, $newsID);
-            }
+        // Update categories. We first delete all existing ones for current NewsID
+        $this->deleteCategories($newsID);
+        foreach ($data['categories'] as $category) {
+            $this->addUpdatedCategory($category, $newsID);
         }
 
         $response['code'] = 200;
         $response['contents'] = array();
+
         return $response;
     }
 
@@ -33,17 +35,13 @@ class EditNews
      */
     public function editNews(int $newsID, array $news)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Update();
-        $sql = $sqlBuilder->update('News')
+        $sql = $this->update->update('News')
             ->set('Title = :title, Contents = :contents, Updated = NOW()')
             ->where('NewsID = :id')->result();
         $pdo = array('title' => $news['title'], 'contents' => $news['contents'], 'id' => $newsID);
-        $database->run($sql, $pdo);
+        $this->database->run($sql, $pdo);
 
-        return $database->isQuerySuccessful();
+        return $this->database->isQuerySuccessful();
     }
 
     /**
@@ -56,16 +54,12 @@ class EditNews
      */
     public function addUpdatedCategory(int $category, int $newsID)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Insert();
-        $sql = $sqlBuilder->insert()->into('NewsCategories(NewsID, CategoryID)')
+        $sql = $this->create->insert()->into('NewsCategories(NewsID, CategoryID)')
             ->values(':id, :cid')->result();
         $pdo = array('id' => $newsID, 'cid' => $category);
-        $database->run($sql, $pdo);
+        $this->database->run($sql, $pdo);
 
-        return $database->getInsertId();
+        return $this->database->getInsertId();
     }
 
     /**
@@ -74,13 +68,9 @@ class EditNews
      */
     public function deleteCategories(int $newsID)
     {
-        $database = new \Apps\Database\Database();
-        $database->connect();
-
-        $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('NewsCategories')->where('NewsID = :id')->result();
+        $sql = $this->delete->delete()->from('NewsCategories')->where('NewsID = :id')->result();
         $pdo = array('id' => $newsID);
 
-        $database->run($sql, $pdo);
+        $this->database->run($sql, $pdo);
     }
 }

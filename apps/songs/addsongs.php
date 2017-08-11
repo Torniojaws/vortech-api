@@ -2,17 +2,8 @@
 
 namespace Apps\Songs;
 
-class AddSongs
+class AddSongs extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     /**
      * The song we receive will be inserted to Songs table. There are two possibilities in the data
      * we get. It can either be a single JSON Array, or it can be an array of JSON arrays when several
@@ -66,7 +57,7 @@ class AddSongs
      */
     public function insertSong(array $song)
     {
-        $sql = $this->insert->insert()->into('Songs(Title, Duration)')
+        $sql = $this->create->insert()->into('Songs(Title, Duration)')
             ->values(':title, :duration')->result();
         $pdo = array('title' => $song['title'], 'duration' => $song['duration']);
         $this->database->run($sql, $pdo);

@@ -2,23 +2,15 @@
 
 namespace Apps\People;
 
-class GetPeople
+class GetPeople extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-    }
-
     public function get(int $personID = null)
     {
-        $sql = $this->select->select()->from('People')->result();
+        $sql = $this->read->select()->from('People')->result();
         $pdo = array();
 
         if (is_numeric($personID)) {
-            $sql = $this->select->select()->from('People')->where('PersonID = :id')->limit(1)->result();
+            $sql = $this->read->select()->from('People')->where('PersonID = :id')->limit(1)->result();
             $pdo = array('id' => $personID);
         }
 

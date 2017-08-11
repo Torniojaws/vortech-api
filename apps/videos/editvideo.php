@@ -2,22 +2,11 @@
 
 namespace Apps\Videos;
 
-class EditVideo
+class EditVideo extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-        $this->update = new \Apps\Database\Update();
-        $this->delete = new \Apps\Database\Delete();
-    }
-
     public function edit(int $videoID, string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -70,7 +59,7 @@ class EditVideo
         $this->database->run($sql, $pdo);
 
         foreach ($categories as $category) {
-            $sql = $this->insert->insert()->into('VideosTags(VideoID, VideoCategoryID)')
+            $sql = $this->create->insert()->into('VideosTags(VideoID, VideoCategoryID)')
                 ->values(':vid, :cid')->result();
             $pdo = array('vid' => $videoID, 'cid' => $category);
             $this->database->run($sql, $pdo);

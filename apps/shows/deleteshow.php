@@ -2,26 +2,23 @@
 
 namespace Apps\Shows;
 
-class DeleteShow
+class DeleteShow extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-    }
-
     public function delete(int $showID)
     {
-        $check = new \Apps\Utils\DatabaseCheck();
-        if ($check->existsInTable('Shows', 'ShowID', $showID) == false) {
+        if ($this->dbCheck->existsInTable('Shows', 'ShowID', $showID) == false) {
             $response['contents'] = 'Show not found';
             $response['code'] = 400;
             return $response;
         }
 
-        $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('Shows')->where('ShowID = :id')->result();
+        $sql = $this->delete->delete()->from('Shows')->where('ShowID = :id')->result();
         $pdo = array('id' => $showID);
         $this->database->run($sql, $pdo);
+
+        $response['code'] = 204;
+        $response['contents'] = array();
+
+        return $response;
     }
 }

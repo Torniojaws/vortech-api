@@ -2,16 +2,8 @@
 
 namespace Apps\Songs;
 
-class EditSongs
+class EditSongs extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->update = new \Apps\Database\Update();
-    }
-
     /**
      * Update the SongID in the database and return the status
      * @param int $songID is the song we edit
@@ -20,15 +12,13 @@ class EditSongs
      */
     public function edit(int $songID, string $json)
     {
-        $jsonValidator = new \Apps\Utils\Json();
-        if ($jsonValidator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
         }
 
-        $check = new \Apps\Utils\DatabaseCheck();
-        if ($check->existsInTable('Songs', 'SongID', $songID) == false) {
+        if ($this->dbCheck->existsInTable('Songs', 'SongID', $songID) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid value';
             return $response;
@@ -43,6 +33,7 @@ class EditSongs
 
         $response['code'] = 200;
         $response['contents'] = array();
+
         return $response;
     }
 }

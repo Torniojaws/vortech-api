@@ -2,16 +2,8 @@
 
 namespace Apps\Releases\Songs;
 
-class EditSongs
+class EditSongs extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->insert = new \Apps\Database\Insert();
-    }
-
     /**
      * We receive a new integer array with references to songs.
      * @param int $releaseID is the release to update
@@ -40,6 +32,7 @@ class EditSongs
 
         $response['contents'] = 'Location: http://www.vortechmusic.com/api/1.0/releases/'.$releaseID.'/songs';
         $response['code'] = 200;
+
         return $response;
     }
 
@@ -53,7 +46,7 @@ class EditSongs
         $this->removePreviousSongs($releaseID);
 
         foreach ($songs as $songID) {
-            $sql = $this->insert->insert()->into('ReleaseSongs(ReleaseID, SongID)')
+            $sql = $this->create->insert()->into('ReleaseSongs(ReleaseID, SongID)')
                 ->values(':rid, :song')->result();
             $pdo = array('rid' => $releaseID, 'song' => $songID);
             $this->database->run($sql, $pdo);
@@ -67,8 +60,7 @@ class EditSongs
      */
     public function removePreviousSongs(int $releaseID)
     {
-        $sqlBuilder = new \Apps\Database\Delete();
-        $sql = $sqlBuilder->delete()->from('ReleaseSongs')->where('ReleaseID = :id')->result();
+        $sql = $this->delete->delete()->from('ReleaseSongs')->where('ReleaseID = :id')->result();
         $pdo = array('id' => $releaseID);
         $this->database->run($sql, $pdo);
     }
@@ -81,9 +73,8 @@ class EditSongs
     public function allSongsExist(array $songs)
     {
         $missingCount = 0;
-        $databaseCheck = new \Apps\Utils\DatabaseCheck();
         foreach ($songs as $songID) {
-            if ($databaseCheck->existsInTable('Songs', 'SongID', (string)$songID) == false) {
+            if ($this->dbCheck->existsInTable('Songs', 'SongID', (string)$songID) == false) {
                 $missingCount++;
             }
         }

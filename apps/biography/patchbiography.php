@@ -2,21 +2,11 @@
 
 namespace Apps\Biography;
 
-class PatchBiography
+class PatchBiography extends \Apps\Abstraction\CRUD
 {
-    public function __construct()
-    {
-        $this->database = new \Apps\Database\Database();
-        $this->database->connect();
-
-        $this->select = new \Apps\Database\Select();
-        $this->update = new \Apps\Database\Update();
-    }
-
     public function patch(string $json)
     {
-        $validator = new \Apps\Utils\Json();
-        if ($validator->isJson($json) == false) {
+        if ($this->json->isJson($json) == false) {
             $response['code'] = 400;
             $response['contents'] = 'Invalid JSON';
             return $response;
@@ -35,7 +25,7 @@ class PatchBiography
         }
 
         // Get the latest ID
-        $sql = $this->select->select('BiographyID')->from('Biography')->order('Created DESC')
+        $sql = $this->read->select('BiographyID')->from('Biography')->order('Created DESC')
             ->limit(1)->result();
         $pdo = array();
         $latest = intval($this->database->run($sql, $pdo)[0]['BiographyID']);
