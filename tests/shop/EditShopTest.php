@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class GetShopTest extends TestCase
+class EditShopTest extends TestCase
 {
     public function setUp()
     {
-        $this->shop = new \Apps\Shop\GetShop();
+        $this->shop = new \Apps\Shop\EditShop();
 
         $this->read = new \Apps\Database\Select();
         $this->delete = new \Apps\Database\Delete();
@@ -59,51 +59,6 @@ class GetShopTest extends TestCase
 
     public function testClassWorks()
     {
-        $this->assertTrue($this->shop instanceof \Apps\Shop\GetShop);
-    }
-
-    public function testGettingOneShopItemsWorks()
-    {
-        $response = $this->shop->get($this->validID);
-
-        $shopitem = $response['contents'];
-
-        $this->assertFalse(empty($response), 'Got empty response');
-        $this->assertEquals(200, $response['code'], 'Wrong response code');
-        $this->assertFalse(empty($shopitem), 'No contents');
-        $this->assertEquals('UnitTest Shop Item', $shopitem['title'], 'Wrong title');
-        $this->assertEquals(1, $shopitem['categories'][0], 'Wrong category');
-        $this->assertEquals('PayPal', $shopitem['urls'][0]['title']);
-    }
-
-    public function testGettingAllShopItemsWorks()
-    {
-        $response = $this->shop->get();
-
-        $shopitems = $response['contents'];
-
-        $this->assertFalse(empty($response), 'Got empty response');
-        $this->assertEquals(200, $response['code'], 'Wrong response code');
-        $this->assertFalse(empty($shopitems), 'No contents');
-        $this->assertEquals('UnitTest Shop Item', $shopitems[0]['title'], 'Wrong title in first item');
-        $this->assertEquals('UnitTest Shop Item 2', $shopitems[1]['title'], 'Wrong title in second item');
-        $this->assertEquals(1, $shopitems[0]['categories'][0], 'Wrong category in first item');
-        $this->assertEquals(3, $shopitems[1]['categories'][0], 'Wrong category in second item');
-        $this->assertEquals('PayPal', $shopitems[0]['urls'][0]['title'], 'Wrong title in first item url');
-        $this->assertEquals('BandCamp', $shopitems[1]['urls'][1]['title'], 'Wrong title in second item url');
-    }
-
-    public function testGettingAllShopItemsWithFilters()
-    {
-        $filters['category'] = 'Clothing';
-        $response = $this->shop->get(null, $filters);
-
-        $shopitems = $response['contents'];
-
-        $this->assertFalse(empty($response), 'Got empty response');
-        $this->assertEquals(200, $response['code'], 'Wrong response code');
-        $this->assertFalse(empty($shopitems), 'No shop items returned');
-        $this->assertEquals('UnitTest Shop Item 2', $shopitems[0]['title'], 'Wrong title');
-        $this->assertEquals(4, $shopitems[0]['categories'][1], 'Wrong category');
+        $this->assertTrue($this->shop instanceof \Apps\Shop\EditShop);
     }
 }

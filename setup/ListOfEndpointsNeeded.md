@@ -86,16 +86,12 @@ Note that DELETE will not be implemented on purpose.
 ## Shop
 
 - [x] ``GET /shop`` to return all shop items
+- [x] ``GET /shop?category=<string>`` to return all shop items that are in category <string>
 - [x] ``GET /shop/:id`` to get a specific shop item
 - [x] ``POST /shop`` with a JSON, to add a new shop item
 - [ ] ``PUT /shop/:id`` with a JSON, to replace a shop item
 - [ ] ``PATCH /shop/:id`` with a JSON, to update an existing shop item
 - [ ] ``DELETE /shop/:id`` to remove a shop item
-
-Would be good to have a way to get also shop items from particular categories, like albums, shirts,
-or something else. Probably with filters? Eg. ``GET /shop?category=1`` to get all shop items from
-category 1 (maybe it can be a cleartext search?)
-
 ## Photos
 
 Photos will always be returned grouped by their assigned albums.

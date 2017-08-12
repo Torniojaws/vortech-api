@@ -23,7 +23,7 @@ class Database
 
     public function getConfig()
     {
-        $data = parse_ini_file('config_db.ini', true);
+        $data = parse_ini_file('dev_config.ini', true);
         $config['driver'] = $data['database']['driver'];
         $config['host'] = $data['database']['host'];
         $config['name'] = $data['database']['schema'];

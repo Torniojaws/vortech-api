@@ -4,9 +4,15 @@ namespace Apps\Shop;
 
 class GetShop extends \Apps\Abstraction\CRUD
 {
-    public function get(int $shopID = null)
+    /**
+     * Get the data of shop items.
+     * @param int $shopID is given if you want to retrieve a specific shop item
+     * @param array $filters allows you to filter the results when getting all items
+     * @return array $response has the results
+     */
+    public function get(int $shopID = null, array $filters = null)
     {
-        $result = empty($shopID) ? $this->getAllItems() : $this->getOneItem($shopID);
+        $result = empty($shopID) ? $this->getAllItems($filters) : $this->getOneItem($shopID);
 
         $response['code'] = 200;
         $response['contents'] = $result;
@@ -41,17 +47,46 @@ class GetShop extends \Apps\Abstraction\CRUD
 
     /**
      * Return the data of all DB items in an array of arrays
+     * @param array $filters allows you to optionally filter the results
      * @return array $allItems all results in the format we want
      */
-    public function getAllItems()
+    public function getAllItems(array $filters = null)
     {
         $sql = $this->read->select('ShopItemID')->from('ShopItems')->order('ShopItemID ASC')->result();
         $pdo = array();
+
+        // User wants to have specific filters in the search
+        if (empty($filters) == false) {
+            // Only one filter is supported for now, so we check the 0-index
+            switch (array_keys($filters)[0]) {
+                case 'category':
+                    // eg. "Releases", "Clothing", "Boxsets" - the query is case-insensitive
+                    $sql = $this->read
+                        ->select('DISTINCT(s.ShopItemID)')
+                        ->from('ShopItems s, ShopItemCategories sc')
+                        ->where('s.ShopItemID = sc.ShopItemID
+                            AND sc.ShopCategoryID IN (
+                                SELECT ShopCategoryID
+                                FROM ShopCategories
+                                WHERE Category = :category
+                            )')
+                        ->result();
+                    $pdo = array('category' => $filters['category']);
+                    break;
+                default:
+                    // No action, we will return all results as if no filter was used
+                    break;
+            }
+        }
+
         $results = $this->database->run($sql, $pdo);
 
-        $shopitemIDs = $this->arrays->flattenArray($results, 'ShopItemID');
-        foreach ($shopitemIDs as $shopitemID) {
-            $allItems[] = $this->getOneItem($shopitemID);
+        $allItems = array();
+        if (empty($results) == false) {
+            $shopitemIDs = $this->arrays->flattenArray($results, 'ShopItemID');
+            foreach ($shopitemIDs as $shopitemID) {
+                $allItems[] = $this->getOneItem($shopitemID);
+            }
         }
 
         return $allItems;

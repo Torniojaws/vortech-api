@@ -21,7 +21,8 @@ switch ($method) {
     case 'GET':
         $shop = new \Apps\Shop\GetShop();
         $shopID = isset($request->getParams()[1]) ? $request->getParams()[1] : null;
-        $response = $shop->get($shopID);
+        $filters = $request->getFilters();
+        $response = $shop->get($shopID, $filters);
         break;
     case 'POST':
         if ($isValid) {

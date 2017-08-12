@@ -1,10 +1,10 @@
-DROP DATABASE vortech;
-CREATE DATABASE vortech;
-USE vortech;
+DROP DATABASE test_vortech;
+CREATE DATABASE test_vortech;
+USE test_vortech;
 
 -- Testing account in local development
 CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
-GRANT ALL ON vortech.* TO 'test'@'localhost';
+GRANT ALL ON test_vortech.* TO 'test'@'localhost';
 
 -- NEWS
 
