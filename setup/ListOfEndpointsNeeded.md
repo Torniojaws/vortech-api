@@ -85,9 +85,9 @@ Note that DELETE will not be implemented on purpose.
 
 ## Shop
 
-- [ ] ``GET /shop`` to return all shop items
-- [ ] ``GET /shop/:id`` to get a specific shop item
-- [ ] ``POST /shop`` with a JSON, to add a new shop item
+- [x] ``GET /shop`` to return all shop items
+- [x] ``GET /shop/:id`` to get a specific shop item
+- [x] ``POST /shop`` with a JSON, to add a new shop item
 - [ ] ``PUT /shop/:id`` with a JSON, to replace a shop item
 - [ ] ``PATCH /shop/:id`` with a JSON, to update an existing shop item
 - [ ] ``DELETE /shop/:id`` to remove a shop item

@@ -32,6 +32,9 @@ RewriteRule ^api/1.0/biography(.*)$ ./apps/biography/biography.php?params=$1
 # Videos
 RewriteRule ^api/1.0/videos(.*)$ ./apps/videos/videos.php?params=$1
 
+# Shop
+RewriteRule ^api/1.0/shop(.*)$ ./apps/shop/shop.php?params=$1
+
 # GZIP handling
 <ifModule mod_gzip.c>
     mod_gzip_on Yes
