@@ -42,7 +42,7 @@ class AddVideosTest extends TestCase
         $pdo = array('id' => $response['id']);
         $query = $this->database->run($sql, $pdo);
 
-        $sql = $this->select->select()->from('VideosTags')->where('VideoID = :id')->limit('')->result();
+        $sql = $this->select->select()->from('VideosTags')->where('VideoID = :id')->result();
         $tagResult = $this->database->run($sql, $pdo);
 
         $tags = $this->arrays->flattenArray($tagResult, 'VideoCategoryID');
