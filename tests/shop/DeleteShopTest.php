@@ -7,11 +7,11 @@ use PHPUnit\Framework\TestCase;
 require_once(__DIR__.'/../../autoloader.php');
 spl_autoload_register('VortechAPI\Autoloader\Loader::load');
 
-class PatchShopTest extends TestCase
+class DeleteShopTest extends TestCase
 {
     public function setUp()
     {
-        $this->shop = new \Apps\Shop\PatchShop();
+        $this->shop = new \Apps\Shop\DeleteShop();
 
         $this->read = new \Apps\Database\Select();
         $this->delete = new \Apps\Database\Delete();
@@ -19,6 +19,7 @@ class PatchShopTest extends TestCase
         $this->database->connect();
 
         $this->arrays = new \Apps\Utils\Arrays();
+        $this->dbCheck = new \Apps\Utils\DatabaseCheck();
 
         // Add a shop item
         $json = '{"title": "UnitTest Shop Item", "description": "This is a nice Unit Test",
@@ -48,6 +49,7 @@ class PatchShopTest extends TestCase
 
     public function tearDown()
     {
+        // Just in case...
         $sql = $this->delete->delete()->from('ShopItems')->where('Title LIKE :title')->result();
         $pdo = array('title' => 'UnitTest%');
         $this->database->run($sql, $pdo);
@@ -59,29 +61,27 @@ class PatchShopTest extends TestCase
 
     public function testClassWorks()
     {
-        $this->assertTrue($this->shop instanceof \Apps\Shop\PatchShop);
+        $this->assertTrue($this->shop instanceof \Apps\Shop\DeleteShop);
     }
 
-    public function testPatchingShopItems()
+    public function testDeletingWorks()
     {
-        $json = '{"title": "UnitTest Patched", "price": {"value": "9.99"}, "urls": [
-            {"title": "Amazon", "url": "http://www.amazon.com", "image": "amazon.png"}]}';
-        $response = $this->shop->patch($this->anotherValidID, $json);
+        $response = $this->shop->delete($this->validID);
 
-        $sql = $this->read->select()->from('ShopItems')->where('ShopItemID = :id')->result();
-        $pdo = array('id' => $this->anotherValidID);
-        $shopitem = $this->database->run($sql, $pdo)[0];
+        $itemExists = $this->dbCheck->existsInTable('ShopItems', 'ShopItemID', $this->validID);
+        $urlsExist = $this->dbCheck->existsInTable('ShopItemURLs', 'ShopItemID', $this->validID);
 
-        $sql = $this->read->Select('Title')->from('ShopItemURLs')
-            ->where('ShopItemID = :id AND Title = :title')->result();
-        $pdo = array('id' => $this->anotherValidID, 'title' => 'Amazon');
-        $urls = $this->database->run($sql, $pdo);
+        $this->assertFalse(empty($response), 'Response was empty');
+        $this->assertEquals(204, $response['code'], 'Wrong response code');
+        $this->assertFalse($itemExists, 'Shopitem was not deleted successfully');
+        $this->assertFalse($urlsExist, 'Shopitem URLs were not deleted successfully');
+    }
+
+    public function testDeletingNonExistingIDIs404()
+    {
+        $response = $this->shop->delete(-30);
 
         $this->assertFalse(empty($response), 'Empty response');
-        $this->assertEquals(200, $response['code'], 'Wrong response code');
-        $this->assertEquals('UnitTest Patched', $shopitem['Title'], 'Title was not edited');
-        $this->assertEquals('9.99', $shopitem['Price'], 'Price was not edited');
-        $this->assertTrue(isset($urls[0]), 'Could not find expected url');
-        $this->assertEquals('Amazon', $urls[0]['Title'], 'New url was not added');
+        $this->assertEquals(404, $response['code'], 'Wrong response code');
     }
 }
