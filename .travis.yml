@@ -9,9 +9,9 @@ service:
 before_install:
 - composer require phpunit/phpunit:6.2.3 satooshi/php-coveralls:1.0.1
 - composer install
-- mysql -e 'DROP DATABASE IF EXISTS vortech;'
-- mysql -e 'CREATE DATABASE IF NOT EXISTS vortech;'
-- mysql -u root --default-character-set=utf8 vortech < setup/create_db.sql
+- mysql -e 'DROP DATABASE IF EXISTS test_vortech;'
+- mysql -e 'CREATE DATABASE IF NOT EXISTS test_vortech;'
+- mysql -u root --default-character-set=utf8 test_vortech < setup/create_db.sql
 
 script:
   - mkdir -p tests/logs
