@@ -49,6 +49,13 @@ class Insert
         // VALUES
         $query[] = 'VALUES ('.join(', ', $this->values).')';
 
+        // Clear properties so that they don't appear in a second method call if they are not
+        // changed.
+        $old = get_object_vars($this);
+        foreach (array_keys($old) as $key) {
+            $this->$key = null;
+        }
+
         return join(' ', $query);
     }
 }

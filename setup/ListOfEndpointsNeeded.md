@@ -85,16 +85,13 @@ Note that DELETE will not be implemented on purpose.
 
 ## Shop
 
-- [ ] ``GET /shop`` to return all shop items
-- [ ] ``GET /shop/:id`` to get a specific shop item
-- [ ] ``POST /shop`` with a JSON, to add a new shop item
-- [ ] ``PUT /shop/:id`` with a JSON, to replace a shop item
-- [ ] ``PATCH /shop/:id`` with a JSON, to update an existing shop item
-- [ ] ``DELETE /shop/:id`` to remove a shop item
-
-Would be good to have a way to get also shop items from particular categories, like albums, shirts,
-or something else. Probably with filters? Eg. ``GET /shop?category=1`` to get all shop items from
-category 1 (maybe it can be a cleartext search?)
+- [x] ``GET /shop`` to return all shop items
+- [x] ``GET /shop?category=<string>`` to return all shop items that are in category <string>
+- [x] ``GET /shop/:id`` to get a specific shop item
+- [x] ``POST /shop`` with a JSON, to add a new shop item
+- [x] ``PUT /shop/:id`` with a JSON, to replace a shop item
+- [x] ``PATCH /shop/:id`` with a JSON, to update an existing shop item
+- [x] ``DELETE /shop/:id`` to remove a shop item
 
 ## Photos
 
@@ -149,3 +146,15 @@ which country the request came from?
 - [ ] ``GET /downloads/releases`` to get the download count of all releases
 - [ ] ``GET /downloads/releases/:id`` to get the download count of a specific release
 - [ ] ``POST /downloads/releases`` with a JSON, add to download count
+
+## Todo
+
+Maybe implement PATCH for all endpoints with the "action" style, eg. ``PATCH /shop/123`` with a JSON
+something like this:
+```
+[
+    {"op": "add", "target": "categories", "value": 1},
+    {"op": "replace", "target": "title", "value": "New value"},
+    {"op": "remove", "target": "urls"}
+]
+```

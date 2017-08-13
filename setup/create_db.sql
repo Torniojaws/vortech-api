@@ -1,10 +1,10 @@
-DROP DATABASE vortech;
-CREATE DATABASE vortech;
-USE vortech;
+DROP DATABASE test_vortech;
+CREATE DATABASE test_vortech;
+USE test_vortech;
 
 -- Testing account in local development
 CREATE USER 'test'@'localhost' IDENTIFIED BY 'test';
-GRANT ALL ON vortech.* TO 'test'@'localhost';
+GRANT ALL ON test_vortech.* TO 'test'@'localhost';
 
 -- NEWS
 
@@ -18,7 +18,7 @@ CREATE TABLE News (
     PRIMARY KEY (NewsID)
 );
 
-CREATE TABLE Categories (
+CREATE TABLE NewsCategoryValues (
     CategoryID int AUTO_INCREMENT,
     Category varchar(255) NOT NULL,
     PRIMARY KEY (CategoryID)
@@ -217,10 +217,64 @@ CREATE TABLE VideosTags (
         REFERENCES VideosCategories(VideoCategoryID) ON DELETE CASCADE
 );
 
+-- Shop
+
+CREATE TABLE ShopItems (
+    ShopItemID int AUTO_INCREMENT,
+    Title varchar(200) NOT NULL,
+    Description text,
+    Price decimal(10,2) NOT NULL,
+    Currency varchar(3) NOT NULL,
+    Image varchar(200),
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (ShopItemID)
+);
+
+CREATE TABLE ShopCategories (
+    ShopCategoryID int AUTO_INCREMENT,
+    Category varchar(200) NOT NULL,
+    SubCategory varchar(200) NOT NULL,
+    PRIMARY KEY(ShopCategoryID)
+);
+
+CREATE TABLE ShopItemCategories (
+    ShopItemCategoryID int AUTO_INCREMENT,
+    ShopItemID int NOT NULL,
+    ShopCategoryID int NOT NULL,
+    PRIMARY KEY(ShopItemCategoryID),
+    CONSTRAINT fk_shopitem FOREIGN KEY (ShopItemID)
+        REFERENCES ShopItems(ShopItemID) ON DELETE CASCADE,
+    CONSTRAINT fk_shopcategory FOREIGN KEY (ShopCategoryID)
+        REFERENCES ShopCategories(ShopCategoryID) ON DELETE CASCADE
+);
+
+-- These are 3rd party logos used in shopitems, like Spotify logo, BandCamp logo, etc.
+CREATE TABLE ShopItemImages (
+    ShopItemImageID int AUTO_INCREMENT,
+    Image varchar(200) NOT NULL,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (ShopItemImageID)
+);
+
+CREATE TABLE ShopItemURLs (
+    ShopItemURLID int AUTO_INCREMENT,
+    ShopItemID int NOT NULL,
+    Title varchar(200) NOT NULL,
+    URL text NOT NULL,
+    ShopItemImageID int,
+    PRIMARY KEY (ShopItemURLID),
+    CONSTRAINT fk_shopitem_url FOREIGN KEY (ShopItemID)
+        REFERENCES ShopItems(ShopItemID) ON DELETE CASCADE,
+    CONSTRAINT fk_shopitem_img FOREIGN KEY (ShopItemImageID)
+        REFERENCES ShopItemImages(ShopItemImageID) ON DELETE CASCADE
+);
+
 -- Setup some predefined values
 
 INSERT INTO
-    Categories(Category)
+    NewsCategoryValues(Category)
 VALUES
     ("Studio"),
     ("Live"),
@@ -262,3 +316,22 @@ VALUES
     ("Video greeting"),
     ("How to play"),
     ("Interview");
+
+INSERT INTO
+    ShopCategories(Category, SubCategory)
+VALUES
+    ("Releases", "CD"),
+    ("Releases", "CD-R"),
+    ("Releases", "Digital"),
+    ("Clothing", "T-Shirt"),
+    ("Clothing", "Longsleeve"),
+    ("Clothing", "Hoodie"),
+    ("Clothing", "Girlie"),
+    ("Boxsets", "Album and Shirt"),
+    ("Boxsets", "Albums");
+
+INSERT INTO
+    ShopItemImages(Image)
+VALUES
+    ("paypal.png"),
+    ("bandcamp.png");

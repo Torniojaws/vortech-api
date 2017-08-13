@@ -68,6 +68,13 @@ class Delete
         $query[] = 'WHERE';
         $query[] = $this->where;
 
+        // Clear properties so that they don't appear in a second method call if they are not
+        // changed.
+        $old = get_object_vars($this);
+        foreach (array_keys($old) as $key) {
+            $this->$key = null;
+        }
+
         return join(' ', $query);
     }
 }

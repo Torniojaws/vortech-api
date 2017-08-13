@@ -22,6 +22,15 @@ class Request
         return explode('/', $this->get['params']);
     }
 
+    public function getFilters()
+    {
+        // We want everything except the key "params", and the other keys can be anything
+        // Also, we don't want to modify the original GET
+        $filters = $this->get;
+        unset($filters['params']);
+        return $filters;
+    }
+
     /**
      * We check that the request contains a valid ID or no ID.
      * If the request is POST, PUT or PATCH, we also require a valid JSON
