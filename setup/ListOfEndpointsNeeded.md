@@ -89,7 +89,7 @@ Note that DELETE will not be implemented on purpose.
 - [x] ``GET /shop?category=<string>`` to return all shop items that are in category <string>
 - [x] ``GET /shop/:id`` to get a specific shop item
 - [x] ``POST /shop`` with a JSON, to add a new shop item
-- [ ] ``PUT /shop/:id`` with a JSON, to replace a shop item
+- [x] ``PUT /shop/:id`` with a JSON, to replace a shop item
 - [ ] ``PATCH /shop/:id`` with a JSON, to update an existing shop item
 - [ ] ``DELETE /shop/:id`` to remove a shop item
 ## Photos
