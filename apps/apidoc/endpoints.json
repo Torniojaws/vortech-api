@@ -1,0 +1,124 @@
+[
+    {
+        "name": "News",
+        "endpoints": [
+            {
+                "title": "Show all news",
+                "uri": "/news",
+                "method": "GET",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "200 OK", "text": "Success"}
+                ]
+            },
+            {
+                "title": "Show a specific news post",
+                "uri": "/news/:id",
+                "method": "GET",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "200 OK", "text": "Success"}
+                ]
+            },
+            {
+                "title": "Add a news post",
+                "uri": "/news",
+                "method": "POST",
+                "urlParams": null,
+                "body": "{\"title\": [string], \"contents\": [string], \"categories\": [array]}",
+                "codes": [
+                    {"code": "201 Created", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            },
+            {
+                "title": "Edit a news post",
+                "uri": "/news/:id",
+                "method": "PUT",
+                "urlParams": null,
+                "body": "{\"title\": [string], \"contents\": [string], \"categories\": [array]}",
+                "codes": [
+                    {"code": "200 OK", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            },
+            {
+                "title": "Delete a news post",
+                "uri": "/news/:id",
+                "method": "DELETE",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "204 No Contents", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Releases",
+        "endpoints": [
+            {
+                "title": "Show all releases",
+                "uri": "/releases",
+                "method": "GET",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "200 OK", "text": "Success"}
+                ]
+            },
+            {
+                "title": "Show a specific release",
+                "uri": "/releases/:id",
+                "method": "GET",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "200 OK", "text": "Success"}
+                ]
+            },
+            {
+                "title": "Add a release",
+                "uri": "/releases",
+                "method": "POST",
+                "urlParams": null,
+                "body": "{\"title\": [string], \"date\": [string], \"artist\": [string], \"credits\": [string], \"people\": [\"id\": [int], \"name\": [string], \"instruments\": [string]], \"songs\": [\"title\": [string], \"duration\": [int]], \"categories\": [array], \"formats\": [array]}",
+                "codes": [
+                    {"code": "201 Created", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            },
+            {
+                "title": "Edit a release",
+                "uri": "/releases/:id",
+                "method": "PUT",
+                "urlParams": null,
+                "body": "{\"title\": [string], \"date\": [string], \"artist\": [string], \"credits\": [string], \"people\": [\"id\": [int], \"name\": [string], \"instruments\": [string]], \"songs\": [\"title\": [string], \"duration\": [int]], \"categories\": [array], \"formats\": [array]}",
+                "codes": [
+                    {"code": "200 OK", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            },
+            {
+                "title": "Delete a release",
+                "uri": "/releases/:id",
+                "method": "DELETE",
+                "urlParams": null,
+                "body": null,
+                "codes": [
+                    {"code": "204 No Contents", "text": "Success"},
+                    {"code": 400, "text": "Bad Request"},
+                    {"code": 401, "text": "Unauthorized"}
+                ]
+            }
+        ]
+    }
+]

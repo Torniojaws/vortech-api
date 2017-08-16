@@ -271,6 +271,57 @@ CREATE TABLE ShopItemURLs (
         REFERENCES ShopItemImages(ShopItemImageID) ON DELETE CASCADE
 );
 
+-- Photos
+
+CREATE TABLE Photos (
+    PhotoID int AUTO_INCREMENT,
+    Image varchar(255) NOT NULL,
+    Caption varchar(1000),
+    TakenBy varchar(200),
+    Country varchar(100),
+    CountryCode varchar(2),
+    City varchar(100),
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (PhotoID)
+);
+
+CREATE TABLE PhotoAlbums (
+    AlbumID int AUTO_INCREMENT,
+    Title varchar(200) NOT NULL,
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (AlbumID)
+);
+
+CREATE TABLE PhotosAlbumsMapping (
+    MappingID int AUTO_INCREMENT,
+    PhotoID int NOT NULL,
+    AlbumID int NOT NULL,
+    PRIMARY KEY (MappingID),
+    CONSTRAINT fk_photos FOREIGN KEY (PhotoID)
+        REFERENCES Photos(PhotoID) ON DELETE CASCADE,
+    CONSTRAINT fk_albums FOREIGN KEY (AlbumID)
+        REFERENCES PhotoAlbums(AlbumID) ON DELETE CASCADE
+);
+
+CREATE TABLE PhotoCategories (
+    PhotoCategoryID int AUTO_INCREMENT,
+    Category varchar(200) NOT NULL,
+    PRIMARY KEY (PhotoCategoryID)
+);
+
+CREATE TABLE PhotoCategoryMapping (
+    MappingID int AUTO_INCREMENT,
+    PhotoID int NOT NULL,
+    PhotoCategoryID int NOT NULL,
+    PRIMARY KEY (MappingID),
+    CONSTRAINT fk_photo FOREIGN KEY (PhotoID)
+        REFERENCES Photos(PhotoID) ON DELETE CASCADE,
+    CONSTRAINT fk_photo_categories FOREIGN KEY (PhotoCategoryID)
+        REFERENCES PhotoCategories(PhotoCategoryID) ON DELETE CASCADE
+);
+
 -- Setup some predefined values
 
 INSERT INTO
@@ -335,3 +386,12 @@ INSERT INTO
 VALUES
     ("paypal.png"),
     ("bandcamp.png");
+
+INSERT INTO
+    PhotoCategories(Category)
+VALUES
+    ("Promotional"),
+    ("Live"),
+    ("Rehearsal"),
+    ("Studio"),
+    ("Interesting");
