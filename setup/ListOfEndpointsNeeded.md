@@ -102,7 +102,7 @@ Photos will always be returned grouped by their assigned albums.
 - [x] ``GET /photos?category=<int>`` to get all photos of category <int>
 - [x] ``POST /photos`` with a JSON with the files being uploaded during the process, the JSON has the metadata
 - [x] ``PATCH /photos/:id`` with a JSON, to edit a photo details (probably the Caption text)
-- [ ] ``DELETE /photos/:id`` to delete the photo DB entry and the file itself
+- [x] ``DELETE /photos/:id`` to delete the photo DB entry and the file itself
 
 ## Contacts
 
