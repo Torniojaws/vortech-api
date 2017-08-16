@@ -79,4 +79,18 @@ class GetPhotosTest extends TestCase
         $this->assertFalse(empty($photos[0]['categories']), 'No categories found');
         $this->assertEquals(3, $photos[0]['categories'][1], 'Did not get category ID');
     }
+
+    public function testGettingPhotosWithFilter()
+    {
+        // GET /photos?category=2
+        $response = $this->photos->get($this->anotherValidID, 2);
+        $photos = $response['contents'];
+
+        $this->assertFalse(empty($response), 'No response');
+        $this->assertEquals(200, $response['code'], 'Wrong response code');
+        $this->assertEquals(1, count($photos), 'Wrong amount of photos received');
+        $this->assertEquals('unittest2.jpg', $photos[0]['Image'], 'Unexpected filename');
+        $this->assertFalse(empty($photos[0]['categories']), 'No categories found');
+        $this->assertEquals(2, $photos[0]['categories'][0], 'Did not get correct category ID');
+    }
 }

@@ -21,7 +21,7 @@ switch ($method) {
     case 'GET':
         $photos = new \Apps\Photos\GetPhotos();
         $filters = $request->getFilters();
-        $response = $photos->get($photosID);
+        $response = $photos->get($photosID, $filters);
         break;
     case 'POST':
         if ($isValid) {

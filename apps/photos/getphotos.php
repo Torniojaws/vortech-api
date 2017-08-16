@@ -4,7 +4,14 @@ namespace Apps\Photos;
 
 class GetPhotos extends \Apps\Abstraction\CRUD
 {
-    public function get(int $photoID = null)
+    /**
+     * Retrive photos from the DB. The actual files are in a predefined directory. We only reference
+     * the actual filename for both the fullsize and the thumbnail photo.
+     * @param int $photoID If given, we will only return matching data by Photos.PhotoID
+     * @param int $category If given, we filter data by the category. If photoID is given, ignore.
+     * @return array $response
+     */
+    public function get(int $photoID = null, int $categoryID = null)
     {
         $sql = $this->read->select()->from('Photos')->order('PhotoID ASC')->result();
         $pdo = array();
@@ -20,6 +27,14 @@ class GetPhotos extends \Apps\Abstraction\CRUD
         foreach ($photos as $photo) {
             $photo['album'] = $this->getPhotoAlbum($photo['PhotoID']);
             $photo['categories'] = $this->getPhotoCategories($photo['PhotoID']);
+
+            // Apply category filter
+            if (empty($categoryID) == false && empty($photoID)) {
+                // If photo is not in the category of the filter, we don't include it
+                if (in_array($categoryID, $photo['categories']) == false) {
+                    continue;
+                }
+            }
             $contents[] = $photo;
         }
 
