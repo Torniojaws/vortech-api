@@ -108,9 +108,17 @@ Photos will always be returned grouped by their assigned albums.
 
 Contacts is quite simple. Mostly used to retrieve the most recent values.
 
-- [ ] ``GET /contacts`` to get the data of the most recent contacts data (by Created)
-- [ ] ``POST /contacts`` to add an updated contacts dataset
+- [x] ``GET /contacts`` to get the data of the most recent contacts data (by Created)
+- [x] ``POST /contacts`` to add an updated contacts dataset
 - [ ] ``PATCH /contacts`` to update the most recent contact info
+
+## Subscribers
+
+When fans want to receive email updates, they can subscribe
+
+- [ ] ``GET /subscribers`` to get the subscribers
+- [ ] ``POST /subscribers`` to add a subscriber
+- [ ] ``PATCH /subscribers`` to update subcribers' email address based on their own input (WARNING!)
 
 ## Guestbook
 
