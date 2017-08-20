@@ -61,7 +61,7 @@ implemented before putting to production. Probably by logging in, and if login i
 a new session ID and then use that session to keep track.
 
 ## Database
-All queries will be done using PDO. User passwords will be hashed using a PBFKD2 implementation,
+All queries will be done using PDO. User passwords will be hashed using a PBKDF2 implementation,
 which should be very secure.
 
 ## Testing

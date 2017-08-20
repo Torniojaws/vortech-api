@@ -335,7 +335,7 @@ CREATE TABLE Contacts (
     PRIMARY KEY (ContactsID)
 );
 
--- Subscribers will receive news directly to their email
+-- Subscribers will receive news directly to their email. UniqueID will be used when unsubscribing
 
 CREATE TABLE Subscribers (
     SubscriberID int AUTO_INCREMENT,

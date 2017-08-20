@@ -41,6 +41,9 @@ RewriteRule ^api/1.0/photos(.*)$ ./apps/photos/photos.php?params=$1
 # Contacts
 RewriteRule ^api/1.0/contacts(.*)$ ./apps/contacts/contacts.php?params=$1
 
+# Subscribers
+RewriteRule ^api/1.0/subscribers(.*)$ ./apps/subscribers/subscribers.php?params=$1
+
 # GZIP handling
 <ifModule mod_gzip.c>
     mod_gzip_on Yes
