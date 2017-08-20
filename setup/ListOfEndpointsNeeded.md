@@ -108,9 +108,22 @@ Photos will always be returned grouped by their assigned albums.
 
 Contacts is quite simple. Mostly used to retrieve the most recent values.
 
-- [ ] ``GET /contacts`` to get the data of the most recent contacts data (by Created)
-- [ ] ``POST /contacts`` to add an updated contacts dataset
-- [ ] ``PATCH /contacts`` to update the most recent contact info
+- [x] ``GET /contacts`` to get the data of the most recent contacts data (by Created)
+- [x] ``POST /contacts`` to add an updated contacts dataset
+- [x] ``PATCH /contacts`` to update the most recent contact info
+
+## Subscribers
+
+When fans want to receive email updates, they can subscribe. In the email, there is a link to
+unsubscribe. Opening that link will call a public endpoint that then internally calls the DELETE
+endpoint here. For a valid unsubscription, the user link also passes a UniqueID as URL param that
+must match to what we have in the database. Same for changing the email of a subscriber.
+
+- [x] ``GET /subscribers`` to get the active subscribers, for internal use to get the emails we'll send to
+- [x] ``GET /subscribers/:id`` to get the details of a specific subscriber, active or not
+- [x] ``POST /subscribers`` to add a subscriber. If the email already exists as inactive, reuse that.
+- [x] ``PATCH /subscribers/:id`` to update subcribers' email address based on their own input (WARNING!)
+- [x] ``DELETE /subscribers/:id`` to unsubscribe
 
 ## Guestbook
 
@@ -136,7 +149,7 @@ can be expanded for other things too. Maybe songs, shopitems, and something else
 
 - [ ] ``GET /votes/releases`` to get all vote results for all albums.
 - [ ] ``GET /votes/releases/:id`` to get the vote results for a specific album
-- [ ] ``POST /votes/releases`` with a JSON, to add a vote for an album
+- [ ] ``POST /votes/releases`` with a JSON, to add a vote for an album. This is not in ``/me`` because this is public
 
 ## Release download count
 
@@ -146,6 +159,25 @@ which country the request came from?
 - [ ] ``GET /downloads/releases`` to get the download count of all releases
 - [ ] ``GET /downloads/releases/:id`` to get the download count of a specific release
 - [ ] ``POST /downloads/releases`` with a JSON, add to download count
+
+## Users
+
+This will store all the user accounts, with a hashed password using the PBKDF2
+(https://en.wikipedia.org/wiki/PBKDF2) class. Should also
+have an endpoint/handling for user resetting their password. After successful login/logout, the
+session ID should be regenerated. Using POST prevents browsers from caching the path.
+
+ALL requests to ``/me`` endpoints will authenticate the user. If they eg. try to PATCH a comment ID
+they did not post, then it would throw a 401.
+
+- [ ] ``GET /me`` to retrieve user's information when successfully logged in, otherwise 401
+- [ ] ``POST /me/login`` to validate the details provided by the user, and login if they are correct
+- [ ] ``POST /me/logout`` logout the user and clear all session data
+- [ ] ``POST /me/:section/:id`` to add a comment to :section :id, for example ``/me/news/:id``
+- [ ] ``PATCH /me/:section/:id/comments/:id`` to edit a specific comment on a specific :section, eg. ``/me/news/:id/comments/:id``
+- [ ] ``DELETE /me/:section/:id/comments/:id`` to delete a specific comment on a specific :section, eg. ``/me/releases/:id/comments/:id``
+
+Sections will be defined in the ``/me/:section`` endpoint handler.
 
 ## Todo
 

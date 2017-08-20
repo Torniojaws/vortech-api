@@ -322,6 +322,31 @@ CREATE TABLE PhotoCategoryMapping (
         REFERENCES PhotoCategories(PhotoCategoryID) ON DELETE CASCADE
 );
 
+-- Contacts refers to the Contacts page, where we have mostly info and links to tech documents
+
+CREATE TABLE Contacts (
+    ContactsID int AUTO_INCREMENT,
+    Email varchar(100) NOT NULL,
+    TechRider varchar(100),
+    InputList varchar(100),
+    Backline varchar(100),
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (ContactsID)
+);
+
+-- Subscribers will receive news directly to their email. UniqueID will be used when unsubscribing
+
+CREATE TABLE Subscribers (
+    SubscriberID int AUTO_INCREMENT,
+    Email varchar(200) NOT NULL,
+    UniqueID varchar(23) NOT NULL,
+    Active BIT(1),
+    Created datetime,
+    Updated datetime,
+    PRIMARY KEY (SubscriberID)
+);
+
 -- Setup some predefined values
 
 INSERT INTO
